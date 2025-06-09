@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Auxiliar.VeriFactuWrapper
 {
-  public class VeriFactuHelper
+  public class VeriFactuHelper : IVeriFactuHelper
   {
     private readonly bool isEntornoTest;
     private readonly Action<string> feedback;
@@ -91,6 +91,7 @@ namespace Auxiliar.VeriFactuWrapper
 
     #endregion
 
+    #region Métodos de IVeriFactuHelper
 
     public void SaveSettings()
     {
@@ -166,5 +167,8 @@ namespace Auxiliar.VeriFactuWrapper
       feedback($"Respuesta de la AEAT:\n{invoiceEntry.Response}");
       return (invoiceEntry.Status == "Correcto");
     }
+
+    #endregion
+
   }
 }
