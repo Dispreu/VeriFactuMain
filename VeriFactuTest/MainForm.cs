@@ -1,38 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace VeriFactuTest
 {
-  public partial class MainForm : Form
+  public partial class MainForm : System.Windows.Forms.Form
   {
+    private readonly Auxiliar.VeriFactuWrapper.VeriFactuHelper veriFactuHelper;
+
     public MainForm()
     {
+      veriFactuHelper = new Auxiliar.VeriFactuWrapper.VeriFactuHelper("B67858753", "SES ILLES BAIX COST SOCIEDAD LIMITADA", "64A609F86721D1DB658BCD211CAA89DC", true, addMessage, (msg, isError) => addMessage(msg));
+      veriFactuHelper.SistemaInformaticoNombreSistemaInformatico = "GestionNet";
+      veriFactuHelper.SistemaInformaticoIdSistemaInformatico = "V4";
+      veriFactuHelper.SistemaInformaticoNumeroInstalacion = "4.7.9256.1711";
+      veriFactuHelper.SistemaInformaticoTipoUsoPosibleMultiOT = "N";
+      veriFactuHelper.SistemaInformaticoTipoUsoPosibleSoloVerifactu = "S";
+      veriFactuHelper.SaveSettings();
       InitializeComponent();
-    }
-
-    protected override void OnLoad(EventArgs e)
-    {
-      base.OnLoad(e);
-      // Carpeta del sistema dónde se ubica el archivo Settings.xml
-      string settingsFolder = $"{Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)}{System.IO.Path.DirectorySeparatorChar}VeriFactu";
-      // Cambio configuración a los endpoints de producción
-      VeriFactu.Config.Settings.Current.VeriFactuEndPointPrefix = VeriFactu.VeriFactuEndPointPrefixes.Test;
-      VeriFactu.Config.Settings.Current.VeriFactuEndPointValidatePrefix = VeriFactu.VeriFactuEndPointPrefixes.TestValidate;
-      VeriFactu.Config.Settings.Current.CertificateSerial = "64A609F86721D1DB658BCD211CAA89DC"; //--- Ses Illes
-      // Guardo los cambios
-      VeriFactu.Config.Settings.Save();
     }
 
     private void btnSendRegular_Click(object sender, EventArgs e)
     {
-      enviarFacturaRegular();
+      veriFactuHelper.EnviarFactura(false);
+      //enviarFacturaRegular();
     }
 
     private void btnSendSimplificada_Click(object sender, EventArgs e)
     {
-      enviarFacturaSimplificada();
+      veriFactuHelper.EnviarFactura(false);
+      //enviarFacturaSimplificada();
     }
 
     private void enviarFacturaRegular()
@@ -61,11 +58,19 @@ namespace VeriFactuTest
           }
         }
       };
-      // Creamos la entrada de la factura
+      //--- Obtener el Hash de la factura.
+      var blockchain = VeriFactu.Blockchain.Blockchain.Get(invoice.SellerID);
+      // Obtenemos una instancia de la clase RegistroAlta a partir de
+      // la instancia del objeto de negocio Invoice
+      var registro = invoice.GetRegistroAlta();
+      // Añadimos el registro de alta
+      blockchain.Add(registro);
+      addMessage($"La huella de la factura es: {registro.GetHashOutput()}");
+      //--- Creamos la entrada de la factura
       VeriFactu.Business.InvoiceEntry invoiceEntry = new VeriFactu.Business.InvoiceEntry(invoice);
       try
       {
-        // Guardamos la factura
+        //--- Guardamos la factura
         invoiceEntry.Save();
       }
       catch(Exception ex)

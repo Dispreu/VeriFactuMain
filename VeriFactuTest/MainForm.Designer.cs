@@ -30,8 +30,8 @@
     {
       this.editMemo = new System.Windows.Forms.TextBox();
       this.panel1 = new System.Windows.Forms.Panel();
-      this.btnSendRegular = new System.Windows.Forms.Button();
       this.btnSendSimplificada = new System.Windows.Forms.Button();
+      this.btnSendRegular = new System.Windows.Forms.Button();
       this.panel1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -59,17 +59,6 @@
       this.panel1.Size = new System.Drawing.Size(800, 58);
       this.panel1.TabIndex = 2;
       // 
-      // btnSend
-      // 
-      this.btnSendRegular.Dock = System.Windows.Forms.DockStyle.Left;
-      this.btnSendRegular.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnSendRegular.Location = new System.Drawing.Point(0, 0);
-      this.btnSendRegular.Name = "btnSend";
-      this.btnSendRegular.Size = new System.Drawing.Size(382, 58);
-      this.btnSendRegular.TabIndex = 1;
-      this.btnSendRegular.Text = "Send Factura Regular";
-      this.btnSendRegular.UseVisualStyleBackColor = true;
-      // 
       // btnSendSimplificada
       // 
       this.btnSendSimplificada.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -81,6 +70,18 @@
       this.btnSendSimplificada.Text = "Send Factura Simplificada";
       this.btnSendSimplificada.UseVisualStyleBackColor = true;
       this.btnSendSimplificada.Click += new System.EventHandler(this.btnSendSimplificada_Click);
+      // 
+      // btnSendRegular
+      // 
+      this.btnSendRegular.Dock = System.Windows.Forms.DockStyle.Left;
+      this.btnSendRegular.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnSendRegular.Location = new System.Drawing.Point(0, 0);
+      this.btnSendRegular.Name = "btnSendRegular";
+      this.btnSendRegular.Size = new System.Drawing.Size(382, 58);
+      this.btnSendRegular.TabIndex = 1;
+      this.btnSendRegular.Text = "Send Factura Regular";
+      this.btnSendRegular.UseVisualStyleBackColor = true;
+      this.btnSendRegular.Click += new System.EventHandler(this.btnSendRegular_Click);
       // 
       // MainForm
       // 
