@@ -39,34 +39,29 @@
 
 namespace VeriFactu.Xml.Factu.Alta
 {
+  /// <summary>
+  /// Clave de la operación sujeta y no exenta o de la operación no sujeta. L9.
+  /// </summary>
+  public enum CalificacionOperacion
+  {
+    /// <summary>
+    /// Operación Sujeta y No exenta - Sin inversión del sujeto pasivo.
+    /// </summary>
+    S1,
 
     /// <summary>
-    /// Clave de la operación sujeta y no exenta
-    /// o de la operación no sujeta. L9.
+    /// Operación Sujeta y No exenta - Con Inversión del sujeto pasivo.
     /// </summary>
-    public enum CalificacionOperacion
-    {
+    S2,
 
-        /// <summary>
-        ///  Operación Sujeta y No exenta - Sin inversión del sujeto pasivo.
-        /// </summary>
-        S1,
+    /// <summary>
+    /// Operación No Sujeta artículo 7, 14, otros.
+    /// </summary>
+    N1,
 
-        /// <summary>
-        /// Operación Sujeta y No exenta - Con Inversión del sujeto pasivo.
-        /// </summary>
-        S2,
-
-        /// <summary>
-        /// Operación No Sujeta artículo 7, 14, otros.
-        /// </summary>
-        N1,
-
-        /// <summary>
-        /// Operación No Sujeta por Reglas de localización.
-        /// </summary>
-        N2
-
-    }
-
+    /// <summary>
+    /// Operación No Sujeta por Reglas de localización.
+    /// </summary>
+    N2
+  }
 }

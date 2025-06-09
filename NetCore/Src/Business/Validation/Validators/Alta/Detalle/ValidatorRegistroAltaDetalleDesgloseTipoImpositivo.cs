@@ -46,86 +46,77 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta.Detalle
 {
+  /// <summary>
+  /// Valida los datos de RegistroAlta DetalleDesglose TipoImpositivo.
+  /// </summary>
+  public class ValidatorRegistroAltaDetalleDesgloseTipoImpositivo : ValidatorRegistroAlta
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Valida los datos de RegistroAlta DetalleDesglose TipoImpositivo.
+    /// Interlocutor a validar.
     /// </summary>
-    public class ValidatorRegistroAltaDetalleDesgloseTipoImpositivo : ValidatorRegistroAlta
+    private readonly DetalleDesglose _DetalleDesglose;
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">Sobre SOAP envío.</param>
+    /// <param name="registroAlta">Registro alta factura.</param>
+    /// <param name="detalleDesglose">DetalleDesglose a validar.</param>
+    public ValidatorRegistroAltaDetalleDesgloseTipoImpositivo(
+      Envelope envelope,
+      RegistroAlta registroAlta,
+      DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
     {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Interlocutor a validar.
-        /// </summary>
-        readonly DetalleDesglose _DetalleDesglose;
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Sobre SOAP envío.</param>
-        /// <param name="registroAlta"> Registro alta factura.</param>
-        /// <param name="detalleDesglose"> DetalleDesglose a validar. </param>
-        public ValidatorRegistroAltaDetalleDesgloseTipoImpositivo(Envelope envelope, RegistroAlta registroAlta,
-            DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
-        {
-
-            _DetalleDesglose = detalleDesglose;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // Si Impuesto = “01” (IVA) o no se cumplimenta (considerándose “01” - IVA) y CalificacionOperacion = “S1”:
-            if (_DetalleDesglose.Impuesto == Impuesto.IVA && _DetalleDesglose.CalificacionOperacion == CalificacionOperacion.S1) 
-            {
-
-                // Solo se permiten TipoImpositivo = 0; 2; 4; 5; 7,5; 10 y 21 (valores que indican el tanto por ciento).
-                var allowedRates = new decimal[] { 0m, 4m, 10m, 21m };
-
-                // Si FechaOperacion (FechaExpedicionFactura de la agrupación IDFactura si no se informa FechaOperacion)
-                // ≥ 1 de julio de 2022 y ≤ 30 de septiembre de 2024 se admitirá TipoImpositivo = 5.
-                var fechaOperacion = _FechaOperacion ?? _FechaExpedicion;
-                var allowedFive = fechaOperacion.CompareTo(new DateTime(2022, 7, 1)) >= 0 && fechaOperacion.CompareTo(new DateTime(2024, 9, 30)) <= 0;
-
-                // Si FechaOperacion (FechaExpedicionFactura de la agrupación IDFactura si no se informa FechaOperacion)
-                // ≥ 1 de octubre de 2024 y ≤ 31 de diciembre de 2024 se admitirá el TipoImpositivo = 2 y el TipoImpositivo = 7,5.
-                var allowedLastRates = fechaOperacion.CompareTo(new DateTime(2024, 10, 1)) >= 0 && fechaOperacion.CompareTo(new DateTime(2024, 12, 31)) <= 0;
-
-                if (allowedLastRates)
-                    allowedRates = new decimal[] { 0m, 2m, 4m, 7.5m, 10m, 21m };
-
-                var tipoImpositivo = XmlParser.ToDecimal(_DetalleDesglose.TipoImpositivo);
-                var isTipoImpositivoOK = Array.IndexOf(allowedRates, tipoImpositivo) != -1;
-
-                if(!isTipoImpositivoOK)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                        $" Solo se permiten TipoImpositivo = {string.Join(", ", allowedRates)}" +
-                        $" en la fecha {fechaOperacion:yyyy-MM-dd} (valores que indican el tanto por ciento).");
-
-            }
-
-            return result;
-
-        }
-
-        #endregion
-
+      _DetalleDesglose = detalleDesglose;
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // Si Impuesto = “01” (IVA) o no se cumplimenta (considerándose “01” - IVA) y CalificacionOperacion = “S1”:
+      if(_DetalleDesglose.Impuesto == Impuesto.IVA && _DetalleDesglose.CalificacionOperacion == CalificacionOperacion.S1)
+      {
+        // Solo se permiten TipoImpositivo = 0; 2; 4; 5; 7,5; 10 y 21 (valores que indican el tanto por ciento).
+        decimal[] allowedRates = new decimal[] { 0m, 4m, 10m, 21m };
+        // Si FechaOperacion (FechaExpedicionFactura de la agrupación IDFactura si no se informa FechaOperacion)
+        // ≥ 1 de julio de 2022 y ≤ 30 de septiembre de 2024 se admitirá TipoImpositivo = 5.
+        DateTime fechaOperacion = _FechaOperacion ?? _FechaExpedicion;
+        bool allowedFive = fechaOperacion.CompareTo(new DateTime(2022, 7, 1)) >= 0 && fechaOperacion.CompareTo(new DateTime(2024, 9, 30)) <= 0;
+        // Si FechaOperacion (FechaExpedicionFactura de la agrupación IDFactura si no se informa FechaOperacion)
+        // ≥ 1 de octubre de 2024 y ≤ 31 de diciembre de 2024 se admitirá el TipoImpositivo = 2 y el TipoImpositivo = 7,5.
+        bool allowedLastRates = fechaOperacion.CompareTo(new DateTime(2024, 10, 1)) >= 0 && fechaOperacion.CompareTo(new DateTime(2024, 12, 31)) <= 0;
+        if(allowedLastRates)
+        {
+          allowedRates = new decimal[] { 0m, 2m, 4m, 7.5m, 10m, 21m };
+        }
+        decimal tipoImpositivo = XmlParser.ToDecimal(_DetalleDesglose.TipoImpositivo);
+        bool isTipoImpositivoOK = Array.IndexOf(allowedRates, tipoImpositivo) != -1;
+        if(!isTipoImpositivoOK)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                $" Solo se permiten TipoImpositivo = {string.Join(", ", allowedRates)}" +
+                                $" en la fecha {fechaOperacion:yyyy-MM-dd} (valores que indican el tanto por ciento).");
+        }
+      }
+      return result;
+    }
+
+    #endregion
+  }
 }

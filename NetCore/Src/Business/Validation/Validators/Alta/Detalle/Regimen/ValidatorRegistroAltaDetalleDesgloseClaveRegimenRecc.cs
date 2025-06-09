@@ -45,77 +45,75 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta.Detalle.Regimen
 {
+  /// <summary>
+  /// Valida los datos de RegistroAlta DetalleDesglose ClaveRegimen 07. Criterio de caja.
+  /// </summary>
+  public class ValidatorRegistroAltaDetalleDesgloseClaveRegimenRecc : ValidatorRegistroAlta
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Valida los datos de RegistroAlta DetalleDesglose ClaveRegimen 07. Criterio de caja.
+    /// Interlocutor a validar.
     /// </summary>
-    public class ValidatorRegistroAltaDetalleDesgloseClaveRegimenRecc : ValidatorRegistroAlta
+    private readonly DetalleDesglose _DetalleDesglose;
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">Sobre SOAP envío.</param>
+    /// <param name="registroAlta">Registro alta factura.</param>
+    /// <param name="detalleDesglose">DetalleDesglose a validar.</param>
+    public ValidatorRegistroAltaDetalleDesgloseClaveRegimenRecc(
+      Envelope envelope,
+      RegistroAlta registroAlta,
+      DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
     {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Interlocutor a validar.
-        /// </summary>
-        readonly DetalleDesglose _DetalleDesglose;
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Sobre SOAP envío.</param>
-        /// <param name="registroAlta"> Registro alta factura.</param>
-        /// <param name="detalleDesglose"> DetalleDesglose a validar. </param>
-        public ValidatorRegistroAltaDetalleDesgloseClaveRegimenRecc(Envelope envelope, RegistroAlta registroAlta,
-            DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
-        {
-
-            _DetalleDesglose = detalleDesglose;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // Si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta (considerándose “01” - IVA):
-            // Si ClaveRegimen = “07”:
-            // CalificacionOperacion no puede ser “S2”, “N1”, “N2”.
-            // OperacionExenta no puede ser “E2”, “E3”, “E4” y “E5”.
-            if (_DetalleDesglose.Impuesto != Impuesto.IVA &&
-                _DetalleDesglose.Impuesto != Impuesto.IGIC)
-            {
-
-                if (Array.IndexOf(new CalificacionOperacion[] { CalificacionOperacion.S1, CalificacionOperacion.S2, CalificacionOperacion.N1, CalificacionOperacion.N2 }, _DetalleDesglose.CalificacionOperacion) != -1)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                        $" Cuando ClaveRegimen sea igual a “07”" +
-                        $" CalificacionOperacion no puede ser “S2”, “N1”, “N2”.");
-
-                if (Array.IndexOf(new CausaExencion[] { CausaExencion.E2, CausaExencion.E3, CausaExencion.E4, CausaExencion.E5 }, _DetalleDesglose.OperacionExenta) != -1)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                        $" Cuando ClaveRegimen sea igual a “07”" +
-                        $" OperacionExenta no puede ser “E2”, “E3”, “E4” y “E5”.");
-            }
-
-
-            return result;
-
-        }
-
-        #endregion
-
+      _DetalleDesglose = detalleDesglose;
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // Si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta (considerándose “01” - IVA):
+      // Si ClaveRegimen = “07”:
+      // CalificacionOperacion no puede ser “S2”, “N1”, “N2”.
+      // OperacionExenta no puede ser “E2”, “E3”, “E4” y “E5”.
+      if(_DetalleDesglose.Impuesto != Impuesto.IVA &&
+                _DetalleDesglose.Impuesto != Impuesto.IGIC)
+      {
+        if(Array.IndexOf(
+          new CalificacionOperacion[] { CalificacionOperacion.S1, CalificacionOperacion.S2, CalificacionOperacion.N1, CalificacionOperacion.N2 },
+          _DetalleDesglose.CalificacionOperacion) != -1)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                $" Cuando ClaveRegimen sea igual a “07”" +
+                                $" CalificacionOperacion no puede ser “S2”, “N1”, “N2”.");
+        }
+        if(Array.IndexOf(new CausaExencion[] { CausaExencion.E2, CausaExencion.E3, CausaExencion.E4, CausaExencion.E5 }, _DetalleDesglose.OperacionExenta) != -1)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                $" Cuando ClaveRegimen sea igual a “07”" +
+                                $" OperacionExenta no puede ser “E2”, “E3”, “E4” y “E5”.");
+        }
+      }
+      return result;
+    }
+
+    #endregion
+  }
 }

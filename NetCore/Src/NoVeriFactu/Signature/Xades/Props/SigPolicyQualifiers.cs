@@ -41,37 +41,32 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Calificadores de política de firma..
-    /// </summary>
-    internal class SigPolicyQualifiers : PropXmlElement
-    {
+  /// <summary>
+  /// Calificadores de política de firma..
+  /// </summary>
+  internal class SigPolicyQualifiers : PropXmlElement
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Calificador de política de firma.
-        /// </summary>
-        internal SigPolicyQualifier SigPolicyQualifier { get; private set; }
+    /// <summary>
+    /// Calificador de política de firma.
+    /// </summary>
+    internal SigPolicyQualifier SigPolicyQualifier { get; private set; }
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal SigPolicyQualifiers(XmlNode parent) : base(parent, "SigPolicyQualifiers")
-        {
-
-            SigPolicyQualifier = new SigPolicyQualifier(XmlElement);
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal SigPolicyQualifiers(XmlNode parent) : base(parent, "SigPolicyQualifiers")
+    {
+      SigPolicyQualifier = new SigPolicyQualifier(XmlElement);
     }
 
+    #endregion
+  }
 }

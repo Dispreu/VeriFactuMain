@@ -41,41 +41,37 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Respuesta
 {
-
-    /// <summary>
-    /// Cabecera de respuesta.
-    /// </summary>
-    [XmlType(AnonymousType = true, Namespace = Namespaces.NamespaceTikR)]
-    public partial class Cabecera
-    {
+  /// <summary>
+  /// Cabecera de respuesta.
+  /// </summary>
+  [XmlType(AnonymousType = true, Namespace = Namespaces.NamespaceTikR)]
+  public partial class Cabecera
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Obligado tributario emisión.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public Interlocutor ObligadoEmision { get; set; }
+    /// <summary>
+    /// Obligado tributario emisión.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public Interlocutor ObligadoEmision { get; set; }
 
-        /// <summary>
-        /// Representante.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public Interlocutor Representante { get; set; }
+    /// <summary>
+    /// Representante.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public Interlocutor Representante { get; set; }
 
-        /// <summary>
-        /// <para>Información relativa a las circustancias que afectan a la remisión voluntaria
-        /// de los registros de facuración al sistema «VERI*FACTU».</para>
-        /// <para>Contine información de la renuncia al sistema o si la remisión voluntaria de
-        /// los registros de facturación se ha visto afectada por algún tipo de incidencia técnica
-        /// (por ej. ausencia de corriente eléctrica, problemas de conexión a Internet, fallo del
-        /// sistema informático de facturación…)</para>
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public RemisionVoluntaria RemisionVoluntaria { get; set; }
+    /// <summary>
+    /// <para>Información relativa a las circustancias que afectan a la remisión voluntaria de los registros de
+    /// facuración al sistema «VERI*FACTU».</para> <para>Contine información de la renuncia al sistema o si la remisión
+    /// voluntaria de los registros de facturación se ha visto afectada por algún tipo de incidencia técnica (por ej.
+    /// ausencia de corriente eléctrica, problemas de conexión a Internet, fallo del sistema informático de
+    /// facturación…)</para>
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public RemisionVoluntaria RemisionVoluntaria { get; set; }
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

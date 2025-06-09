@@ -42,45 +42,39 @@ using System.Text.RegularExpressions;
 
 namespace VeriFactu.Business.Validation.VIES
 {
+  /// <summary>
+  /// Validador de NIF comunitarios mediante API REST. https://ec.europa.eu/taxation_customs/vies/#/technical-
+  /// information
+  /// </summary>
+  public class ViesVatNumber
+  {
+    /// <summary>
+    /// Url del endpoint de validación.
+    /// </summary>
+    private static readonly string UrlValidate = "https://ec.europa.eu/taxation_customs/vies/rest-api//check-vat-number";
 
     /// <summary>
-    /// Validador de NIF comunitarios mediante API REST.
-    /// https://ec.europa.eu/taxation_customs/vies/#/technical-information
+    /// Valida un número de IVA intracomunitario.
     /// </summary>
-    public class ViesVatNumber
+    /// <param name="vatNumber">
+    /// Número de IVA intracomunitario incluyendo el código de país.
+    /// </param>
+    /// <returns>True si es válido y false en caso contario.</returns>
+    public static bool Validate(string vatNumber)
     {
-
-        /// <summary>
-        /// Url del endpoint de validación.
-        /// </summary>
-        static readonly string UrlValidate = "https://ec.europa.eu/taxation_customs/vies/rest-api//check-vat-number";
-
-        /// <summary>
-        /// Valida un número de IVA intracomunitario.
-        /// </summary>
-        /// <param name="vatNumber">Número de IVA intracomunitario
-        /// incluyendo el código de país.</param>
-        /// <returns>True si es válido y false en caso contario.</returns>
-        public static bool Validate(string vatNumber) 
-        {
-
-            var country = vatNumber.Substring(0, 2);
-            var number = vatNumber.Substring(2, vatNumber.Length - 2);
-
-            var json = "{\"countryCode\": \""+ country + "\",\"vatNumber\": \""+ number + "\"}";
-            string valid = null;
-
-            using (WebClient webClient = new WebClient()) 
-            {
-
-                webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
-                string response = webClient.UploadString(UrlValidate, json);
-                valid = Regex.Match(response, @"(?<=\Wvalid\W\s*:\s*)\w+").Value;
-
-            }
-
-            return (valid == "true");
-
-        }
+      string country = vatNumber.Substring(0, 2);
+      string number = vatNumber.Substring(2, vatNumber.Length - 2);
+      string json = $"{{\"countryCode\": \"{country}\",\"vatNumber\": \"{number}\"}}";
+      string valid = null;
+      #pragma warning disable SYSLIB0014
+      using(WebClient webClient = new WebClient())
+      #pragma warning restore SYSLIB0014
+      {
+        webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
+        string response = webClient.UploadString(UrlValidate, json);
+        valid = Regex.Match(response, @"(?<=\Wvalid\W\s*:\s*)\w+").Value;
+      }
+      return (valid == "true");
     }
+  }
 }

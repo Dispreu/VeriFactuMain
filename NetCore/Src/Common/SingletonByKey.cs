@@ -42,116 +42,106 @@ using System.Collections.Generic;
 
 namespace VeriFactu.Common
 {
+  /// <summary>
+  /// Representa una clase en la que sólo puede existir una instancia por clave o identificador asignado.
+  /// </summary>
+  /// <typeparam name="T">
+  /// Tipo de la clase a desplegar como de instancia única por clave (Blockchain o SellerQeue).
+  /// </typeparam>
+  public class SingletonByKey<T>
+  {
+
+    #region Variables Privadas Estáticas
 
     /// <summary>
-    /// Representa una clase en la que sólo puede existir
-    /// una instancia por clave o identificador asignado.
+    /// Diccionario dónde se registran todas las instancias de la clase generadas durante la ejecución de la biblioteca.
+    /// Se registran todas en este diccionario estático para únicamente permitir la creación de una clase por clave.
     /// </summary>
-    /// <typeparam name="T">Tipo de la clase a desplegar como
-    /// de instancia única por clave (Blockchain o SellerQeue).</typeparam>
-    public class SingletonByKey<T>
+    private static readonly Dictionary<string, SingletonByKey<T>> _InstancesLoaded = new Dictionary<string, SingletonByKey<T>>();
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="key">Clave que indentifica unívocamente a la instancia.</param>
+    protected SingletonByKey(string key)
     {
-
-        #region Variables Privadas Estáticas
-
-        /// <summary>
-        /// Diccionario dónde se registran todas las instancias
-        /// de la clase generadas durante la ejecución de la biblioteca.
-        /// Se registran todas en este diccionario estático para únicamente permitir
-        /// la creación de una clase por clave.
-        /// </summary>
-        static readonly Dictionary<string, SingletonByKey<T>> _InstancesLoaded = new Dictionary<string, SingletonByKey<T>>();
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="key">Clave que indentifica unívocamente a la instancia.</param>
-        protected SingletonByKey(string key)
-        {
-
-            var tKey = key.Trim();
-
-            Check(tKey);
-            Register(tKey);
-
-            Key = tKey;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados Estáticos
-
-        /// <summary>
-        /// Devuelve la instancia correspondiente a la cadena de bloques
-        /// de un emisor de facturas.
-        /// </summary>
-        /// <param name="key">Clave asociada a esta instancia.</param>
-        /// <returns>Instancia correspondiente a la clave
-        /// facilitada en el parámetro key.</returns>
-        protected static SingletonByKey<T> GetInstance(string key)
-        {
-
-            if (_InstancesLoaded.ContainsKey(key))
-                return _InstancesLoaded[key];
-
-            return Activator.CreateInstance(typeof(T), new object[] { key }) as SingletonByKey<T>;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Si la clave facilitada como parámetro ya tiene una instancia
-        /// en ejecución registrada lanza una excepción.
-        /// </summary>
-        /// <param name="key">Clave únivoca de instancia.</param>
-        /// <exception cref="ArgumentException">Cuando ya hay registrada una instancia
-        /// para la clave, o el valor de la misma es una cadena nula o vacía.</exception>
-        private void Check(string key)
-        {
-
-            if (string.IsNullOrEmpty(key))
-                throw new ArgumentException($"El valor del parámetro key no puede" +
-                    $" ser nulo o una cadena vacía.");
-
-
-            if (_InstancesLoaded.ContainsKey(key))
-                throw new ArgumentException($"Ya existe una instancia" +
-                    $" de {typeof(T).Name} creada para la clave {key}.");
-
-        }
-
-        /// <summary>
-        /// Registra la instancia para una
-        /// clave determinada.
-        /// </summary>
-        /// <param name="key">Emisor al que pertenece la
-        /// cadena de bloques a gestionar.</param>
-        private void Register(string key)
-        {
-
-            _InstancesLoaded.Add(key, this);
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// Identificador único de la instancia.
-        /// </summary>        
-        public string Key { get; private set; }
-
-        #endregion
-
+      string tKey = key.Trim();
+      Check(tKey);
+      Register(tKey);
+      Key = tKey;
     }
 
+    #endregion
+
+    #region Métodos Privados Estáticos
+
+    /// <summary>
+    /// Devuelve la instancia correspondiente a la cadena de bloques de un emisor de facturas.
+    /// </summary>
+    /// <param name="key">Clave asociada a esta instancia.</param>
+    /// <returns>
+    /// Instancia correspondiente a la clave facilitada en el parámetro key.
+    /// </returns>
+    protected static SingletonByKey<T> GetInstance(string key)
+    {
+      if(_InstancesLoaded.ContainsKey(key))
+      {
+        return _InstancesLoaded[key];
+      }
+      return Activator.CreateInstance(typeof(T), new object[] { key }) as SingletonByKey<T>;
+    }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Si la clave facilitada como parámetro ya tiene una instancia en ejecución registrada lanza una excepción.
+    /// </summary>
+    /// <param name="key">Clave únivoca de instancia.</param>
+    /// <exception cref="ArgumentException">
+    /// Cuando ya hay registrada una instancia para la clave, o el valor de la misma es una cadena nula o vacía.
+    /// </exception>
+    private void Check(string key)
+    {
+      if(string.IsNullOrEmpty(key))
+      {
+        throw new ArgumentException(
+          $"El valor del parámetro key no puede" +
+                          $" ser nulo o una cadena vacía.");
+      }
+      if(_InstancesLoaded.ContainsKey(key))
+      {
+        throw new ArgumentException(
+          $"Ya existe una instancia" +
+                          $" de {typeof(T).Name} creada para la clave {key}.");
+      }
+    }
+
+    /// <summary>
+    /// Registra la instancia para una clave determinada.
+    /// </summary>
+    /// <param name="key">
+    /// Emisor al que pertenece la cadena de bloques a gestionar.
+    /// </param>
+    private void Register(string key)
+    {
+      _InstancesLoaded.Add(key, this);
+    }
+
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// Identificador único de la instancia.
+    /// </summary>        
+    public string Key { get; private set; }
+
+    #endregion
+  }
 }

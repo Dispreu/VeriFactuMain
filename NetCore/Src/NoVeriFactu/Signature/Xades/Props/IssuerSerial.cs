@@ -41,43 +41,38 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Emisor y número de serie de un certificado digital.
-    /// </summary>
-    internal class IssuerSerial : PropXmlElement
-    {
+  /// <summary>
+  /// Emisor y número de serie de un certificado digital.
+  /// </summary>
+  internal class IssuerSerial : PropXmlElement
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Nombre emisor.
-        /// </summary>
-        internal X509IssuerName X509IssuerName { get; private set; }
+    /// <summary>
+    /// Nombre emisor.
+    /// </summary>
+    internal X509IssuerName X509IssuerName { get; private set; }
 
-        /// <summary>
-        /// Número de serie.
-        /// </summary>
-        internal X509SerialNumber X509SerialNumber { get; private set; }
+    /// <summary>
+    /// Número de serie.
+    /// </summary>
+    internal X509SerialNumber X509SerialNumber { get; private set; }
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal IssuerSerial(XmlNode parent) : base(parent, "IssuerSerial")
-        {
-
-            X509IssuerName = new X509IssuerName(XmlElement);
-            X509SerialNumber = new X509SerialNumber(XmlElement);
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal IssuerSerial(XmlNode parent) : base(parent, "IssuerSerial")
+    {
+      X509IssuerName = new X509IssuerName(XmlElement);
+      X509SerialNumber = new X509SerialNumber(XmlElement);
     }
 
+    #endregion
+  }
 }

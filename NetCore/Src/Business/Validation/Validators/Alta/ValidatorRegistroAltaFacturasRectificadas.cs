@@ -43,84 +43,72 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta FacturasRectificadas.
-    /// </summary>
-    public class ValidatorRegistroAltaFacturasRectificadas : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta FacturasRectificadas.
+  /// </summary>
+  public class ValidatorRegistroAltaFacturasRectificadas : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        /// <param name="registroAlta"> Registro de alta del bloque Body.</param>
-        public ValidatorRegistroAltaFacturasRectificadas(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    /// <param name="registroAlta">Registro de alta del bloque Body.</param>
+    public ValidatorRegistroAltaFacturasRectificadas(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // 4. Agrupación FacturasRectificadas
+      Xml.IDFactura[] facturasRecticadas = _RegistroAlta?.FacturasRectificadas;
+      if(facturasRecticadas != null)
+      {
+        if(facturasRecticadas.Length > 1000)
         {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                               $" La colección FacturasRectificadas no puede" +
+                               $" contener más de 1000 elementos y contiene {facturasRecticadas.Length}”.");
         }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
+        if(!_IsRectificativa)
         {
-
-            var result = new List<string>();
-
-            // 4. Agrupación FacturasRectificadas
-
-            var facturasRecticadas = _RegistroAlta?.FacturasRectificadas;
-
-            if (facturasRecticadas != null)
-            {
-
-                if (facturasRecticadas.Length > 1000)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                       $" La colección FacturasRectificadas no puede" +
-                       $" contener más de 1000 elementos y contiene {facturasRecticadas.Length}”.");
-
-
-                if (!_IsRectificativa)
-                {
-                    // Sólo podrá incluirse esta agrupación (no es obligatoria) si TipoFactura es igual a “R1”, “R2”, “R3”, “R4” o “R5”.
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+          // Sólo podrá incluirse esta agrupación (no es obligatoria) si TipoFactura es igual a “R1”, “R2”, “R3”, “R4” o “R5”.
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
                         $" La colección FacturasRectificadas sólo puede existir" +
                         $" si TipoFactura es igual a “R1”, “R2”, “R3”, “R4” o “R5”.");
-
-                }
-                else
-                {
-
-                    // El NIF del campo IDEmisorFactura debe estar identificado.
-                    foreach (var facturaRectificada in facturasRecticadas)
-                    {
-
-                        if (facturaRectificada?.IDEmisorFactura != _RegistroAlta?.IDFacturaAlta?.IDEmisorFactura)
-                            result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                               $" El NIF del campo IDEmisorFactura de FacturasRectificada ({facturaRectificada?.IDEmisorFactura}) debe estar" +
-                               $" identificado y debe se el mismo que IDEmisorFactura ({_RegistroAlta?.IDFacturaAlta?.IDEmisorFactura}).");
-
-                    }
-
-                }
-
-
-            }
-
-            return result;
-
         }
-
-        #endregion
-
+        else
+        {
+          // El NIF del campo IDEmisorFactura debe estar identificado.
+          foreach(Xml.IDFactura facturaRectificada in facturasRecticadas)
+          {
+            if(facturaRectificada?.IDEmisorFactura != _RegistroAlta?.IDFacturaAlta?.IDEmisorFactura)
+            {
+              result.Add(
+                $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                           $" El NIF del campo IDEmisorFactura de FacturasRectificada ({facturaRectificada?.IDEmisorFactura}) debe estar" +
+                                           $" identificado y debe se el mismo que IDEmisorFactura ({_RegistroAlta?.IDFacturaAlta?.IDEmisorFactura}).");
+            }
+          }
+        }
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

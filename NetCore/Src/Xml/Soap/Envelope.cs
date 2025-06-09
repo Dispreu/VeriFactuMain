@@ -43,123 +43,112 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Soap
 {
-
-    /// <summary>
-    /// Representacion de envelope (sobre) para SOAP. 
-    /// Sobre: el cual define qué hay en el mensaje y cómo procesarlo.
-    /// </summary>
-    [Serializable]
-    [XmlRoot("Envelope", Namespace = Namespaces.NamespaceSoap)]
-    public class Envelope
-    {
+  /// <summary>
+  /// Representacion de envelope (sobre) para SOAP.  Sobre: el cual define qué hay en el mensaje y cómo procesarlo.
+  /// </summary>
+  [Serializable]
+  [XmlRoot("Envelope", Namespace = Namespaces.NamespaceSoap)]
+  public class Envelope
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor clase Envelope.
-        /// </summary>
-        public Envelope()
-        {
-            Header = new Header();
-            Body = new Body();
-        }
-
-        /// <summary>
-        /// Constructor clase Envelope.
-        /// </summary>
-        /// <param name="xmlPath">Ruta al archivo xml que contiene el mensaje SOAP.</param>
-        public Envelope(string xmlPath)
-        {
-
-            Envelope envelope = null;
-
-            XmlSerializer serializer = new XmlSerializer(this.GetType());
-            if (File.Exists(xmlPath))
-            {
-                using (StreamReader r = new StreamReader(xmlPath))
-                {
-                    envelope = serializer.Deserialize(r) as Envelope;
-                }
-            }
-
-            if (envelope == null)
-                throw new Exception("XML SOAP serialization error");
-
-            Header = envelope.Header;
-            Body = envelope.Body;
-
-        }
-
-        /// <summary>
-        /// Constructor clase Envelope.
-        /// </summary>
-        /// <param name="stream">Ruta al archivo xml que contiene el mensaje SOAP.</param>
-        public Envelope(Stream stream)
-        {
-
-            Envelope envelope = null;
-
-            XmlSerializer serializer = new XmlSerializer(this.GetType());
-
-            using (StreamReader r = new StreamReader(stream))
-                envelope = serializer.Deserialize(r) as Envelope;
-
-            if (envelope == null)
-                throw new Exception("XML SOAP selerailization error");
-
-            Header = envelope.Header;
-            Body = envelope.Body;
-
-        }
-
-        /// <summary>
-        /// Devuelve un objeto envelope a partir de un
-        /// string procedente de una respuesta de la AEAT.
-        /// </summary>
-        /// <param name="xml">String xml de una instancia de tipo de VERIFACTU.</param>
-        /// <returns>Nuevo objeto envelope.</returns>
-        public static Envelope FromXml(string xml)
-        {
-            var streamResponse = new MemoryStream();
-            var writer = new StreamWriter(streamResponse);
-            writer.Write(xml);
-            writer.Flush();
-            streamResponse.Position = 0;
-
-            return new Envelope(streamResponse);
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// SOAP Header.
-        /// </summary>
-        [XmlElement(Order = 1)]
-        public Header Header { get; set; }
-
-        /// <summary>
-        /// Body del envelope SOAP.
-        /// </summary>
-        [XmlElement(Order = 2)]
-        public Body Body { get; set; }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{Body}";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor clase Envelope.
+    /// </summary>
+    public Envelope()
+    {
+      Header = new Header();
+      Body = new Body();
     }
 
+    /// <summary>
+    /// Constructor clase Envelope.
+    /// </summary>
+    /// <param name="xmlPath">Ruta al archivo xml que contiene el mensaje SOAP.</param>
+    public Envelope(string xmlPath)
+    {
+      Envelope envelope = null;
+      XmlSerializer serializer = new XmlSerializer(GetType());
+      if(File.Exists(xmlPath))
+      {
+        using(StreamReader r = new StreamReader(xmlPath))
+        {
+          envelope = serializer.Deserialize(r) as Envelope;
+        }
+      }
+      if(envelope == null)
+      {
+        throw new Exception("XML SOAP serialization error");
+      }
+      Header = envelope.Header;
+      Body = envelope.Body;
+    }
+
+    /// <summary>
+    /// Constructor clase Envelope.
+    /// </summary>
+    /// <param name="stream">Ruta al archivo xml que contiene el mensaje SOAP.</param>
+    public Envelope(Stream stream)
+    {
+      Envelope envelope = null;
+      XmlSerializer serializer = new XmlSerializer(GetType());
+      using(StreamReader r = new StreamReader(stream))
+      {
+        envelope = serializer.Deserialize(r) as Envelope;
+      }
+      if(envelope == null)
+      {
+        throw new Exception("XML SOAP selerailization error");
+      }
+      Header = envelope.Header;
+      Body = envelope.Body;
+    }
+
+    /// <summary>
+    /// Devuelve un objeto envelope a partir de un string procedente de una respuesta de la AEAT.
+    /// </summary>
+    /// <param name="xml">String xml de una instancia de tipo de VERIFACTU.</param>
+    /// <returns>Nuevo objeto envelope.</returns>
+    public static Envelope FromXml(string xml)
+    {
+      MemoryStream streamResponse = new MemoryStream();
+      StreamWriter writer = new StreamWriter(streamResponse);
+      writer.Write(xml);
+      writer.Flush();
+      streamResponse.Position = 0;
+      return new Envelope(streamResponse);
+    }
+
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// SOAP Header.
+    /// </summary>
+    [XmlElement(Order = 1)]
+    public Header Header { get; set; }
+
+    /// <summary>
+    /// Body del envelope SOAP.
+    /// </summary>
+    [XmlElement(Order = 2)]
+    public Body Body { get; set; }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{Body}";
+    }
+
+    #endregion
+  }
 }

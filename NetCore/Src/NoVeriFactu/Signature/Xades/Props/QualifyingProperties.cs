@@ -41,37 +41,32 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Propiedades que califican el contexto de la firma.
-    /// </summary>
-    internal class QualifyingProperties : PropertyElementWithSigId
-    {
+  /// <summary>
+  /// Propiedades que califican el contexto de la firma.
+  /// </summary>
+  internal class QualifyingProperties : PropertyElementWithSigId
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Propiedades firmadas.
-        /// </summary>
-        internal SignedProperties SignedProperties { get; private set; }
+    /// <summary>
+    /// Propiedades firmadas.
+    /// </summary>
+    internal SignedProperties SignedProperties { get; private set; }
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal QualifyingProperties(XmlNode parent) : base(parent, "QualifyingProperties")
-        {
-
-            SignedProperties = new SignedProperties(XmlElement);
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal QualifyingProperties(XmlNode parent) : base(parent, "QualifyingProperties")
+    {
+      SignedProperties = new SignedProperties(XmlElement);
     }
 
+    #endregion
+  }
 }

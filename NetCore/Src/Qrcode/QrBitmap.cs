@@ -39,110 +39,95 @@
 
 namespace VeriFactu.Qrcode
 {
+  /// <summary>
+  /// Representa un mapa de bits obtenido a partir de una matriz de bytes de código QR.
+  /// </summary>
+  public class QrBitmap
+  {
+
+    #region Variables Privadas de Instancia
+
+    private readonly ByteMatrix _ByteMatrix;
+    private readonly QrRawBm _Bitmap;
+
+    #endregion
+
+    #region Propiedades Privadas Estáticas
+
+    private static readonly byte[] BLACK = new byte[] { 0, 0, 0 };
+    private static readonly byte[] WHITE = new byte[] { 255, 255, 255 };
+
+    #endregion
+
+    #region Propiedades Privadas de Instacia
+
+    private readonly int SquareSideLenth = 4;
+
+    #endregion
+
+    #region Construtores de Instancia
 
     /// <summary>
-    /// Representa un mapa de bits obtenido a partir de una
-    /// matriz de bytes de código QR.
+    /// Consturctor.
     /// </summary>
-    public class QrBitmap
+    /// <param name="byteMatrix">Matriz de bytes QR.</param>
+    public QrBitmap(ByteMatrix byteMatrix)
     {
-
-        #region Variables Privadas de Instancia
-
-        readonly ByteMatrix _ByteMatrix;
-        readonly QrRawBm _Bitmap;
-
-        #endregion
-
-        #region Propiedades Privadas Estáticas
-
-        private static readonly byte[] BLACK = new byte[] { 0, 0, 0 };
-        private static readonly byte[] WHITE = new byte[] { 255, 255, 255 };
-
-        #endregion
-
-        #region Propiedades Privadas de Instacia
-
-        private readonly int SquareSideLenth = 4;
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Consturctor.
-        /// </summary>
-        /// <param name="byteMatrix">Matriz de bytes QR.</param>
-        public QrBitmap(ByteMatrix byteMatrix)
-        {
-
-            _ByteMatrix = byteMatrix;
-            _Bitmap = GetRenderedBm();
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene un bitmap con la representacióndel QR.
-        /// </summary>
-        /// <returns>Bitmap con la representacióndel QR.</returns>
-        private QrRawBm GetRenderedBm()
-        {
-
-            int bmWidth = _ByteMatrix.GetWidth();
-            int bmHeight = _ByteMatrix.GetHeight();
-
-            int width = bmWidth * SquareSideLenth;
-            int height = bmHeight * SquareSideLenth;
-
-            var bm = new QrRawBm(width, height);
-
-            for (int x = 0; x < bmWidth; x++)
-            {
-                for (int y = 0; y < bmHeight; y++)
-                {
-                    var color = _ByteMatrix.Get(x, y) == 0 ?
-                    new byte[]{0, 0, 0 } : new byte[] { 255, 255, 255 };
-
-                    for (int r = 0; r < SquareSideLenth; r++)
-                    {
-                        var rY = SquareSideLenth * y + r;
-
-                        for (int c = 0; c < SquareSideLenth; c++)
-                        {
-                            var cX = SquareSideLenth * x + c;
-                            bm.SetPixel(rY, cX, color[0], color[1], color[2]);
-                        }
-                    }
-                }
-            }
-
-            return bm;
-
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Obtiene el bitmap correspondiente al la
-        /// matriz de bytes QR.
-        /// </summary>
-        /// <returns>Bitmap correspondiente al la
-        /// matriz de bytes QR.</returns>
-        public byte[] GetBytes()
-        {
-
-            return _Bitmap.GetBitmapBytes();
-
-        }
-
-        #endregion
-
+      _ByteMatrix = byteMatrix;
+      _Bitmap = GetRenderedBm();
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene un bitmap con la representacióndel QR.
+    /// </summary>
+    /// <returns>Bitmap con la representacióndel QR.</returns>
+    private QrRawBm GetRenderedBm()
+    {
+      int bmWidth = _ByteMatrix.GetWidth();
+      int bmHeight = _ByteMatrix.GetHeight();
+      int width = bmWidth * SquareSideLenth;
+      int height = bmHeight * SquareSideLenth;
+      QrRawBm bm = new QrRawBm(width, height);
+      for(int x = 0; x < bmWidth; x++)
+      {
+        for(int y = 0; y < bmHeight; y++)
+        {
+          byte[] color = _ByteMatrix.Get(x, y) == 0 ?
+              new byte[] { 0, 0, 0 } :
+              new byte[] { 255, 255, 255 };
+          for(int r = 0; r < SquareSideLenth; r++)
+          {
+            int rY = SquareSideLenth * y + r;
+            for(int c = 0; c < SquareSideLenth; c++)
+            {
+              int cX = SquareSideLenth * x + c;
+              bm.SetPixel(rY, cX, color[0], color[1], color[2]);
+            }
+          }
+        }
+      }
+      return bm;
+    }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Obtiene el bitmap correspondiente al la matriz de bytes QR.
+    /// </summary>
+    /// <returns>
+    /// Bitmap correspondiente al la matriz de bytes QR.
+    /// </returns>
+    public byte[] GetBytes()
+    {
+      return _Bitmap.GetBitmapBytes();
+    }
+
+    #endregion
+  }
 }

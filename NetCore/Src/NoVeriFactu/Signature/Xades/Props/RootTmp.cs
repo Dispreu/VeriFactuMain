@@ -37,76 +37,69 @@
     address: info@irenesolutions.com
  */
 
-using System.Xml;
 using System.Security.Cryptography.Xml;
+using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Objeto dummy que representa el xml a firmar. Lo utilizamos
-    /// para simplificar inclusión de los espacios de nombres en
-    /// el proceso de canonicalización.
-    /// </summary>
-    internal class RootTmp : PropXmlElement
-    {
+  /// <summary>
+  /// Objeto dummy que representa el xml a firmar. Lo utilizamos para simplificar inclusión de los espacios de nombres
+  /// en el proceso de canonicalización.
+  /// </summary>
+  internal class RootTmp : PropXmlElement
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Objeto dummy que representa nodo de firma. Lo utilizamos
-        /// para simplificar inclusión de los espacios de nombres en
-        /// el proceso de canonicalización.
-        /// </summary>
-        internal SignatureTmp SignatureTmp { get; private set; }
+    /// <summary>
+    /// Objeto dummy que representa nodo de firma. Lo utilizamos para simplificar inclusión de los espacios de nombres
+    /// en el proceso de canonicalización.
+    /// </summary>
+    internal SignatureTmp SignatureTmp { get; private set; }
 
-        /// <summary>
-        /// Representa el bloque Object a incluir en la firma.
-        /// </summary>
-        internal XmlElement XmlElementObject { get; private set; }
+    /// <summary>
+    /// Representa el bloque Object a incluir en la firma.
+    /// </summary>
+    internal XmlElement XmlElementObject { get; private set; }
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        /// <param name="name">Nombre elemento.</param>
-        internal RootTmp(XmlDocument parent, string name = "RegistroAlta") : base(parent, name, "sum1",
-            "https://www2.agenciatributaria.gob.es/static_files/common/internet/dep/aplicaciones/es/aeat/tike/cont/ws/SuministroInformacion.xsd", true)
-        {
-
-            SignatureTmp = new SignatureTmp(XmlElement);
-            XmlElementObject = SignatureTmp.Object.XmlElement;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Devuelve una instancia de DataObject a partir del 
-        /// elemento xml 'Object'. El resultado se utiliza para
-        /// incluir el objeto en la lógica de firma xml
-        /// del .net.
-        /// </summary>
-        /// <returns>Instancia de DataObject a partir del 
-        /// elemento xml 'Object'.</returns>
-        internal DataObject GetDataObject()
-        {
-
-            var dataObject = new DataObject();
-            dataObject.LoadXml(XmlElementObject);
-
-            return dataObject;
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    /// <param name="name">Nombre elemento.</param>
+    internal RootTmp(XmlDocument parent, string name = "RegistroAlta") : base(
+      parent,
+      name,
+      "sum1",
+      "https://www2.agenciatributaria.gob.es/static_files/common/internet/dep/aplicaciones/es/aeat/tike/cont/ws/SuministroInformacion.xsd",
+      true)
+    {
+      SignatureTmp = new SignatureTmp(XmlElement);
+      XmlElementObject = SignatureTmp.Object.XmlElement;
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Devuelve una instancia de DataObject a partir del  elemento xml 'Object'. El resultado se utiliza para incluir
+    /// el objeto en la lógica de firma xml del .net.
+    /// </summary>
+    /// <returns>
+    /// Instancia de DataObject a partir del  elemento xml 'Object'.
+    /// </returns>
+    internal DataObject GetDataObject()
+    {
+      DataObject dataObject = new DataObject();
+      dataObject.LoadXml(XmlElementObject);
+      return dataObject;
+    }
+
+    #endregion
+  }
 }

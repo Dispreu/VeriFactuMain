@@ -43,70 +43,62 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta ImporteRectificacion.
-    /// </summary>
-    public class ValidatorRegistroAltaImporteRectificacion : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta ImporteRectificacion.
+  /// </summary>
+  public class ValidatorRegistroAltaImporteRectificacion : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        /// <param name="registroAlta"> Registro de alta del bloque Body.</param>
-        public ValidatorRegistroAltaImporteRectificacion(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    /// <param name="registroAlta">Registro de alta del bloque Body.</param>
+    public ValidatorRegistroAltaImporteRectificacion(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // 6. Agrupación ImporteRectificacion
+      ImporteRectificacion importeRectificacion = _RegistroAlta?.ImporteRectificacion;
+      if(_RegistroAlta.TipoRectificativaSpecified && _RegistroAlta.TipoRectificativa == TipoRectificativa.S)
+      {
+        // Obligatorio si TipoRectificativa = “S”
+        // 1118 = Si la factura es de tipo rectificativa por sustitución el bloque ImporteRectificacion es obligatorio.
+        if(importeRectificacion == null)
         {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                $" Obligatorio informar el bloque ImporteRectificacion si TipoRectificativa = 'S'.");
         }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
+      }
+      else
+      {
+        // Sólo deberá incluirse esta agrupación si el campo TipoRectificativa = "S".
+        // 1119 = Si la factura no es de tipo rectificativa por sustitución el bloque ImporteRectificacion no debe tener valor.
+        if(importeRectificacion != null)
         {
-
-            var result = new List<string>();
-
-            // 6. Agrupación ImporteRectificacion
-
-            var importeRectificacion = _RegistroAlta?.ImporteRectificacion;
-
-            if (_RegistroAlta.TipoRectificativaSpecified && _RegistroAlta.TipoRectificativa == TipoRectificativa.S)
-            {
-
-                // Obligatorio si TipoRectificativa = “S”
-                // 1118 = Si la factura es de tipo rectificativa por sustitución el bloque ImporteRectificacion es obligatorio.
-                if (importeRectificacion == null)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" Obligatorio informar el bloque ImporteRectificacion si TipoRectificativa = 'S'.");
-
-            }
-            else
-            {
-
-                // Sólo deberá incluirse esta agrupación si el campo TipoRectificativa = "S".
-                // 1119 = Si la factura no es de tipo rectificativa por sustitución el bloque ImporteRectificacion no debe tener valor.
-                if (importeRectificacion != null)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" Sólo deberá incluirse el bloque ImporteRectificacion si el campo TipoRectificativa = 'S'.");
-
-            }
-
-
-            return result;
-
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                $" Sólo deberá incluirse el bloque ImporteRectificacion si el campo TipoRectificativa = 'S'.");
         }
-
-        #endregion
-
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

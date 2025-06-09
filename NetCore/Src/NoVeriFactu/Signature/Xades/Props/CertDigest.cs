@@ -41,43 +41,38 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Representa la huella del certificado.
-    /// </summary>
-    internal class CertDigest : PropXmlElement
-    {
+  /// <summary>
+  /// Representa la huella del certificado.
+  /// </summary>
+  internal class CertDigest : PropXmlElement
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Método de cálculo de la huella SHA1, SHA256...
-        /// </summary>
-        internal DigestMethod DigestMethod { get; private set; }
+    /// <summary>
+    /// Método de cálculo de la huella SHA1, SHA256...
+    /// </summary>
+    internal DigestMethod DigestMethod { get; private set; }
 
-        /// <summary>
-        /// Valor del hash calculado.
-        /// </summary>
-        internal DigestValue DigestValue { get; private set; }
+    /// <summary>
+    /// Valor del hash calculado.
+    /// </summary>
+    internal DigestValue DigestValue { get; private set; }
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal CertDigest(XmlNode parent) : base(parent, "CertDigest")
-        {
-
-            DigestMethod = new DigestMethod(XmlElement);
-            DigestValue = new DigestValue(XmlElement);
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal CertDigest(XmlNode parent) : base(parent, "CertDigest")
+    {
+      DigestMethod = new DigestMethod(XmlElement);
+      DigestValue = new DigestValue(XmlElement);
     }
 
+    #endregion
+  }
 }

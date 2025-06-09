@@ -41,25 +41,21 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Tipo mime de archivo firmado.
-    /// </summary>
-    internal class MimeType : PropXmlElementWithValue
-    {
+  /// <summary>
+  /// Tipo mime de archivo firmado.
+  /// </summary>
+  internal class MimeType : PropXmlElementWithValue
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal MimeType(XmlNode parent) : base(parent, "MimeType")
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal MimeType(XmlNode parent) : base(parent, "MimeType")
+        { }
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

@@ -39,25 +39,20 @@
 
 namespace VeriFactu.Business
 {
+  /// <summary>
+  /// Indicador que determina si la línea de impuestos contiene información de impuestos repecutidos  (IVA, IGIC,
+  /// IPSI...) o de retenciones.
+  /// </summary>
+  public enum TaxClass
+  {
+    /// <summary>
+    /// Impuestos repecutidos (IVA, IGIC, IPSI...)
+    /// </summary>
+    TaxOutput,
 
     /// <summary>
-    /// Indicador que determina si la línea de impuestos
-    /// contiene información de impuestos repecutidos 
-    /// (IVA, IGIC, IPSI...) o de retenciones.
+    /// Retenciones.
     /// </summary>
-    public enum TaxClass
-    {
-
-        /// <summary>
-        /// Impuestos repecutidos
-        /// (IVA, IGIC, IPSI...)
-        /// </summary>
-        TaxOutput,
-
-        /// <summary>
-        /// Retenciones.
-        /// </summary>
-        TaxWithheld
-
-    }
+    TaxWithheld
+  }
 }

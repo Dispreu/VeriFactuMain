@@ -41,30 +41,29 @@ using System;
 
 namespace VeriFactu.Qrcode.Exceptions
 {
-
-    /// <summary>
-    /// A base class which covers the range of exceptions which may occur when encoding a barcode using
-    /// the Writer framework.
-    /// </summary>
-    /// <author>dswitkin@google.com (Daniel Switkin)</author>
-    public sealed class WriterException : Exception 
-    {
+  /// <summary>
+  /// A base class which covers the range of exceptions which may occur when encoding a barcode using the Writer
+  /// framework.
+  /// </summary>
+  /// <author>dswitkin@google.com (Daniel Switkin)</author>
+  public sealed class WriterException : Exception
+  {
 
         #region Construtores de Instancia        
 
-        /// <summary>Creates a WriterException.</summary>
-        public WriterException()
-            : base() {
-        }
+    /// <summary>
+    /// Creates a WriterException.
+    /// </summary>
+    public WriterException()
+            : base() { }
 
-        /// <summary>Creates a WriterException with a message.</summary>
-        /// <param name="message">message of the exception</param>
-        public WriterException(String message)
-            : base(message) {
-        }
+    /// <summary>
+    /// Creates a WriterException with a message.
+    /// </summary>
+    /// <param name="message">message of the exception</param>
+    public WriterException(string message)
+            : base(message) { }
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

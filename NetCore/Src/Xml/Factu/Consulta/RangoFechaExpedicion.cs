@@ -41,47 +41,40 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Consulta
 {
-
-    /// <summary>
-    /// Representa un rango de fechas de expedición.
-    /// </summary>
-    public class RangoFechaExpedicion
-    {
+  /// <summary>
+  /// Representa un rango de fechas de expedición.
+  /// </summary>
+  public class RangoFechaExpedicion
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// <para> Fecha desde la que se consulta</para>
-        /// <para>Fecha (dd-mm-yyyy)</para>
-        /// </summary>
+    /// <summary>
+    /// <para>Fecha desde la que se consulta</para> <para>Fecha (dd-mm-yyyy)</para>
+    /// </summary>
 
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string Desde { get; set; }
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string Desde { get; set; }
 
-        /// <summary>
-        /// <para> Fecha hasta  la que se consulta</para>
-        /// <para>Fecha (dd-mm-yyyy)</para>
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string Hasta { get; set; }
+    /// <summary>
+    /// <para>Fecha hasta  la que se consulta</para> <para>Fecha (dd-mm-yyyy)</para>
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string Hasta { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representacioón textual de la instancia.
-        /// </summary>
-        /// <returns>Representacioón textual de la instancia.</returns>
-        public override string ToString()
-        {
-
-            return $"{Desde} - {Hasta}";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representacioón textual de la instancia.
+    /// </summary>
+    /// <returns>Representacioón textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{Desde} - {Hasta}";
     }
 
+    #endregion
+  }
 }

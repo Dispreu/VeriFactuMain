@@ -43,57 +43,52 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta Tercero.
-    /// </summary>
-    public class ValidatorRegistroAltaTercero : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta Tercero.
+  /// </summary>
+  public class ValidatorRegistroAltaTercero : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        /// <param name="registroAlta"> Registro de alta del bloque Body.</param>
-        public ValidatorRegistroAltaTercero(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    /// <param name="registroAlta">Registro de alta del bloque Body.</param>
+    public ValidatorRegistroAltaTercero(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
 
-        #endregion
+    #endregion
 
-        #region Métodos Privados de Instancia
+    #region Métodos Privados de Instancia
 
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // 12. Agrupación Tercero
-
-            // Solo podrá cumplimentarse si EmitidaPorTerceroODestinatario es “T”.
-
-            if (_RegistroAlta.Tercero != null && _RegistroAlta.EmitidaPorTercerosODestinatarioSpecified &&
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // 12. Agrupación Tercero
+      // Solo podrá cumplimentarse si EmitidaPorTerceroODestinatario es “T”.
+      if(_RegistroAlta.Tercero != null && _RegistroAlta.EmitidaPorTercerosODestinatarioSpecified &&
                 _RegistroAlta.EmitidaPorTercerosODestinatario != EmitidaPorTercerosODestinatario.T)
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                    $" Tercero sólo podrá cumplimentarse si EmitidaPorTerceroODestinatario es “T”.");
-
-            // Validaciones de ID
-            if(_RegistroAlta.Tercero != null)
-                result.AddRange(new ValidatorRegistroAltaInterlocutor(_Envelope, _RegistroAlta, _RegistroAlta.Tercero, "Tercero").GetErrors());
-
-            return result;
-
-        }
-
-        #endregion
-
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                          $" Tercero sólo podrá cumplimentarse si EmitidaPorTerceroODestinatario es “T”.");
+      }
+      // Validaciones de ID
+      if(_RegistroAlta.Tercero != null)
+      {
+        result.AddRange(new ValidatorRegistroAltaInterlocutor(_Envelope, _RegistroAlta, _RegistroAlta.Tercero, "Tercero").GetErrors());
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

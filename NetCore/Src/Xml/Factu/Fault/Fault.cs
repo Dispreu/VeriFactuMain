@@ -41,50 +41,46 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Fault
 {
-
-    /// <summary>
-    /// Error devuelto por el servidor no relacionado
-    /// con la lógica de Verifactu.
-    /// </summary>
-    public class Fault
-    {
+  /// <summary>
+  /// Error devuelto por el servidor no relacionado con la lógica de Verifactu.
+  /// </summary>
+  public class Fault
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Código de error.
-        /// </summary>
-        [XmlElement(Namespace = "")]
-        public string faultcode { get; set; }
+    /// <summary>
+    /// Código de error.
+    /// </summary>
+    [XmlElement(Namespace = "")]
+    public string faultcode { get; set; }
 
-        /// <summary>
-        /// Descripción error.
-        /// </summary>
-        [XmlElement(Namespace = "")]
-        public string faultstring { get; set; }
+    /// <summary>
+    /// Descripción error.
+    /// </summary>
+    [XmlElement(Namespace = "")]
+    public string faultstring { get; set; }
 
-        /// <summary>
-        /// Detalles del error.
-        /// </summary>
+    /// <summary>
+    /// Detalles del error.
+    /// </summary>
 
-        [XmlElement(Namespace = "")]
-        public detail detail { get; set; }
+    [XmlElement(Namespace = "")]
+    public detail detail { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{faultcode}: {faultstring}";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{faultcode}: {faultstring}";
     }
 
+    #endregion
+  }
 }

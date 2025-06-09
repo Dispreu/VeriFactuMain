@@ -47,143 +47,143 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
+  /// <summary>
+  /// Valida los datos de RegistroAlta respecto a un intelocutor con un rol concreto (Tercero, Destinatario...).
+  /// </summary>
+  public class ValidatorRegistroAltaInterlocutor : ValidatorRegistroAlta
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Valida los datos de RegistroAlta respecto a un intelocutor
-    /// con un rol concreto (Tercero, Destinatario...).
+    /// Interlocutor a validar.
     /// </summary>
-    public class ValidatorRegistroAltaInterlocutor : ValidatorRegistroAlta
+    private readonly Interlocutor _Interlocutor;
+
+    /// <summary>
+    /// Rol del interlocutor en el registro de alta (Tercero, Destinatario...).
+    /// </summary>
+    private readonly string _Rol;
+
+    /// <summary>
+    /// True indica que se admite el valor IDOtro.IDType = “07” (NO CENSADO)
+    /// </summary>
+    private readonly bool _AllowNoCensado;
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">Sobre SOAP envío.</param>
+    /// <param name="registroAlta">Registro alta factura.</param>
+    /// <param name="interlocutor">Interlocutor a validar.</param>
+    /// <param name="rol">Rol del interlocutor a validar (Destinatario, Tercero...)</param>
+    /// <param name="allowNoCensado">True indica que se admite el valor IDOtro.IDType = “07” (NO CENSADO).</param>
+    public ValidatorRegistroAltaInterlocutor(
+      Envelope envelope,
+      RegistroAlta registroAlta,
+      Interlocutor interlocutor,
+      string rol,
+      bool allowNoCensado = false) : base(envelope, registroAlta)
     {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Interlocutor a validar.
-        /// </summary>
-        readonly Interlocutor _Interlocutor;
-
-        /// <summary>
-        /// Rol del interlocutor en el registro
-        /// de alta (Tercero, Destinatario...).
-        /// </summary>
-        readonly string _Rol;
-
-        /// <summary>
-        /// True indica que se admite el valor IDOtro.IDType = “07” (NO CENSADO)
-        /// </summary>
-        readonly bool _AllowNoCensado;
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Sobre SOAP envío.</param>
-        /// <param name="registroAlta"> Registro alta factura.</param>
-        /// <param name="interlocutor"> Interlocutor a validar. </param>
-        /// <param name="rol"> Rol del interlocutor a validar (Destinatario, Tercero...)</param>
-        /// <param name="allowNoCensado"> True indica que se admite el valor IDOtro.IDType = “07” (NO CENSADO).</param>
-        public ValidatorRegistroAltaInterlocutor(Envelope envelope, RegistroAlta registroAlta, 
-            Interlocutor interlocutor, string rol, bool allowNoCensado = false) : base(envelope, registroAlta)
-        {
-
-            _Interlocutor = interlocutor;
-            _Rol = rol;
-            _AllowNoCensado = allowNoCensado;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // Si se identifica mediante NIF, el NIF debe estar identificado y ser distinto del NIF del campo IDEmisorFactura de la agrupación IDFactura.
-            if (!string.IsNullOrEmpty(_Interlocutor.NIF))
-            {
-
-                if (!Settings.Current.SkipNifAeatValidation)
-                    result.AddRange(new NifValidation(_Interlocutor.NIF, _Interlocutor.NombreRazon).GetErrors());
-
-                if(_Interlocutor.NIF == _RegistroAlta.IDFacturaAlta.IDEmisorFactura)
-                    result.Add($"Error en el bloque RegistroAlta: El NIF del {_Rol} {_Interlocutor.NIF}" +
-                        $" con el nombre {_Interlocutor.NombreRazon} debe ser distinto del NIF del campo" +
-                        $" IDEmisorFactura de la agrupación IDFactura.");
-
-            }
-
-            // Si se cumplimenta NIF, no deberá existir la agrupación IDOtro y viceversa, pero es obligatorio que se cumplimente uno de los dos.
-            if (_Interlocutor != null && !string.IsNullOrEmpty(_Interlocutor.NIF) && _Interlocutor.IDOtro != null)
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                    $" {_Rol} si se cumplimenta NIF, no deberá existir la agrupación IDOtro y viceversa");
-
-            if (_Interlocutor != null && string.IsNullOrEmpty(_Interlocutor.NIF) && _Interlocutor.IDOtro == null)
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                    $" {_Rol} es obligatorio que se cumplimente NIF o IDOtro.");
-
-            if (_Interlocutor != null && _Interlocutor.IDOtro != null)
-            {
-
-                // Si el campo IDType = “02” (NIF-IVA), no será exigible el campo CodigoPais.
-                if (_Interlocutor.IDOtro.IDType != IDType.NIF_IVA && !_Interlocutor.IDOtro.CodigoPaisSpecified)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" {_Rol} es obligatorio que se cumplimente CodigoPais con IDOtro.IDType != “02”.");
-
-                var isValidViesVatNumber = Settings.Current.SkipViesVatNumberValidation ? true : ViesVatNumber.Validate(_Interlocutor.IDOtro.ID);
-
-                // Cuando el tercero se identifique a través de la agrupación IDOtro e IDType sea “02”,
-                // se validará que el campo identificador ID se ajuste a la estructura de NIF-IVA de
-                // alguno de los Estados Miembros y debe estar identificado. Ver nota (1).
-                if (_Interlocutor.IDOtro.IDType == IDType.NIF_IVA && !isValidViesVatNumber)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" {_Rol} es obligatorio que IDOtro.ID = “{_Interlocutor.IDOtro.ID}” esté identificado.");
-
-                if (_AllowNoCensado) 
-                {
-
-                    // Si se identifica a través de la agrupación IDOtro y CodigoPais sea "ES", se validará que el campo IDType sea “03” o “07”..
-                    if (_Interlocutor.IDOtro.CodigoPais == CodigoPais.ES && 
-                        (_Interlocutor.IDOtro.IDType != IDType.PASAPORTE && _Interlocutor.IDOtro.IDType != IDType.NO_CENSADO))
-                        result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                            $" {_Rol} es obligatorio que para IDOtro.CodigoPais = “{_Interlocutor.IDOtro.CodigoPais}”" +
-                            $" IDOtro.IDType = “03” (PASAPORTE) o IDOtro.IDType = “07” (NO_CENSADO).");
-
-                }
-                else 
-                {
-
-                    // Si se identifica a través de la agrupación IDOtro y CodigoPais sea "ES", se validará que el campo IDType sea “03”.
-                    if (_Interlocutor.IDOtro.CodigoPais == CodigoPais.ES && _Interlocutor.IDOtro.IDType != IDType.PASAPORTE)
-                        result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                            $" {_Rol} es obligatorio que para IDOtro.CodigoPais = “{_Interlocutor.IDOtro.CodigoPais}” IDOtro.IDType = “03” (PASAPORTE).");
-
-
-                    if (_Interlocutor.IDOtro.IDType == IDType.NO_CENSADO)
-                        result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                            $" {_Rol} no se admite IDOtro.IDType = “07” (NO CENSADO).");
-
-                }
-
-
-
-            }
-
-            return result;
-
-        }
-
-        #endregion
-
+      _Interlocutor = interlocutor;
+      _Rol = rol;
+      _AllowNoCensado = allowNoCensado;
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // Si se identifica mediante NIF, el NIF debe estar identificado y ser distinto del NIF del campo IDEmisorFactura de la agrupación IDFactura.
+      if(!string.IsNullOrEmpty(_Interlocutor.NIF))
+      {
+        if(!Settings.Current.SkipNifAeatValidation)
+        {
+          result.AddRange(new NifValidation(_Interlocutor.NIF, _Interlocutor.NombreRazon).GetErrors());
+        }
+        if(_Interlocutor.NIF == _RegistroAlta.IDFacturaAlta.IDEmisorFactura)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta: El NIF del {_Rol} {_Interlocutor.NIF}" +
+                                $" con el nombre {_Interlocutor.NombreRazon} debe ser distinto del NIF del campo" +
+                                $" IDEmisorFactura de la agrupación IDFactura.");
+        }
+      }
+      // Si se cumplimenta NIF, no deberá existir la agrupación IDOtro y viceversa, pero es obligatorio que se cumplimente uno de los dos.
+      if(_Interlocutor != null && !string.IsNullOrEmpty(_Interlocutor.NIF) && _Interlocutor.IDOtro != null)
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                          $" {_Rol} si se cumplimenta NIF, no deberá existir la agrupación IDOtro y viceversa");
+      }
+      if(_Interlocutor != null && string.IsNullOrEmpty(_Interlocutor.NIF) && _Interlocutor.IDOtro == null)
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                          $" {_Rol} es obligatorio que se cumplimente NIF o IDOtro.");
+      }
+      if(_Interlocutor != null && _Interlocutor.IDOtro != null)
+      {
+        // Si el campo IDType = “02” (NIF-IVA), no será exigible el campo CodigoPais.
+        if(_Interlocutor.IDOtro.IDType != IDType.NIF_IVA && !_Interlocutor.IDOtro.CodigoPaisSpecified)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                $" {_Rol} es obligatorio que se cumplimente CodigoPais con IDOtro.IDType != “02”.");
+        }
+        bool isValidViesVatNumber = Settings.Current.SkipViesVatNumberValidation ? true : ViesVatNumber.Validate(_Interlocutor.IDOtro.ID);
+        // Cuando el tercero se identifique a través de la agrupación IDOtro e IDType sea “02”,
+        // se validará que el campo identificador ID se ajuste a la estructura de NIF-IVA de
+        // alguno de los Estados Miembros y debe estar identificado. Ver nota (1).
+        if(_Interlocutor.IDOtro.IDType == IDType.NIF_IVA && !isValidViesVatNumber)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                $" {_Rol} es obligatorio que IDOtro.ID = “{_Interlocutor.IDOtro.ID}” esté identificado.");
+        }
+        if(_AllowNoCensado)
+        {
+          // Si se identifica a través de la agrupación IDOtro y CodigoPais sea "ES", se validará que el campo IDType sea “03” o “07”..
+          if(_Interlocutor.IDOtro.CodigoPais == CodigoPais.ES &&
+                        (_Interlocutor.IDOtro.IDType != IDType.PASAPORTE && _Interlocutor.IDOtro.IDType != IDType.NO_CENSADO))
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                      $" {_Rol} es obligatorio que para IDOtro.CodigoPais = “{_Interlocutor.IDOtro.CodigoPais}”" +
+                                      $" IDOtro.IDType = “03” (PASAPORTE) o IDOtro.IDType = “07” (NO_CENSADO).");
+          }
+        }
+        else
+        {
+          // Si se identifica a través de la agrupación IDOtro y CodigoPais sea "ES", se validará que el campo IDType sea “03”.
+          if(_Interlocutor.IDOtro.CodigoPais == CodigoPais.ES && _Interlocutor.IDOtro.IDType != IDType.PASAPORTE)
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                      $" {_Rol} es obligatorio que para IDOtro.CodigoPais = “{_Interlocutor.IDOtro.CodigoPais}” IDOtro.IDType = “03” (PASAPORTE).");
+          }
+          if(_Interlocutor.IDOtro.IDType == IDType.NO_CENSADO)
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                      $" {_Rol} no se admite IDOtro.IDType = “07” (NO CENSADO).");
+          }
+        }
+      }
+      return result;
+    }
+
+    #endregion
+  }
 }

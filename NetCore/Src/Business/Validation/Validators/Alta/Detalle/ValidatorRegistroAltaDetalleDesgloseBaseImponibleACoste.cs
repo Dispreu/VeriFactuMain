@@ -45,71 +45,63 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta.Detalle
 {
+  /// <summary>
+  /// Valida los datos de RegistroAlta DetalleDesglose BaseImponibleACoste.
+  /// </summary>
+  public class ValidatorRegistroAltaDetalleDesgloseBaseImponibleACoste : ValidatorRegistroAlta
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Valida los datos de RegistroAlta DetalleDesglose BaseImponibleACoste.
+    /// Interlocutor a validar.
     /// </summary>
-    public class ValidatorRegistroAltaDetalleDesgloseBaseImponibleACoste : ValidatorRegistroAlta
+    private readonly DetalleDesglose _DetalleDesglose;
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">Sobre SOAP envío.</param>
+    /// <param name="registroAlta">Registro alta factura.</param>
+    /// <param name="detalleDesglose">DetalleDesglose a validar.</param>
+    public ValidatorRegistroAltaDetalleDesgloseBaseImponibleACoste(
+      Envelope envelope,
+      RegistroAlta registroAlta,
+      DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
     {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Interlocutor a validar.
-        /// </summary>
-        readonly DetalleDesglose _DetalleDesglose;
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Sobre SOAP envío.</param>
-        /// <param name="registroAlta"> Registro alta factura.</param>
-        /// <param name="detalleDesglose"> DetalleDesglose a validar. </param>
-        public ValidatorRegistroAltaDetalleDesgloseBaseImponibleACoste(Envelope envelope, RegistroAlta registroAlta,
-            DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
-        {
-
-            _DetalleDesglose = detalleDesglose;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // El campo BaseImponibleACoste solo puede estar cumplimentado si la
-            // ClaveRegimen es = “06” o Impuesto = “02” (IPSI)o Impuesto = “05” (Otros).
-            if(_DetalleDesglose.ClaveRegimen != ClaveRegimen.GrupoEntidades && 
-                _DetalleDesglose.Impuesto != Impuesto.IPSI && 
-                _DetalleDesglose.Impuesto != Impuesto.OTROS && 
-                (_DetalleDesglose.BaseImponibleACoste != null && XmlParser.ToDecimal(_DetalleDesglose.BaseImponibleACoste) != 0)) 
-            {
-
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                       $"El campo BaseImponibleACoste solo puede estar cumplimentado si la" +
-                       $"ClaveRegimen es = “06” o Impuesto = “02” (IPSI)o Impuesto = “05” (Otros).");
-
-            }
-
-            return result;
-
-        }
-
-        #endregion
-
+      _DetalleDesglose = detalleDesglose;
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // El campo BaseImponibleACoste solo puede estar cumplimentado si la
+      // ClaveRegimen es = “06” o Impuesto = “02” (IPSI)o Impuesto = “05” (Otros).
+      if(_DetalleDesglose.ClaveRegimen != ClaveRegimen.GrupoEntidades &&
+                _DetalleDesglose.Impuesto != Impuesto.IPSI &&
+                _DetalleDesglose.Impuesto != Impuesto.OTROS &&
+                (_DetalleDesglose.BaseImponibleACoste != null && XmlParser.ToDecimal(_DetalleDesglose.BaseImponibleACoste) != 0))
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                       $"El campo BaseImponibleACoste solo puede estar cumplimentado si la" +
+                       $"ClaveRegimen es = “06” o Impuesto = “02” (IPSI)o Impuesto = “05” (Otros).");
+      }
+      return result;
+    }
+
+    #endregion
+  }
 }

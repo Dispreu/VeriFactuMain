@@ -41,28 +41,23 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Representa un método o función de hash.
-    /// </summary>
-    internal class DigestMethod : PropXmlElement
-    {
+  /// <summary>
+  /// Representa un método o función de hash.
+  /// </summary>
+  internal class DigestMethod : PropXmlElement
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal DigestMethod(XmlNode parent) : base(parent, "DigestMethod", "ds", "http://www.w3.org/2000/09/xmldsig#")
-        {
-
-            XmlElement.SetAttribute("Algorithm", "http://www.w3.org/2000/09/xmldsig#sha1");
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal DigestMethod(XmlNode parent) : base(parent, "DigestMethod", "ds", "http://www.w3.org/2000/09/xmldsig#")
+    {
+      XmlElement.SetAttribute("Algorithm", "http://www.w3.org/2000/09/xmldsig#sha1");
     }
 
+    #endregion
+  }
 }

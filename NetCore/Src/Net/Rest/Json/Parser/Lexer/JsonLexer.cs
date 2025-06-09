@@ -44,149 +44,139 @@ using VeriFactu.Net.Rest.Json.Parser.Lexer.Tokens;
 
 namespace VeriFactu.Net.Rest.Json.Parser.Lexer
 {
+  /// <summary>
+  /// Analizador léxico JSON.
+  /// </summary>
+  public class JsonLexer
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Analizador léxico JSON.
+    /// Mapa de tipos de JsonToken por carácter inicial de fragmento.
     /// </summary>
-    public class JsonLexer
+    private Dictionary<char, Type> _TokenMap = new Dictionary<char, Type>
     {
+      { '{', typeof(JsonLeftBrace) },
+      { '}', typeof(JsonRightBrace) },
+      { '[', typeof(JsonLeftBracket) },
+      { ']', typeof(JsonRightBracket) },
+      { ':', typeof(JsonColon) },
+      { ',', typeof(JsonComma) },
+      { '-', typeof(JsonNumber) },
+      { '0', typeof(JsonNumber) },
+      { '1', typeof(JsonNumber) },
+      { '2', typeof(JsonNumber) },
+      { '3', typeof(JsonNumber) },
+      { '4', typeof(JsonNumber) },
+      { '5', typeof(JsonNumber) },
+      { '6', typeof(JsonNumber) },
+      { '7', typeof(JsonNumber) },
+      { '8', typeof(JsonNumber) },
+      { '9', typeof(JsonNumber) },
+      { '"', typeof(JsonString) },
+      { 't', typeof(JsonTrue) },
+      { 'f', typeof(JsonFalse) },
+      { 'n', typeof(JsonNull) },
+    };
 
-        #region Variables Privadas de Instancia
+    /// <summary>
+    /// Fragmentos de texto obtenidos como resultado del  analisis.
+    /// </summary>
+    private List<JsonToken> _Tokens = new List<JsonToken>();
 
-        /// <summary>
-        /// Mapa de tipos de JsonToken por carácter inicial de fragmento.
-        /// </summary>
-        Dictionary<char, Type> _TokenMap = new Dictionary<char, Type>()
-        {
+    #endregion
 
-            { '{',      typeof(JsonLeftBrace) },
-            { '}',      typeof(JsonRightBrace)},
-            { '[',      typeof(JsonLeftBracket)},
-            { ']',      typeof(JsonRightBracket)},
-            { ':',      typeof(JsonColon)},
-            { ',',      typeof(JsonComma)},
-            { '-',      typeof(JsonNumber)},
-            { '0',      typeof(JsonNumber)},
-            { '1',      typeof(JsonNumber)},
-            { '2',      typeof(JsonNumber)},
-            { '3',      typeof(JsonNumber)},
-            { '4',      typeof(JsonNumber)},
-            { '5',      typeof(JsonNumber)},
-            { '6',      typeof(JsonNumber)},
-            { '7',      typeof(JsonNumber)},
-            { '8',      typeof(JsonNumber)},
-            { '9',      typeof(JsonNumber)},
-            { '"',      typeof(JsonString)},
-            { 't',      typeof(JsonTrue)},
-            { 'f',      typeof(JsonFalse)},
-            { 'n',      typeof(JsonNull)},
+    #region Construtores de Instancia
 
-        };
-
-        /// <summary>
-        /// Fragmentos de texto obtenidos como resultado del 
-        /// analisis.
-        /// </summary>
-        List<JsonToken> _Tokens = new List<JsonToken>();
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="jsonText">Texto JSON.</param>
-        public JsonLexer(string jsonText)
-        {
-
-            JsonText = jsonText;
-            Analize(JsonText);
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Realiza el analisis léxico de una
-        /// cadena JSON.
-        /// </summary>
-        /// <param name="jsonText">Cadena JSON para analizar.</param>
-        /// <exception cref="ArgumentException">Excepción por carácteres no esperados.</exception>
-        internal void Analize(string jsonText)
-        {
-
-            int position = 0;
-
-            while (position < jsonText.Length)
-            {
-
-                var ch = jsonText[position];
-                var token = GetFromChar(ch, position);
-
-                if (token.Length > 0)
-                    _Tokens.Add(token);
-                else
-                    throw new ArgumentException($"Unknown character '{jsonText[position]}'.");
-
-                position += token.Length;
-
-            }
-
-        }
-
-        /// <summary>
-        /// Devuelve los fragmentos de texto
-        /// resultado del analisis.
-        /// </summary>
-        /// <returns>Fragmentos de texto
-        /// resultado del analisis.</returns>
-        internal List<JsonToken> GetTokens()
-        {
-
-            return _Tokens;
-
-        }
-
-        /// <summary>
-        /// Obtiene una instancia de fragmento de
-        /// analisis de texto según el carácter de 
-        /// la posición inicial del fragmento pasada
-        /// como argumento.
-        /// </summary>
-        /// <param name="c">Carácter inicial del fragmento.</param>
-        /// <param name="position">Posición inicial del fragmento
-        /// en respecto a la cadena JSON total.</param>
-        /// <returns>Instancia con la clase derivada de JsonToken
-        /// correspondiente a ese fragmento de texto.</returns>
-        /// <exception cref="ArgumentException">Error si el carácter
-        /// no se correponde con ningún tipo de fragmento de texto
-        /// válido.</exception>
-        private JsonToken GetFromChar(char c, int position)
-        {
-
-            if (!_TokenMap.ContainsKey(c))
-                throw new ArgumentException($"Unknown character '{c}'.");
-            
-            return Activator.CreateInstance(_TokenMap[c], BindingFlags.Instance |
-                BindingFlags.NonPublic | BindingFlags.CreateInstance,
-                null, new object[2] { this, position }, null, null) as JsonToken;
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// Texto JSON.
-        /// </summary>
-        public string JsonText { get; private set; }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="jsonText">Texto JSON.</param>
+    public JsonLexer(string jsonText)
+    {
+      JsonText = jsonText;
+      Analize(JsonText);
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Realiza el analisis léxico de una cadena JSON.
+    /// </summary>
+    /// <param name="jsonText">Cadena JSON para analizar.</param>
+    /// <exception cref="ArgumentException">Excepción por carácteres no esperados.</exception>
+    internal void Analize(string jsonText)
+    {
+      int position = 0;
+      while(position < jsonText.Length)
+      {
+        char ch = jsonText[position];
+        JsonToken token = GetFromChar(ch, position);
+        if(token.Length > 0)
+        {
+          _Tokens.Add(token);
+        }
+        else
+        {
+          throw new ArgumentException($"Unknown character '{jsonText[position]}'.");
+        }
+        position += token.Length;
+      }
+    }
+
+    /// <summary>
+    /// Devuelve los fragmentos de texto resultado del analisis.
+    /// </summary>
+    /// <returns>
+    /// Fragmentos de texto resultado del analisis.
+    /// </returns>
+    internal List<JsonToken> GetTokens()
+    {
+      return _Tokens;
+    }
+
+    /// <summary>
+    /// Obtiene una instancia de fragmento de analisis de texto según el carácter de  la posición inicial del fragmento
+    /// pasada como argumento.
+    /// </summary>
+    /// <param name="c">Carácter inicial del fragmento.</param>
+    /// <param name="position">
+    /// Posición inicial del fragmento en respecto a la cadena JSON total.
+    /// </param>
+    /// <returns>
+    /// Instancia con la clase derivada de JsonToken correspondiente a ese fragmento de texto.
+    /// </returns>
+    /// <exception cref="ArgumentException">
+    /// Error si el carácter no se correponde con ningún tipo de fragmento de texto válido.
+    /// </exception>
+    private JsonToken GetFromChar(char c, int position)
+    {
+      if(!_TokenMap.ContainsKey(c))
+      {
+        throw new ArgumentException($"Unknown character '{c}'.");
+      }
+      return Activator.CreateInstance(
+        _TokenMap[c],
+        BindingFlags.Instance |
+                BindingFlags.NonPublic | BindingFlags.CreateInstance,
+        null,
+        new object[2] { this, position },
+        null,
+        null) as JsonToken;
+    }
+
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// Texto JSON.
+    /// </summary>
+    public string JsonText { get; private set; }
+
+    #endregion
+  }
 }

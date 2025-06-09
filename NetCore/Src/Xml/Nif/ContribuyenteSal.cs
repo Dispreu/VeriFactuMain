@@ -42,48 +42,44 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Nif
 {
-    /// <summary>
-    /// Representa un resultado de llamada al web service de
-    /// validación de NIF de la AEAT.
-    /// </summary>
-    [Serializable]
-	[XmlRoot("Contribuyente", Namespace = Namespaces.NamespaceVNifV2Sal)]
-	public class ContribuyenteSal
-	{
+  /// <summary>
+  /// Representa un resultado de llamada al web service de validación de NIF de la AEAT.
+  /// </summary>
+  [Serializable]
+  [XmlRoot("Contribuyente", Namespace = Namespaces.NamespaceVNifV2Sal)]
+  public class ContribuyenteSal
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// NIF del contribuyente.
-        /// Numérico(4).
-        /// </summary>
-        public string Nif { get; set; }
+    /// <summary>
+    /// NIF del contribuyente. Numérico(4).
+    /// </summary>
+    public string Nif { get; set; }
 
-        /// <summary>
-        /// Nombre del contribuyente.	
-        /// </summary>
-        public string Nombre { get; set; }
+    /// <summary>
+    /// Nombre del contribuyente.
+    /// </summary>
+    public string Nombre { get; set; }
 
-        /// <summary>
-        /// Resultado.	
-        /// </summary>
-        public string Resultado { get; set; }
+    /// <summary>
+    /// Resultado.
+    /// </summary>
+    public string Resultado { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{Nif} ({Nombre})";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{Nif} ({Nombre})";
     }
 
+    #endregion
+  }
 }

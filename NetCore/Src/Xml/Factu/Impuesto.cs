@@ -41,37 +41,33 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu
 {
-
+  /// <summary>
+  /// Clave que identifica un impuesto. Alfanumérico(2) L1.
+  /// </summary>
+  public enum Impuesto
+  {
     /// <summary>
-    /// Clave que identifica un impuesto. Alfanumérico(2) L1.
+    /// IVA (01).
     /// </summary>
-    public enum Impuesto
-    {
-
-        /// <summary>
-        /// IVA (01).
-        /// </summary>
-        [XmlEnum("01")]
+    [XmlEnum("01")]
         IVA = 1,
 
-        /// <summary>
-        /// IPSI (02).
-        /// </summary>
-        [XmlEnum("02")]
+    /// <summary>
+    /// IPSI (02).
+    /// </summary>
+    [XmlEnum("02")]
         IPSI = 2,
 
-        /// <summary>
-        /// IGIC (03).
-        /// </summary>
-        [XmlEnum("03")]
+    /// <summary>
+    /// IGIC (03).
+    /// </summary>
+    [XmlEnum("03")]
         IGIC = 3,
 
-        /// <summary>
-        /// Otros (05).
-        /// </summary>
-        [XmlEnum("05")]
+    /// <summary>
+    /// Otros (05).
+    /// </summary>
+    [XmlEnum("05")]
         OTROS = 5
-
-    }
-
+  }
 }

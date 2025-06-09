@@ -41,38 +41,33 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu
 {
-
+  /// <summary>
+  /// Clave que identifica el tipo de uso del sistema informático de facturación. Alfanumérico(2) L14.
+  /// </summary>
+  public enum TipoUsoSistema
+  {
     /// <summary>
-    /// Clave que identifica el tipo de uso del
-    /// sistema informático de facturación. Alfanumérico(2) L14.
+    /// Solo funciona en modo VERIFACTU.
     /// </summary>
-    public enum TipoUsoSistema
-    {
-
-        /// <summary>
-        /// Solo funciona en modo VERIFACTU.
-        /// </summary>
-        [XmlEnum("01")]
+    [XmlEnum("01")]
         Verifactu,
 
-        /// <summary>
-        /// Solo funciona en modo no-VERIFACTU (cumpliendo Reglamento).
-        /// </summary>
-        [XmlEnum("02")]
+    /// <summary>
+    /// Solo funciona en modo no-VERIFACTU (cumpliendo Reglamento).
+    /// </summary>
+    [XmlEnum("02")]
         NoVerifactu,
 
-        /// <summary>
-        /// Funciona tanto en modo VERIFACTU como no-VERIFACTU (cumpliendo Reglamento).
-        /// </summary>
-        [XmlEnum("03")]
+    /// <summary>
+    /// Funciona tanto en modo VERIFACTU como no-VERIFACTU (cumpliendo Reglamento).
+    /// </summary>
+    [XmlEnum("03")]
         Ambos,
 
-        /// <summary>
-        /// Otros.
-        /// </summary>
-        [XmlEnum("04")]
-        Otros  
-
-    }
-
+    /// <summary>
+    /// Otros.
+    /// </summary>
+    [XmlEnum("04")]
+        Otros
+  }
 }

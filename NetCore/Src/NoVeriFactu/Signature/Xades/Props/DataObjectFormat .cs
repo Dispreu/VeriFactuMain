@@ -41,66 +41,60 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Formato del objeto firmado.
-    /// </summary>
-    internal class DataObjectFormat : PropertyElementWithSigId
-    {
+  /// <summary>
+  /// Formato del objeto firmado.
+  /// </summary>
+  internal class DataObjectFormat : PropertyElementWithSigId
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Identificador del objeto.
-        /// </summary>
-        internal ObjectIdentifier ObjectIdentifier { get; private set; }
+    /// <summary>
+    /// Identificador del objeto.
+    /// </summary>
+    internal ObjectIdentifier ObjectIdentifier { get; private set; }
 
-        /// <summary>
-        /// Tipo mime.
-        /// </summary>
-        internal MimeType MimeType { get; private set; }
+    /// <summary>
+    /// Tipo mime.
+    /// </summary>
+    internal MimeType MimeType { get; private set; }
 
-        /// <summary>
-        /// Codificación.
-        /// </summary>
-        internal Encoding Encoding { get; private set; }
+    /// <summary>
+    /// Codificación.
+    /// </summary>
+    internal Encoding Encoding { get; private set; }
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal DataObjectFormat(XmlNode parent) : base(parent, "DataObjectFormat")
-        {
-
-            ObjectIdentifier = new ObjectIdentifier(XmlElement);
-            MimeType = new MimeType(XmlElement);
-            Encoding = new Encoding(XmlElement);
-
-            ObjectIdentifier.Identifier.Value = "urn:oid:1.2.840.10003.5.109.10";
-            MimeType.Value = "text/xml";
-            Encoding.Value = "UTF-8";
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Establece el valor del id de firma.
-        /// </summary>
-        /// <param name="signatureId">Id. de firma.</param>
-        protected override void SetSignatureId(string signatureId)
-        {
-            XmlElement.SetAttribute("ObjectReference", $"#{signatureId}-ref0");
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal DataObjectFormat(XmlNode parent) : base(parent, "DataObjectFormat")
+    {
+      ObjectIdentifier = new ObjectIdentifier(XmlElement);
+      MimeType = new MimeType(XmlElement);
+      Encoding = new Encoding(XmlElement);
+      ObjectIdentifier.Identifier.Value = "urn:oid:1.2.840.10003.5.109.10";
+      MimeType.Value = "text/xml";
+      Encoding.Value = "UTF-8";
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Establece el valor del id de firma.
+    /// </summary>
+    /// <param name="signatureId">Id. de firma.</param>
+    protected override void SetSignatureId(string signatureId)
+    {
+      XmlElement.SetAttribute("ObjectReference", $"#{signatureId}-ref0");
+    }
+
+    #endregion
+  }
 }

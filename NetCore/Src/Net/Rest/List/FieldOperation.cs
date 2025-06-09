@@ -41,27 +41,24 @@ using VeriFactu.Net.Rest.Json;
 
 namespace VeriFactu.Net.Rest.List
 {
-    /// <summary>
-    /// Representa una oparación a realizar en un campo.
-    /// datos.
-    /// </summary>
-    public class FieldOperation : JsonSerializable
-    {
+  /// <summary>
+  /// Representa una oparación a realizar en un campo. datos.
+  /// </summary>
+  public class FieldOperation : JsonSerializable
+  {
 
         #region Public Properties
 
-        /// <summary>
-        /// Nombre del campo por el que operar.
-        /// </summary>
-        public string FieldName { get; set; }
+    /// <summary>
+    /// Nombre del campo por el que operar.
+    /// </summary>
+    public string FieldName { get; set; }
 
-        /// <summary>
-        /// Operador para el la opearción: Comparación ( =, LIKE, IN, >...), Operación (SUM, MAX...)...
-        /// </summary>
-        public string Operator { get; set; }
+    /// <summary>
+    /// Operador para el la opearción: Comparación ( =, LIKE, IN, >...), Operación (SUM, MAX...)...
+    /// </summary>
+    public string Operator { get; set; }
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

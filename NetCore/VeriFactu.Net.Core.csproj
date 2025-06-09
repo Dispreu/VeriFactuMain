@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0;net8.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <ApplicationIcon>VeriFactu.ico</ApplicationIcon>
     <Version>1.0.40</Version>
     <Title>VeriFactu</Title>
@@ -14,7 +14,7 @@
     <RepositoryUrl>https://github.com/mdiago/VeriFactu</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>VeriFactu;Facturas;AEAT</PackageTags>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <AssemblyVersion>1.0.4.0</AssemblyVersion>
@@ -26,6 +26,17 @@
   <PropertyGroup>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);CustomContentTarget</TargetsForTfmSpecificContentInPackage>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <NuGetAudit>False</NuGetAudit>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>C:\VSProjects\MemorySoftKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+    <IsPublishable>False</IsPublishable>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+    <IsPublishable>False</IsPublishable>
   </PropertyGroup>
   
    <Target Name="CustomContentTarget">

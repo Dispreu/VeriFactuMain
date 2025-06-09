@@ -41,44 +41,39 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Respuesta
 {
-
-    /// <summary>
-    /// Contiene información en caso de registro duplicado. 
-    /// </summary>
-    public class RegistroDuplicado
-    {
+  /// <summary>
+  /// Contiene información en caso de registro duplicado.
+  /// </summary>
+  public class RegistroDuplicado
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Identificador de la petición en la que
-        /// se comunicó el registro anteriormente.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string IdPeticionRegistroDuplicado { get; set; }
+    /// <summary>
+    /// Identificador de la petición en la que se comunicó el registro anteriormente.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string IdPeticionRegistroDuplicado { get; set; }
 
-        /// <summary>
-        /// Estado en el que está el registro comunicado
-        /// anteriormente.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string EstadoRegistroDuplicado { get; set; }
+    /// <summary>
+    /// Estado en el que está el registro comunicado anteriormente.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string EstadoRegistroDuplicado { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns>Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{IdPeticionRegistroDuplicado} ({EstadoRegistroDuplicado})";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{IdPeticionRegistroDuplicado} ({EstadoRegistroDuplicado})";
     }
 
+    #endregion
+  }
 }

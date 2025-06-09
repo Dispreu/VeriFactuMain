@@ -42,54 +42,52 @@ using VeriFactu.Net.Rest.Json;
 
 namespace VeriFactu.Net.Rest.List
 {
-    /// <summary>
-    /// Representa un conjunto de filtros.
-    /// </summary>
-    public class FilterSet : JsonSerializable
-    {
+  /// <summary>
+  /// Representa un conjunto de filtros.
+  /// </summary>
+  public class FilterSet : JsonSerializable
+  {
 
         #region Constructors
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        public FilterSet()
-        {
-            Count = Offset = -1;
-            Filters = new List<Filter>();
-        }
-
-        #endregion
-
-        #region Public Properties
-
-        /// <summary>
-        /// Conjunto de filtros-
-        /// </summary>
-        public List<Filter> Filters { get; set; }
-
-        /// <summary>
-        /// Prefijo de tabla.
-        /// </summary>
-        public string TableNameSufix { get; set; }
-
-        /// <summary>
-        /// Número de registros a devolver.
-        /// </summary>
-        public int Count { get; set; }
-
-        /// <summary>
-        /// Offset de registros a devolver.
-        /// </summary>
-        public int Offset { get; set; }
-
-        /// <summary>
-        /// Clausula de ordenación.
-        /// </summary>
-        public string OrderClause { get; set; }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    public FilterSet()
+    {
+      Count = Offset = -1;
+      Filters = new List<Filter>();
     }
 
+    #endregion
+
+    #region Public Properties
+
+    /// <summary>
+    /// Conjunto de filtros-
+    /// </summary>
+    public List<Filter> Filters { get; set; }
+
+    /// <summary>
+    /// Prefijo de tabla.
+    /// </summary>
+    public string TableNameSufix { get; set; }
+
+    /// <summary>
+    /// Número de registros a devolver.
+    /// </summary>
+    public int Count { get; set; }
+
+    /// <summary>
+    /// Offset de registros a devolver.
+    /// </summary>
+    public int Offset { get; set; }
+
+    /// <summary>
+    /// Clausula de ordenación.
+    /// </summary>
+    public string OrderClause { get; set; }
+
+    #endregion
+  }
 }

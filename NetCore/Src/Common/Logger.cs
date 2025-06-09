@@ -45,152 +45,132 @@ using VeriFactu.Config;
 
 namespace VeriFactu.Common
 {
+  /// <summary>
+  /// Se encarga del log.
+  /// </summary>
+  public class Logger
+  {
+
+    #region Variables Privadas Estáticas
 
     /// <summary>
-    /// Se encarga del log.
+    /// Almacena los mensajes.
     /// </summary>
-    public class Logger
+    private Dictionary<int, string> _Log;
+
+    /// <summary>
+    /// Almacena los mensajes.
+    /// </summary>
+    private Dictionary<int, DateTime> _LogTime;
+
+    /// <summary>
+    /// Número de mensajes almacenados
+    /// </summary>
+    private int _Count;
+
+    /// <summary>
+    /// Número máximo de registros a almacenar.
+    /// </summary>
+    private int _MaxCount = 15000;
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    public Logger()
     {
-
-        #region Variables Privadas Estáticas
-
-        /// <summary>
-        /// Almacena los mensajes.
-        /// </summary>
-        Dictionary<int, string> _Log;
-
-        /// <summary>
-        /// Almacena los mensajes.
-        /// </summary>
-        Dictionary<int, DateTime> _LogTime;
-
-        /// <summary>
-        /// Número de mensajes almacenados
-        /// </summary>
-        int _Count;
-
-        /// <summary>
-        /// Número máximo de registros a almacenar.
-        /// </summary>
-        int _MaxCount = 15000;
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public Logger()
-        {
-
-            _Log = new Dictionary<int, string>();
-            _LogTime = new Dictionary<int, DateTime>();
-
-        }
-
-        #endregion
-
-        #region Finalizador de Instancia
-
-        /// <summary>
-        /// Finalizador.
-        /// </summary>
-        ~Logger()
-        {
-
-            Save();
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene un StringBuilder con los datos
-        /// del log.
-        /// </summary>
-        /// <returns>StringBuilder con los datos
-        /// del log.</returns>
-        private StringBuilder GetStringBuilder()
-        {
-
-            StringBuilder sb = new StringBuilder();
-
-            foreach (KeyValuePair<int, string> kvp in _Log)
-                sb.AppendLine($"[{kvp.Key.ToString().PadLeft(6, '0')}] {_LogTime[kvp.Key].ToString("yyyy-MM-dd HH:mm:ss")}: {kvp.Value}");
-
-            return sb;
-
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Almacena un mensaje en el log.
-        /// </summary>
-        /// <param name="msg">Mensaje.</param>
-        public void Log(string msg)
-        {
-
-            _Log.Add(++_Count, msg);
-            _LogTime.Add(_Count, DateTime.Now);
-
-            if (_Count >= _MaxCount)
-            {
-
-                Save();
-                Clear();
-
-            }
-
-        }
-
-        /// <summary>
-        /// Guarda el log en el archivo indicado.
-        /// </summary>
-        /// <param name="path">Ruta donde guardar el archivo.</param>
-        public void Save(string path = null)
-        {
-
-            var text = $"{this}";
-
-            if (string.IsNullOrEmpty(text))
-                return;
-
-            path = string.IsNullOrEmpty(path) ? $"{Settings.Current.LogPath}{DateTime.Now:yyyyMMddHHmmss}.txt" : path;
-            File.WriteAllText(path, $"{this}");
-
-        }
-
-        /// <summary>
-        /// Limpia el contenido del logger.
-        /// </summary>
-        public void Clear()
-        {
-
-            _Log = new Dictionary<int, string>();
-            _LogTime = new Dictionary<int, DateTime>();
-            _Count = 0;
-
-        }
-
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns>Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-
-            return GetStringBuilder().ToString();
-
-        }
-
-        #endregion
-
+      _Log = new Dictionary<int, string>();
+      _LogTime = new Dictionary<int, DateTime>();
     }
 
+    #endregion
+
+    #region Finalizador de Instancia
+
+    /// <summary>
+    /// Finalizador.
+    /// </summary>
+    ~Logger()
+    {
+      Save();
+    }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene un StringBuilder con los datos del log.
+    /// </summary>
+    /// <returns>
+    /// StringBuilder con los datos del log.
+    /// </returns>
+    private StringBuilder GetStringBuilder()
+    {
+      StringBuilder sb = new StringBuilder();
+      foreach(KeyValuePair<int, string> kvp in _Log)
+      {
+        sb.AppendLine($"[{kvp.Key.ToString().PadLeft(6, '0')}] {_LogTime[kvp.Key].ToString("yyyy-MM-dd HH:mm:ss")}: {kvp.Value}");
+      }
+      return sb;
+    }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Almacena un mensaje en el log.
+    /// </summary>
+    /// <param name="msg">Mensaje.</param>
+    public void Log(string msg)
+    {
+      _Log.Add(++_Count, msg);
+      _LogTime.Add(_Count, DateTime.Now);
+      if(_Count >= _MaxCount)
+      {
+        Save();
+        Clear();
+      }
+    }
+
+    /// <summary>
+    /// Guarda el log en el archivo indicado.
+    /// </summary>
+    /// <param name="path">Ruta donde guardar el archivo.</param>
+    public void Save(string path = null)
+    {
+      string text = $"{this}";
+      if(string.IsNullOrEmpty(text))
+      {
+        return;
+      }
+      path = string.IsNullOrEmpty(path) ? $"{Settings.Current.LogPath}{DateTime.Now:yyyyMMddHHmmss}.txt" : path;
+      File.WriteAllText(path, $"{this}");
+    }
+
+    /// <summary>
+    /// Limpia el contenido del logger.
+    /// </summary>
+    public void Clear()
+    {
+      _Log = new Dictionary<int, string>();
+      _LogTime = new Dictionary<int, DateTime>();
+      _Count = 0;
+    }
+
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return GetStringBuilder().ToString();
+    }
+
+    #endregion
+  }
 }

@@ -41,25 +41,21 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Representa una codificación de texto (ASCII, UTF8...).
-    /// </summary>
-    internal class Encoding : PropXmlElementWithValue
-    {
+  /// <summary>
+  /// Representa una codificación de texto (ASCII, UTF8...).
+  /// </summary>
+  internal class Encoding : PropXmlElementWithValue
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal Encoding(XmlNode parent) : base(parent, "Encoding")
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal Encoding(XmlNode parent) : base(parent, "Encoding")
+        { }
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

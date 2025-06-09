@@ -39,29 +39,24 @@
 
 namespace VeriFactu.Xml.Factu.Alta
 {
+  /// <summary>
+  /// Identifica si el tipo de factura rectificativa es por sustitución o por diferencia (L3).
+  /// </summary>
+  public enum TipoRectificativa
+  {
+    /// <summary>
+    /// No asignada tipo rectificativa.
+    /// </summary>
+    NA,
 
     /// <summary>
-    ///  Identifica si el tipo de factura rectificativa
-    ///  es por sustitución o por diferencia (L3).
+    /// Por sustitución.
     /// </summary>
-    public enum TipoRectificativa
-    {
+    S,
 
-        /// <summary>
-        /// No asignada tipo rectificativa.
-        /// </summary>
-        NA,
-
-        /// <summary>
-        /// Por sustitución.
-        /// </summary>
-        S,
-
-        /// <summary>
-        /// Por diferencias.
-        /// </summary>
-        I
-
-    }
-
+    /// <summary>
+    /// Por diferencias.
+    /// </summary>
+    I
+  }
 }

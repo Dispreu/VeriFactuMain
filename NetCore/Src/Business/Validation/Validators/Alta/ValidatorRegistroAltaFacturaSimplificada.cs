@@ -45,77 +45,65 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta DetalleDesglose Total Facturas Simplificadas.
-    /// </summary>
-    public class ValidatorRegistroAltaDetalleDesgloseFacturaSimplificada : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta DetalleDesglose Total Facturas Simplificadas.
+  /// </summary>
+  public class ValidatorRegistroAltaDetalleDesgloseFacturaSimplificada : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Sobre SOAP envío.</param>
-        /// <param name="registroAlta"> Registro alta factura.</param>
-        public ValidatorRegistroAltaDetalleDesgloseFacturaSimplificada(Envelope envelope, 
-            RegistroAlta registroAlta) : base(envelope, registroAlta)
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">Sobre SOAP envío.</param>
+    /// <param name="registroAlta">Registro alta factura.</param>
+    public ValidatorRegistroAltaDetalleDesgloseFacturaSimplificada(
+      Envelope envelope,
+      RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      if(_RegistroAlta.TipoFactura != TipoFactura.F2)
+      {
+        return result;
+      }
+      // Cuando TipoFactura sea “F2”, se validará que Ʃ (BaseImponibleOimporteNoSujeto + CuotaRepercutida)
+      // de todas las líneas de detalle no sea superior a 3.000,00 euros. Se admitirá un error de + 10,00 euros.
+      // Esta validación no se aplicará cuando exista acuerdo de facturación, es decir, cuando el
+      // campo NumRegistroAcuerdoFacturacion esté cumplimentado. Esta validación tampoco se
+      //aplicará cuando el campo FacturaSinIdentifDestinatarioArticulo61d = “S”
+      if(string.IsNullOrEmpty(_RegistroAlta.NumRegistroAcuerdoFacturacion) &&
+                _RegistroAlta.FacturaSinIdentifDestinatarioArt61d != "S")
+      {
+        decimal total = 0m;
+        foreach(DetalleDesglose desglose in _RegistroAlta.Desglose)
         {
+          decimal cuotaRepercutida = XmlParser.ToDecimal(desglose.CuotaRepercutida);
+          decimal baseImponibleOimporteNoSujeto = XmlParser.ToDecimal(desglose.BaseImponibleOimporteNoSujeto);
+          total += cuotaRepercutida + baseImponibleOimporteNoSujeto;
         }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
+        if(Math.Abs(total) > 3010)
         {
-
-            var result = new List<string>();
-
-            if (_RegistroAlta.TipoFactura != TipoFactura.F2)
-                return result;
-
-            // Cuando TipoFactura sea “F2”, se validará que Ʃ (BaseImponibleOimporteNoSujeto + CuotaRepercutida)
-            // de todas las líneas de detalle no sea superior a 3.000,00 euros. Se admitirá un error de + 10,00 euros.
-
-            // Esta validación no se aplicará cuando exista acuerdo de facturación, es decir, cuando el
-            // campo NumRegistroAcuerdoFacturacion esté cumplimentado. Esta validación tampoco se
-            //aplicará cuando el campo FacturaSinIdentifDestinatarioArticulo61d = “S”
-
-            if (string.IsNullOrEmpty(_RegistroAlta.NumRegistroAcuerdoFacturacion) && 
-                _RegistroAlta.FacturaSinIdentifDestinatarioArt61d != "S") 
-            {
-
-                var total = 0m;
-
-                foreach (var desglose in _RegistroAlta.Desglose) 
-                {
-
-                    var cuotaRepercutida = XmlParser.ToDecimal(desglose.CuotaRepercutida);
-                    var baseImponibleOimporteNoSujeto = XmlParser.ToDecimal(desglose.BaseImponibleOimporteNoSujeto);
-
-                    total += cuotaRepercutida + baseImponibleOimporteNoSujeto;
-
-                }
-
-                if(Math.Abs(total) > 3010)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" Cuando TipoFactura sea “F2”, se validará que Ʃ (BaseImponibleOimporteNoSujeto + CuotaRepercutida)" +
-                        $" de todas las líneas de detalle no sea superior a 3.000,00 euros. Se admitirá un error de + 10,00 euros.");
-
-            }
-
-            return result;
-
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                $" Cuando TipoFactura sea “F2”, se validará que Ʃ (BaseImponibleOimporteNoSujeto + CuotaRepercutida)" +
+                                $" de todas las líneas de detalle no sea superior a 3.000,00 euros. Se admitirá un error de + 10,00 euros.");
         }
-
-        #endregion
-
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

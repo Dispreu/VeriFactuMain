@@ -39,28 +39,24 @@
 
 namespace VeriFactu.Net.Rest.Json.Parser.Lexer.Tokens
 {
-
-    /// <summary>
-    /// Fragmento obtenido del análisis léxico de una cadena
-    /// JSON que representa una apertura de objeto '{'.
-    /// </summary>
-    internal class JsonLeftBrace : JsonToken
-    {
+  /// <summary>
+  /// Fragmento obtenido del análisis léxico de una cadena JSON que representa una apertura de objeto '{'.
+  /// </summary>
+  internal class JsonLeftBrace : JsonToken
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="jsonLexer">Analizador léxico.</param>
-        /// <param name="start">Posición del inicio del
-        /// fragmento de texto dentro de la cadena completa JSON.</param>
-        internal JsonLeftBrace(JsonLexer jsonLexer, int start) : base(jsonLexer, start) 
-        { 
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="jsonLexer">Analizador léxico.</param>
+    /// <param name="start">
+    /// Posición del inicio del fragmento de texto dentro de la cadena completa JSON.
+    /// </param>
+    internal JsonLeftBrace(JsonLexer jsonLexer, int start) : base(jsonLexer, start)
+        { }
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

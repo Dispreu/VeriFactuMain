@@ -45,94 +45,79 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.DataStore
 {
-
-    /// <summary>
-    /// Representa un vendedor o emisor de facturas
-    /// en el sistema Verifactu.
-    /// </summary>
-    public class Seller
-    {
+  /// <summary>
+  /// Representa un vendedor o emisor de facturas en el sistema Verifactu.
+  /// </summary>
+  public class Seller
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Identificador del vendedor.
-        /// Debe utilizarse el identificador fiscal si existe (NIF, VAT Number...).
-        /// En caso de no existir, se puede utilizar el número DUNS 
-        /// o cualquier otro identificador acordado.
-        /// </summary>        
-        public string SellerID { get; private set; }
+    /// <summary>
+    /// Identificador del vendedor. Debe utilizarse el identificador fiscal si existe (NIF, VAT Number...). En caso de
+    /// no existir, se puede utilizar el número DUNS  o cualquier otro identificador acordado.
+    /// </summary>        
+    public string SellerID { get; private set; }
 
-        /// <summary>
-        /// Nombre del vendedor.
-        /// </summary>        
-        public string SellerName { get; set; }
+    /// <summary>
+    /// Nombre del vendedor.
+    /// </summary>        
+    public string SellerName { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos Estáticos
+    #region Métodos Públicos Estáticos
 
-        /// <summary>
-        /// Recupera los vendedores en el sistema.
-        /// </summary>
-        /// <returns>Vendedores en el sistema.</returns>
-        public static Dictionary<string, List<PeriodOutbox>> GetSellers()
+    /// <summary>
+    /// Recupera los vendedores en el sistema.
+    /// </summary>
+    /// <returns>Vendedores en el sistema.</returns>
+    public static Dictionary<string, List<PeriodOutbox>> GetSellers()
+    {
+      Dictionary<string, List<PeriodOutbox>> sellersDic = new Dictionary<string, List<PeriodOutbox>>();
+      foreach(string sellerDir in Directory.GetDirectories(Settings.Current.OutboxPath))
+      {
+        foreach(string periodDir in Directory.GetDirectories(sellerDir))
         {
-
-            var sellersDic = new Dictionary<string, List<PeriodOutbox>>();
-
-            foreach (var sellerDir in Directory.GetDirectories(Settings.Current.OutboxPath))
+          string[] invoiceFiles = Directory.GetFiles(periodDir);
+          if(invoiceFiles.Length > 0)
+          {
+            string periodID = Path.GetFileName(periodDir);
+            Envelope envelope = new Envelope(invoiceFiles[0]);
+            RegFactuSistemaFacturacion registro = (envelope.Body.Registro as RegFactuSistemaFacturacion);
+            Seller seller = new Seller
             {
-
-                foreach (var periodDir in Directory.GetDirectories(sellerDir))
-                {
-                    var invoiceFiles = Directory.GetFiles(periodDir);
-
-                    if (invoiceFiles.Length > 0)
-                    {
-
-                        var periodID = Path.GetFileName(periodDir);
-                        var envelope = new Envelope(invoiceFiles[0]);
-                        var registro = (envelope.Body.Registro as RegFactuSistemaFacturacion);
-
-                        var seller = new Seller()
-                        {
-                            SellerID = $"{registro?.Cabecera?.ObligadoEmision?.IDOtro?.ID}{registro?.Cabecera?.ObligadoEmision?.NIF}",
-                            SellerName = $"{registro?.Cabecera?.ObligadoEmision?.NombreRazon}"
-                        };
-
-                        var period = new PeriodOutbox(seller, periodID, invoiceFiles.Length);
-
-                        if (sellersDic.ContainsKey(seller.SellerID))
-                            sellersDic[seller.SellerID].Add(period);
-                        else
-                            sellersDic.Add(seller.SellerID, new List<PeriodOutbox>() { period });
-
-                    }
-
-                }
-
+              SellerID = $"{registro?.Cabecera?.ObligadoEmision?.IDOtro?.ID}{registro?.Cabecera?.ObligadoEmision?.NIF}",
+              SellerName = $"{registro?.Cabecera?.ObligadoEmision?.NombreRazon}"
+            };
+            PeriodOutbox period = new PeriodOutbox(seller, periodID, invoiceFiles.Length);
+            if(sellersDic.ContainsKey(seller.SellerID))
+            {
+              sellersDic[seller.SellerID].Add(period);
             }
-
-            return sellersDic;
-
+            else
+            {
+              sellersDic.Add(seller.SellerID, new List<PeriodOutbox> { period });
+            }
+          }
         }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns>Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{SellerID} {SellerName}";
-        }
-
-        #endregion
-
+      }
+      return sellersDic;
     }
 
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{SellerID} {SellerName}";
+    }
+
+    #endregion
+  }
 }

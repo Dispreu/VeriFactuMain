@@ -42,122 +42,114 @@ using System.Collections.Generic;
 
 namespace VeriFactu.Qrcode
 {
-
-    /// <summary>
-    /// Encapsulates a Character Set ECI, according to "Extended Channel Interpretations" 5.3.1.1
-    /// of ISO 18004.
-    /// </summary>
-    /// <author>Sean Owen</author>
-    internal sealed class CharacterSetECI 
-    {
+  /// <summary>
+  /// Encapsulates a Character Set ECI, according to "Extended Channel Interpretations" 5.3.1.1 of ISO 18004.
+  /// </summary>
+  /// <author>Sean Owen</author>
+  internal sealed class CharacterSetECI
+  {
 
         #region Variables Privadas Estáticas
 
-        private static IDictionary<String, CharacterSetECI> NAME_TO_ECI;
+    private static IDictionary<string, CharacterSetECI> NAME_TO_ECI;
 
-        #endregion
+    #endregion
 
-        #region Variables Privadas de Instancia
+    #region Variables Privadas de Instancia
 
-        private readonly String encodingName;
+    private readonly string encodingName;
 
-        private readonly int value;
+    private readonly int value;
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        private CharacterSetECI(int value, String encodingName)
-        {
-            this.encodingName = encodingName;
-            this.value = value;
-        }
-
-        #endregion
-
-        #region Métodos Privados Estáticos
-
-        private static void Initialize()
-        {
-            IDictionary<String, CharacterSetECI> n = new Dictionary<String, CharacterSetECI
-                >(29);
-            AddCharacterSet(0, "Cp437", n);
-            AddCharacterSet(1, new String[] { "ISO8859_1", "ISO-8859-1" }, n);
-            AddCharacterSet(2, "Cp437", n);
-            AddCharacterSet(3, new String[] { "ISO8859_1", "ISO-8859-1" }, n);
-            AddCharacterSet(4, new String[] { "ISO8859_2", "ISO-8859-2" }, n);
-            AddCharacterSet(5, new String[] { "ISO8859_3", "ISO-8859-3" }, n);
-            AddCharacterSet(6, new String[] { "ISO8859_4", "ISO-8859-4" }, n);
-            AddCharacterSet(7, new String[] { "ISO8859_5", "ISO-8859-5" }, n);
-            AddCharacterSet(8, new String[] { "ISO8859_6", "ISO-8859-6" }, n);
-            AddCharacterSet(9, new String[] { "ISO8859_7", "ISO-8859-7" }, n);
-            AddCharacterSet(10, new String[] { "ISO8859_8", "ISO-8859-8" }, n);
-            AddCharacterSet(11, new String[] { "ISO8859_9", "ISO-8859-9" }, n);
-            AddCharacterSet(12, new String[] { "ISO8859_10", "ISO-8859-10" }, n);
-            AddCharacterSet(13, new String[] { "ISO8859_11", "ISO-8859-11" }, n);
-            AddCharacterSet(15, new String[] { "ISO8859_13", "ISO-8859-13" }, n);
-            AddCharacterSet(16, new String[] { "ISO8859_14", "ISO-8859-14" }, n);
-            AddCharacterSet(17, new String[] { "ISO8859_15", "ISO-8859-15" }, n);
-            AddCharacterSet(18, new String[] { "ISO8859_16", "ISO-8859-16" }, n);
-            AddCharacterSet(20, new String[] { "SJIS", "Shift_JIS" }, n);
-            NAME_TO_ECI = n;
-        }
-        private static void AddCharacterSet(int value, String encodingName, IDictionary<String, CharacterSetECI
-    > n)
-        {
-            CharacterSetECI eci = new CharacterSetECI(value, encodingName);
-            n.Put(encodingName, eci);
-        }
-
-        private static void AddCharacterSet(int value, String[] encodingNames, IDictionary<String, CharacterSetECI
-            > n)
-        {
-            CharacterSetECI eci = new CharacterSetECI(value, encodingNames
-                [0]);
-            for (int i = 0; i < encodingNames.Length; i++)
-            {
-                n.Put(encodingNames[i], eci);
-            }
-        }
-
-        #endregion
-
-        #region Métodos Públicos Estáticos
-
-        /// <param name="name">character set ECI encoding name</param>
-        /// <returns>
-        /// 
-        /// <see cref="CharacterSetECI"/>
-        /// representing ECI for character encoding, or null if it is legal
-        /// but unsupported
-        /// </returns>
-        public static CharacterSetECI GetCharacterSetECIByName(String name)
-        {
-            if (NAME_TO_ECI == null)
-            {
-                Initialize();
-            }
-            return NAME_TO_ECI.Get(name);
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <returns>name of the encoding.</returns>
-        public String GetEncodingName()
-        {
-            return encodingName;
-        }
-
-        /// <returns>the value of the encoding.</returns>
-        public int GetValue()
-        {
-            return value;
-        }
-
-        #endregion
-
+    private CharacterSetECI(int value, string encodingName)
+    {
+      this.encodingName = encodingName;
+      this.value = value;
     }
 
+    #endregion
+
+    #region Métodos Privados Estáticos
+
+    private static void Initialize()
+    {
+      IDictionary<string, CharacterSetECI> n = new Dictionary<string, CharacterSetECI>(29);
+      AddCharacterSet(0, "Cp437", n);
+      AddCharacterSet(1, new string[] { "ISO8859_1", "ISO-8859-1" }, n);
+      AddCharacterSet(2, "Cp437", n);
+      AddCharacterSet(3, new string[] { "ISO8859_1", "ISO-8859-1" }, n);
+      AddCharacterSet(4, new string[] { "ISO8859_2", "ISO-8859-2" }, n);
+      AddCharacterSet(5, new string[] { "ISO8859_3", "ISO-8859-3" }, n);
+      AddCharacterSet(6, new string[] { "ISO8859_4", "ISO-8859-4" }, n);
+      AddCharacterSet(7, new string[] { "ISO8859_5", "ISO-8859-5" }, n);
+      AddCharacterSet(8, new string[] { "ISO8859_6", "ISO-8859-6" }, n);
+      AddCharacterSet(9, new string[] { "ISO8859_7", "ISO-8859-7" }, n);
+      AddCharacterSet(10, new string[] { "ISO8859_8", "ISO-8859-8" }, n);
+      AddCharacterSet(11, new string[] { "ISO8859_9", "ISO-8859-9" }, n);
+      AddCharacterSet(12, new string[] { "ISO8859_10", "ISO-8859-10" }, n);
+      AddCharacterSet(13, new string[] { "ISO8859_11", "ISO-8859-11" }, n);
+      AddCharacterSet(15, new string[] { "ISO8859_13", "ISO-8859-13" }, n);
+      AddCharacterSet(16, new string[] { "ISO8859_14", "ISO-8859-14" }, n);
+      AddCharacterSet(17, new string[] { "ISO8859_15", "ISO-8859-15" }, n);
+      AddCharacterSet(18, new string[] { "ISO8859_16", "ISO-8859-16" }, n);
+      AddCharacterSet(20, new string[] { "SJIS", "Shift_JIS" }, n);
+      NAME_TO_ECI = n;
+    }
+
+    private static void AddCharacterSet(int value, string encodingName, IDictionary<string, CharacterSetECI> n)
+    {
+      CharacterSetECI eci = new CharacterSetECI(value, encodingName);
+      n.Put(encodingName, eci);
+    }
+
+    private static void AddCharacterSet(int value, string[] encodingNames, IDictionary<string, CharacterSetECI> n)
+    {
+      CharacterSetECI eci = new CharacterSetECI(
+        value,
+        encodingNames[0]);
+      for(int i = 0; i < encodingNames.Length; i++)
+      {
+        n.Put(encodingNames[i], eci);
+      }
+    }
+
+    #endregion
+
+    #region Métodos Públicos Estáticos
+
+    /// <param name="name">character set ECI encoding name</param>
+    /// <returns>
+    /// <see cref="CharacterSetECI"/> representing ECI for character encoding, or null if it is legal but unsupported
+    /// </returns>
+    public static CharacterSetECI GetCharacterSetECIByName(string name)
+    {
+      if(NAME_TO_ECI == null)
+      {
+        Initialize();
+      }
+      return NAME_TO_ECI.Get(name);
+    }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <returns>name of the encoding.</returns>
+    public string GetEncodingName()
+    {
+      return encodingName;
+    }
+
+    /// <returns>the value of the encoding.</returns>
+    public int GetValue()
+    {
+      return value;
+    }
+
+    #endregion
+  }
 }

@@ -37,179 +37,132 @@
     address: info@irenesolutions.com
  */
 
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using VeriFactu.Xml.Factu;
 using VeriFactu.Xml.Factu.Respuesta;
 
 namespace VeriFactu.DataStore
 {
-
-    /// <summary>
-    /// Representa un documento de facturación.
-    /// </summary>
-    public class DocumentBox
-    {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Registros del documento (alta / anulación en su caso).
-        /// </summary>
-        readonly List<object> _Records;
-
-        #endregion
+  /// <summary>
+  /// Representa un documento de facturación.
+  /// </summary>
+  public class DocumentBox
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="period">Periodo al que pertenece el documento.</param>
-        /// <param name="record">Registro que pertenece el documento.</param>
-        public DocumentBox(PeriodBox period, object record = null)
-        {
-
-            _Records = new List<object>();
-
-            Period = period;
-            AddRecord(record);
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// Periodo al que pertenece el documento.
-        /// </summary>
-        public PeriodBox Period { get; private set; }
-
-        /// <summary>
-        /// Identificador del periodo en el que se ha realizado el envío.
-        /// Este no tiene porque coincidir con el periodo de la fecha
-        /// de factura.
-        /// </summary>        
-        public string PeriodID
-        {
-            get
-            {
-                return Period.PeriodID;
-            }
-        }
-
-        /// <summary>
-        /// Identificador del vendedor.
-        /// Debe utilizarse el identificador fiscal si existe (NIF, VAT Number...).
-        /// En caso de no existir, se puede utilizar el número DUNS 
-        /// o cualquier otro identificador acordado.
-        /// </summary>        
-        public string SellerID
-        {
-            get
-            {
-                return Period.SellerID;
-            }
-        }
-
-        /// <summary>
-        /// Nombre del vendedor.
-        /// </summary>        
-        public string SellerName
-        {
-            get
-            {
-                return Period.SellerName;
-            }
-        }
-
-        /// <summary>
-        /// Nombre del vendedor.
-        /// </summary>        
-        public string InvoiceID
-        {
-            get
-            {
-
-                if (_Records.Count == 0)
-                    return null;
-
-                return $"{(_Records[0] as Registro)?.IDFactura}{(_Records[0] as RespuestaLinea)?.IDFactura}";
-
-            }
-        }
-
-        /// <summary>
-        /// Registros relacionados con la factura.
-        /// </summary>
-        public List<object> Records 
-        {
-            get 
-            {
-
-                return _Records;
-
-            }
-            
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Añade un nuevo registro aldocumento.
-        /// </summary>
-        /// <param name="record">Registro a añadir.</param>
-        public void AddRecord(object record) 
-        {
-
-            var fechaExpedicion = (record as Registro)?.IDFactura.FechaExpedicion ?? (record as RespuestaLinea)?.IDFactura.FechaExpedicionFactura;
-
-            if(string.IsNullOrEmpty(fechaExpedicion))
-                throw new InvalidOperationException($"No se puede añadir un registro sin Fecha expedición.");
-
-            var idEmisor = (record as Registro)?.IDFactura.IDEmisor ?? (record as RespuestaLinea)?.IDFactura.IDEmisorFactura;
-
-            if (string.IsNullOrEmpty(idEmisor))
-                throw new InvalidOperationException($"No se puede añadir un registro sin IDEmisor.");
-
-            var idFactura = $"{(record as Registro)?.IDFactura}{(record as RespuestaLinea)?.IDFactura}";
-
-            if (string.IsNullOrEmpty(idFactura))
-                throw new InvalidOperationException($"No se puede añadir un registro sin IDFactura.");
-
-            if (idEmisor != SellerID)
-                throw new InvalidOperationException($"No se puede añadir un registro con emisor" +
-                    $" de factura distinto de {SellerID}.");
-
-            if (_Records.Count > 0)
-            {
-
-                var prevIDFactura = $"{(_Records[0] as Registro)?.IDFactura}{(_Records[0] as RespuestaLinea)?.IDFactura}";
-
-                if (prevIDFactura != idFactura)
-                    throw new InvalidOperationException($"No se puede añadir un registro con IDFactura" +
-                        $" {idFactura} ya que ya existe un documento con IDFactura {prevIDFactura}.");
-
-            }
-
-            _Records.Add(record);
-
-        }
-
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns>Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"({SellerID} {SellerName})";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="period">Periodo al que pertenece el documento.</param>
+    /// <param name="record">Registro que pertenece el documento.</param>
+    public DocumentBox(PeriodBox period, object record = null)
+    {
+      Records = new List<object>();
+      Period = period;
+      AddRecord(record);
     }
 
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// Periodo al que pertenece el documento.
+    /// </summary>
+    public PeriodBox Period { get; private set; }
+
+    /// <summary>
+    /// Identificador del periodo en el que se ha realizado el envío. Este no tiene porque coincidir con el periodo de
+    /// la fecha de factura.
+    /// </summary>        
+    public string PeriodID => Period.PeriodID;
+
+    /// <summary>
+    /// Identificador del vendedor. Debe utilizarse el identificador fiscal si existe (NIF, VAT Number...). En caso de
+    /// no existir, se puede utilizar el número DUNS  o cualquier otro identificador acordado.
+    /// </summary>        
+    public string SellerID => Period.SellerID;
+
+    /// <summary>
+    /// Nombre del vendedor.
+    /// </summary>        
+    public string SellerName => Period.SellerName;
+
+    /// <summary>
+    /// Nombre del vendedor.
+    /// </summary>        
+    public string InvoiceID
+    {
+      get
+      {
+        if(Records.Count == 0)
+        {
+          return null;
+        }
+        return $"{(Records[0] as Registro)?.IDFactura}{(Records[0] as RespuestaLinea)?.IDFactura}";
+      }
+    }
+
+    /// <summary>
+    /// Registros relacionados con la factura.
+    /// </summary>
+    public List<object> Records { get; }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Añade un nuevo registro aldocumento.
+    /// </summary>
+    /// <param name="record">Registro a añadir.</param>
+    public void AddRecord(object record)
+    {
+      string fechaExpedicion = (record as Registro)?.IDFactura.FechaExpedicion ?? (record as RespuestaLinea)?.IDFactura.FechaExpedicionFactura;
+      if(string.IsNullOrEmpty(fechaExpedicion))
+      {
+        throw new InvalidOperationException($"No se puede añadir un registro sin Fecha expedición.");
+      }
+      string idEmisor = (record as Registro)?.IDFactura.IDEmisor ?? (record as RespuestaLinea)?.IDFactura.IDEmisorFactura;
+      if(string.IsNullOrEmpty(idEmisor))
+      {
+        throw new InvalidOperationException($"No se puede añadir un registro sin IDEmisor.");
+      }
+      string idFactura = $"{(record as Registro)?.IDFactura}{(record as RespuestaLinea)?.IDFactura}";
+      if(string.IsNullOrEmpty(idFactura))
+      {
+        throw new InvalidOperationException($"No se puede añadir un registro sin IDFactura.");
+      }
+      if(idEmisor != SellerID)
+      {
+        throw new InvalidOperationException(
+          $"No se puede añadir un registro con emisor" +
+                          $" de factura distinto de {SellerID}.");
+      }
+      if(Records.Count > 0)
+      {
+        string prevIDFactura = $"{(Records[0] as Registro)?.IDFactura}{(Records[0] as RespuestaLinea)?.IDFactura}";
+        if(prevIDFactura != idFactura)
+        {
+          throw new InvalidOperationException(
+            $"No se puede añadir un registro con IDFactura" +
+                                $" {idFactura} ya que ya existe un documento con IDFactura {prevIDFactura}.");
+        }
+      }
+      Records.Add(record);
+    }
+
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"({SellerID} {SellerName})";
+    }
+
+    #endregion
+  }
 }

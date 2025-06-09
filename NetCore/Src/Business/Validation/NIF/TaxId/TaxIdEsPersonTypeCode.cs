@@ -39,20 +39,18 @@
 
 namespace VeriFactu.Business.Validation.NIF.TaxId
 {
-
+  /// <summary>
+  /// Código de tipo de persona.
+  /// </summary>
+  public enum TaxIdEsPersonTypeCode
+  {
     /// <summary>
-    /// Código de tipo de persona.
+    /// Persona jurídica
     /// </summary>
-    public enum TaxIdEsPersonTypeCode
-    {
-        /// <summary>
-        /// Persona jurídica
-        /// </summary>
-        LegalEntity,
-        /// <summary>
-        /// Persona física
-        /// </summary>
-        Individual
-    }
-
+    LegalEntity,
+    /// <summary>
+    /// Persona física
+    /// </summary>
+    Individual
+  }
 }

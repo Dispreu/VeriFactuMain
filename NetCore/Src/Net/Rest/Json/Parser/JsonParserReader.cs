@@ -45,207 +45,180 @@ using VeriFactu.Net.Rest.Json.Parser.Lexer.Tokens;
 
 namespace VeriFactu.Net.Rest.Json.Parser
 {
+  /// <summary>
+  /// Lector de datos de cadena en JSON a partir de un analizador léxico.
+  /// </summary>
+  internal class JsonParserReader
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Lector de datos de cadena en JSON
-    /// a partir de un analizador léxico.
+    /// Analizador léxico al que corresponde leer.
     /// </summary>
-    internal class JsonParserReader
+    private JsonLexer _JsonLexer;
+
+    /// <summary>
+    /// Fragmentos obtenidos por el analizador léxico.
+    /// </summary>
+
+    private List<JsonToken> _Tokens;
+
+    /// <summary>
+    /// Íncide del fragmento en curso.
+    /// </summary>
+    private int _CurrentIndex = 0;
+
+    /// <summary>
+    /// Clave actual.
+    /// </summary>
+    private string _Key = null;
+
+    #endregion
+
+    #region Propiedades Privadas de Instacia
+
+    /// <summary>
+    /// Resultado de la deserialización del texto JSON compuesto en un Expando.
+    /// </summary>
+    private ExpandoObject Result = new ExpandoObject();
+
+    internal JsonToken Current => _Tokens[0];
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="jsonLexer">JsonLexer.</param>
+    public JsonParserReader(JsonLexer jsonLexer)
     {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Analizador léxico al que
-        /// corresponde leer.
-        /// </summary>
-        JsonLexer _JsonLexer;
-
-        /// <summary>
-        /// Fragmentos obtenidos por
-        /// el analizador léxico.
-        /// </summary>
-
-        List<JsonToken> _Tokens;
-
-        /// <summary>
-        /// Íncide del fragmento en curso.
-        /// </summary>
-        int _CurrentIndex = 0;
-
-        /// <summary>
-        /// Clave actual.
-        /// </summary>
-        string _Key = null;
-
-        #endregion
-
-        #region Propiedades Privadas de Instacia
-
-        /// <summary>
-        /// Resultado de la deserialización del
-        /// texto JSON compuesto en un Expando.
-        /// </summary>
-        ExpandoObject Result = new ExpandoObject();
-
-        internal JsonToken Current => _Tokens[0];
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="jsonLexer">JsonLexer.</param>
-        public JsonParserReader(JsonLexer jsonLexer)
-        {
-            _JsonLexer = jsonLexer;
-            _Tokens = _JsonLexer.GetTokens();
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Carga un objeto.
-        /// </summary>
-        /// <returns>Objeto cargado.</returns>
-        /// <exception cref="InvalidOperationException">Si se encuentra una secuencia inesperada.</exception>
-        private ExpandoObject LoadObject()
-        {
-
-            var result = new ExpandoObject();
-
-            while (_CurrentIndex < _Tokens.Count)
-            {
-                
-                var keyToken = _Tokens[++_CurrentIndex];
-                _Key = keyToken.Value;
-
-                if (_Key == ",")
-                {
-                    keyToken = _Tokens[++_CurrentIndex];
-                    _Key = keyToken.Value;
-                }
-
-                if (_Tokens[++_CurrentIndex].Value != ":")
-                    throw new InvalidOperationException("Esperado ':'.");
-
-                var nextToken = _Tokens[++_CurrentIndex];
-                var nextTokenValue = nextToken.Value;
-                var key = $"{keyToken.Covert()}";
-
-                if (nextTokenValue == "{")
-                {
-                    ((IDictionary<string, object>)result).Add(key, LoadObject());
-                }
-                else if (nextTokenValue == "[")
-                {
-                    ((IDictionary<string, object>)result).Add(key, LoadArray());
-                }
-                else
-                {
-
-                    ((IDictionary<string, object>)result).Add(key, nextToken.Covert());
-
-                    nextTokenValue = _Tokens[++_CurrentIndex].Value;
-
-                    if (nextTokenValue == ",")
-                        continue;
-
-                    if (nextTokenValue == "}")
-                        break;
-
-                    throw new InvalidOperationException("Esperado ',' o '}'.");
-
-                }
-            }
-
-            return result;
-
-        }
-
-        /// <summary>
-        /// Carga un array.
-        /// </summary>
-        /// <returns>Array cargado.</returns>
-        /// <exception cref="InvalidOperationException">Si se encuentra una secuencia inesperada.</exception>
-        private List<dynamic> LoadArray()
-        {
-
-            var result = new List<dynamic>();
-
-            if (_Tokens[_CurrentIndex + 1].Value == "]")
-            {
-
-                _CurrentIndex++;
-                return result; // Array vacía
-
-            }
-
-            while (_CurrentIndex < _Tokens.Count)
-            {
-
-                var nextToken = _Tokens[++_CurrentIndex];
-                var nextTokenValue = nextToken.Value;
-
-                if (nextTokenValue == "{")
-                    result.Add(LoadObject());
-                else
-                    result.Add(nextToken.Covert());
-
-                nextToken = _Tokens[++_CurrentIndex];
-                nextTokenValue = nextToken.Value;
-
-                if (nextTokenValue == ",")
-                    continue;
-
-                if (nextTokenValue == "]")
-                    break;
-
-                throw new InvalidOperationException("Esperado ',' o '}'.");
-
-            }
-
-            _CurrentIndex++;
-
-            return result;
-
-        }
-
-        /// <summary>
-        /// Devuelve el resultado de la deserialización
-        /// de la cadena JSON.
-        /// </summary>
-        /// <returns>resultado de la deserialización
-        /// de la cadena JSON.</returns>
-        internal dynamic GetResult()
-        {
-
-            return Result;
-
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Ejecuta la lectura de datos.
-        /// </summary>
-        /// <returns>Posición en la que se finaliza la lectura.</returns>
-        public int Read()
-        {
-
-            Result = LoadObject();
-            return _CurrentIndex;
-
-        }
-
-        #endregion
-
+      _JsonLexer = jsonLexer;
+      _Tokens = _JsonLexer.GetTokens();
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Carga un objeto.
+    /// </summary>
+    /// <returns>Objeto cargado.</returns>
+    /// <exception cref="InvalidOperationException">Si se encuentra una secuencia inesperada.</exception>
+    private ExpandoObject LoadObject()
+    {
+      ExpandoObject result = new ExpandoObject();
+      while(_CurrentIndex < _Tokens.Count)
+      {
+        JsonToken keyToken = _Tokens[++_CurrentIndex];
+        _Key = keyToken.Value;
+        if(_Key == ",")
+        {
+          keyToken = _Tokens[++_CurrentIndex];
+          _Key = keyToken.Value;
+        }
+        if(_Tokens[++_CurrentIndex].Value != ":")
+        {
+          throw new InvalidOperationException("Esperado ':'.");
+        }
+        JsonToken nextToken = _Tokens[++_CurrentIndex];
+        string nextTokenValue = nextToken.Value;
+        string key = $"{keyToken.Covert()}";
+        if(nextTokenValue == "{")
+        {
+                    ((IDictionary<string, object>)result).Add(key, LoadObject());
+        }
+        else if(nextTokenValue == "[")
+        {
+                    ((IDictionary<string, object>)result).Add(key, LoadArray());
+        }
+        else
+        {
+                    ((IDictionary<string, object>)result).Add(key, nextToken.Covert());
+          nextTokenValue = _Tokens[++_CurrentIndex].Value;
+          if(nextTokenValue == ",")
+          {
+            continue;
+          }
+          if(nextTokenValue == "}")
+          {
+            break;
+          }
+          throw new InvalidOperationException("Esperado ',' o '}'.");
+        }
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Carga un array.
+    /// </summary>
+    /// <returns>Array cargado.</returns>
+    /// <exception cref="InvalidOperationException">Si se encuentra una secuencia inesperada.</exception>
+    private List<dynamic> LoadArray()
+    {
+      List<dynamic> result = new List<dynamic>();
+      if(_Tokens[_CurrentIndex + 1].Value == "]")
+      {
+        _CurrentIndex++;
+        return result; // Array vacía
+      }
+      while(_CurrentIndex < _Tokens.Count)
+      {
+        JsonToken nextToken = _Tokens[++_CurrentIndex];
+        string nextTokenValue = nextToken.Value;
+        if(nextTokenValue == "{")
+        {
+          result.Add(LoadObject());
+        }
+        else
+        {
+          result.Add(nextToken.Covert());
+        }
+        nextToken = _Tokens[++_CurrentIndex];
+        nextTokenValue = nextToken.Value;
+        if(nextTokenValue == ",")
+        {
+          continue;
+        }
+        if(nextTokenValue == "]")
+        {
+          break;
+        }
+        throw new InvalidOperationException("Esperado ',' o '}'.");
+      }
+      _CurrentIndex++;
+      return result;
+    }
+
+    /// <summary>
+    /// Devuelve el resultado de la deserialización de la cadena JSON.
+    /// </summary>
+    /// <returns>
+    /// resultado de la deserialización de la cadena JSON.
+    /// </returns>
+    internal dynamic GetResult()
+    {
+      return Result;
+    }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Ejecuta la lectura de datos.
+    /// </summary>
+    /// <returns>Posición en la que se finaliza la lectura.</returns>
+    public int Read()
+    {
+      Result = LoadObject();
+      return _CurrentIndex;
+    }
+
+    #endregion
+  }
 }

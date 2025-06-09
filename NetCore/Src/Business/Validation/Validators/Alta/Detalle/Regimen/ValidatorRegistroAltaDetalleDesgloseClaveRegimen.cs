@@ -45,178 +45,168 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta.Detalle.Regimen
 {
+  /// <summary>
+  /// Valida los datos de RegistroAlta DetalleDesglose ClaveRegimen.
+  /// </summary>
+  public class ValidatorRegistroAltaDetalleDesgloseClaveRegimen : ValidatorRegistroAlta
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Valida los datos de RegistroAlta DetalleDesglose ClaveRegimen.
+    /// Interlocutor a validar.
     /// </summary>
-    public class ValidatorRegistroAltaDetalleDesgloseClaveRegimen : ValidatorRegistroAlta
+    private readonly DetalleDesglose _DetalleDesglose;
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">Sobre SOAP envío.</param>
+    /// <param name="registroAlta">Registro alta factura.</param>
+    /// <param name="detalleDesglose">DetalleDesglose a validar.</param>
+    public ValidatorRegistroAltaDetalleDesgloseClaveRegimen(
+      Envelope envelope,
+      RegistroAlta registroAlta,
+      DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
     {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Interlocutor a validar.
-        /// </summary>
-        readonly DetalleDesglose _DetalleDesglose;
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Sobre SOAP envío.</param>
-        /// <param name="registroAlta"> Registro alta factura.</param>
-        /// <param name="detalleDesglose"> DetalleDesglose a validar. </param>
-        public ValidatorRegistroAltaDetalleDesgloseClaveRegimen(Envelope envelope, RegistroAlta registroAlta,
-            DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
-        {
-
-            _DetalleDesglose = detalleDesglose;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // Solo podrá incluirse este campo si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta
-            // (considerándose “01” - IVA) y será obligatorio.
-
-            if (_DetalleDesglose.ClaveRegimenSpecified &&
-                _DetalleDesglose.Impuesto != Impuesto.IVA &&
-                _DetalleDesglose.Impuesto != Impuesto.IGIC) 
-            {
-
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                    $" Solo podrá incluirse ClaveRegimen si Impuesto = “01” (IVA), “03” (IGIC)" +
-                    $" o no se cumplimenta (considerándose “01” - IVA).");
-
-            }
-
-            if (!_DetalleDesglose.ClaveRegimenSpecified &&
-                (_DetalleDesglose.Impuesto == Impuesto.IVA ||
-                _DetalleDesglose.Impuesto == Impuesto.IGIC))
-            {
-
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                    $" ClaveRegimen obligatorio si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta" +
-                    $" (considerándose “01” - IVA).");
-
-            }
-
-            // Si Impuesto = “01” (IVA) o no se cumplimenta (considerándose “01” - IVA), el valor
-            // de ClaveRegimen deberá estar cumplimentado y contenido en lista L8A. (TODO ENUM ClaveRegimen)
-
-            // Si Impuesto = “03” (IGIC), el valor de ClaveRegimen deberá estar cumplimentado y contenido en lista L8B.
-            // (NO APLICA EL VALOR ENUM 'RegimenSimplificado' o '20' en L8B)
-
-            if (_DetalleDesglose.Impuesto == Impuesto.IGIC && _DetalleDesglose.ClaveRegimen == ClaveRegimen.RegimenSimplificado)
-            {
-
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                    $" Si Impuesto = “03” (IGIC), el valor de ClaveRegimen deberá estar cumplimentado y contenido en lista L8B." +
-                    $" El valor '20' RegimenSimplificado sólo aplica para IVA en la lista L8A.");
-
-            }
-
-            // 15.6.9 ClaveRegimen 18. Recargo de equivalencia  
-
-            // Sólo se puede cumplimentar TipoRecargoEquivalencia y CuotaRecargoEquivalencia
-            // cuando CalificacionOperacion es “S1”. 
-            if (_DetalleDesglose.CalificacionOperacion != CalificacionOperacion.S1)
-            {
-
-                if (_DetalleDesglose.TipoRecargoEquivalencia != null && XmlParser.ToDecimal(_DetalleDesglose.TipoRecargoEquivalencia) != 0)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                        $" Sólo se puede cumplimentar TipoRecargoEquivalencia" +
-                        $" cuando CalificacionOperacion es “S1”.");
-
-                if (_DetalleDesglose.CuotaRecargoEquivalencia != null && XmlParser.ToDecimal(_DetalleDesglose.CuotaRecargoEquivalencia) != 0)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                        $" Sólo se puede cumplimentar CuotaRecargoEquivalencia" +
-                        $" cuando CalificacionOperacion es “S1”.");
-
-            }
-
-            // Si Impuesto = “01” (IVA) o no se cumplimenta (considerándose “01” – IVA),
-            if (_DetalleDesglose.Impuesto == Impuesto.IVA) 
-            {
-
-                // sólo se podrá cumplimentar TipoRecargoEquivalencia y CuotaRecargoEquivalencia si ClaveRegimen igual a “18”.  
-                if (_DetalleDesglose.ClaveRegimen != ClaveRegimen.RecEquivPeqEmp)
-                {
-
-                    if (_DetalleDesglose.TipoRecargoEquivalencia != null && XmlParser.ToDecimal(_DetalleDesglose.TipoRecargoEquivalencia) != 0)
-                        result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                            $" Si Impuesto = “01” (IVA) o no se cumplimenta (considerándose “01” – IVA)," +
-                            $" sólo se podrá cumplimentar TipoRecargoEquivalencia si ClaveRegimen igual a “18”.");
-
-                    if (_DetalleDesglose.CuotaRecargoEquivalencia != null && XmlParser.ToDecimal(_DetalleDesglose.CuotaRecargoEquivalencia) != 0)
-                        result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                            $" Si Impuesto = “01” (IVA) o no se cumplimenta (considerándose “01” – IVA)," +
-                            $" sólo se podrá cumplimentar CuotaRecargoEquivalencia si ClaveRegimen igual a “18”.");
-
-                }
-
-                // y ClaveRegimen igual a “18”, es obligatorio cumplimentar TipoRecargoEquivalencia y CuotaRecargoEquivalencia.  
-                if (_DetalleDesglose.ClaveRegimen == ClaveRegimen.RecEquivPeqEmp)
-                {
-
-                    if (_DetalleDesglose.TipoRecargoEquivalencia == null || XmlParser.ToDecimal(_DetalleDesglose.TipoRecargoEquivalencia) == 0)
-                        result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                            $" Si Impuesto = “01” (IVA) o no se cumplimenta (considerándose “01” – IVA) y" +
-                            $" ClaveRegimen igual a “18”, es obligatorio cumplimentar TipoRecargoEquivalencia.");
-
-                    if (_DetalleDesglose.CuotaRecargoEquivalencia == null && XmlParser.ToDecimal(_DetalleDesglose.CuotaRecargoEquivalencia) == 0)
-                        result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                            $" Si Impuesto = “01” (IVA) o no se cumplimenta (considerándose “01” – IVA) y" +
-                            $" ClaveRegimen igual a “18”, es obligatorio cumplimentar CuotaRecargoEquivalencia.");
-
-                }
-
-            }  
-
-            var _ValidatorByClaveRegimen = new Dictionary<ClaveRegimen, IValidator>() 
-            {
-                // 15.6.1 ClaveRegimen 03. REBU.
-                {ClaveRegimen.Rebu,                         new ValidatorRegistroAltaDetalleDesgloseClaveRegimenRebu(_Envelope, _RegistroAlta, _DetalleDesglose) },
-                // 15.6.2 ClaveRegimen 04. Operaciones con oro de inversión.
-                {ClaveRegimen.OroInversion,                 new ValidatorRegistroAltaDetalleDesgloseClaveRegimenOroInversion(_Envelope, _RegistroAlta, _DetalleDesglose) },
-                // 15.6.3 ClaveRegimen 06. Grupo de entidades nivel avanzado.
-                {ClaveRegimen.GrupoEntidades,               new ValidatorRegistroAltaDetalleDesgloseClaveRegimenGrupoEntidades(_Envelope, _RegistroAlta, _DetalleDesglose) },
-                // 15.6.4 ClaveRegimen 07. Criterio de caja.
-                {ClaveRegimen.Recc,                         new ValidatorRegistroAltaDetalleDesgloseClaveRegimenRecc(_Envelope, _RegistroAlta, _DetalleDesglose) },
-                // 15.6.5 ClaveRegimen 08.
-                {ClaveRegimen.IpsiIgic,                     new ValidatorRegistroAltaDetalleDesgloseClaveRegimenIpsiIgic(_Envelope, _RegistroAlta, _DetalleDesglose) },
-                // 15.6.6 ClaveRegimen 10. Cobro por cuenta de terceros.
-                {ClaveRegimen.CobroTerceros,                new ValidatorRegistroAltaDetalleDesgloseClaveRegimenCobroTerceros(_Envelope, _RegistroAlta, _DetalleDesglose) },
-                // 15.6.7 ClaveRegimen 11. Arrendamiento de local de negocio
-                {ClaveRegimen.ArrendamientoLocalNecocio,    new ValidatorRegistroAltaDetalleDesgloseClaveRegimenArrendamientoLocalNecocio(_Envelope, _RegistroAlta, _DetalleDesglose) },
-                // 15.6.8 ClaveRegimen 14. IVA pendiente AAPP.
-                {ClaveRegimen.ObraPteDevengoAdmonPublica,   new ValidatorRegistroAltaDetalleDesgloseClaveRegimenObraPteDevengoAdmonPublica(_Envelope, _RegistroAlta, _DetalleDesglose) }
-            };
-
-            if(_DetalleDesglose.ClaveRegimenSpecified)
-                if(_ValidatorByClaveRegimen.ContainsKey(_DetalleDesglose.ClaveRegimen))
-                    result.AddRange(_ValidatorByClaveRegimen[_DetalleDesglose.ClaveRegimen].GetErrors());
-
-            return result;
-
-        }
-
-        #endregion
-
+      _DetalleDesglose = detalleDesglose;
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // Solo podrá incluirse este campo si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta
+      // (considerándose “01” - IVA) y será obligatorio.
+      if(_DetalleDesglose.ClaveRegimenSpecified &&
+                _DetalleDesglose.Impuesto != Impuesto.IVA &&
+                _DetalleDesglose.Impuesto != Impuesto.IGIC)
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                    $" Solo podrá incluirse ClaveRegimen si Impuesto = “01” (IVA), “03” (IGIC)" +
+                    $" o no se cumplimenta (considerándose “01” - IVA).");
+      }
+      if(!_DetalleDesglose.ClaveRegimenSpecified &&
+                (_DetalleDesglose.Impuesto == Impuesto.IVA ||
+                _DetalleDesglose.Impuesto == Impuesto.IGIC))
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                    $" ClaveRegimen obligatorio si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta" +
+                    $" (considerándose “01” - IVA).");
+      }
+      // Si Impuesto = “01” (IVA) o no se cumplimenta (considerándose “01” - IVA), el valor
+      // de ClaveRegimen deberá estar cumplimentado y contenido en lista L8A. (TODO ENUM ClaveRegimen)
+      // Si Impuesto = “03” (IGIC), el valor de ClaveRegimen deberá estar cumplimentado y contenido en lista L8B.
+      // (NO APLICA EL VALOR ENUM 'RegimenSimplificado' o '20' en L8B)
+      if(_DetalleDesglose.Impuesto == Impuesto.IGIC && _DetalleDesglose.ClaveRegimen == ClaveRegimen.RegimenSimplificado)
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                    $" Si Impuesto = “03” (IGIC), el valor de ClaveRegimen deberá estar cumplimentado y contenido en lista L8B." +
+                    $" El valor '20' RegimenSimplificado sólo aplica para IVA en la lista L8A.");
+      }
+      // 15.6.9 ClaveRegimen 18. Recargo de equivalencia  
+      // Sólo se puede cumplimentar TipoRecargoEquivalencia y CuotaRecargoEquivalencia
+      // cuando CalificacionOperacion es “S1”. 
+      if(_DetalleDesglose.CalificacionOperacion != CalificacionOperacion.S1)
+      {
+        if(_DetalleDesglose.TipoRecargoEquivalencia != null && XmlParser.ToDecimal(_DetalleDesglose.TipoRecargoEquivalencia) != 0)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                $" Sólo se puede cumplimentar TipoRecargoEquivalencia" +
+                                $" cuando CalificacionOperacion es “S1”.");
+        }
+        if(_DetalleDesglose.CuotaRecargoEquivalencia != null && XmlParser.ToDecimal(_DetalleDesglose.CuotaRecargoEquivalencia) != 0)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                $" Sólo se puede cumplimentar CuotaRecargoEquivalencia" +
+                                $" cuando CalificacionOperacion es “S1”.");
+        }
+      }
+      // Si Impuesto = “01” (IVA) o no se cumplimenta (considerándose “01” – IVA),
+      if(_DetalleDesglose.Impuesto == Impuesto.IVA)
+      {
+        // sólo se podrá cumplimentar TipoRecargoEquivalencia y CuotaRecargoEquivalencia si ClaveRegimen igual a “18”.  
+        if(_DetalleDesglose.ClaveRegimen != ClaveRegimen.RecEquivPeqEmp)
+        {
+          if(_DetalleDesglose.TipoRecargoEquivalencia != null && XmlParser.ToDecimal(_DetalleDesglose.TipoRecargoEquivalencia) != 0)
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                      $" Si Impuesto = “01” (IVA) o no se cumplimenta (considerándose “01” – IVA)," +
+                                      $" sólo se podrá cumplimentar TipoRecargoEquivalencia si ClaveRegimen igual a “18”.");
+          }
+          if(_DetalleDesglose.CuotaRecargoEquivalencia != null && XmlParser.ToDecimal(_DetalleDesglose.CuotaRecargoEquivalencia) != 0)
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                      $" Si Impuesto = “01” (IVA) o no se cumplimenta (considerándose “01” – IVA)," +
+                                      $" sólo se podrá cumplimentar CuotaRecargoEquivalencia si ClaveRegimen igual a “18”.");
+          }
+        }
+        // y ClaveRegimen igual a “18”, es obligatorio cumplimentar TipoRecargoEquivalencia y CuotaRecargoEquivalencia.  
+        if(_DetalleDesglose.ClaveRegimen == ClaveRegimen.RecEquivPeqEmp)
+        {
+          if(_DetalleDesglose.TipoRecargoEquivalencia == null || XmlParser.ToDecimal(_DetalleDesglose.TipoRecargoEquivalencia) == 0)
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                      $" Si Impuesto = “01” (IVA) o no se cumplimenta (considerándose “01” – IVA) y" +
+                                      $" ClaveRegimen igual a “18”, es obligatorio cumplimentar TipoRecargoEquivalencia.");
+          }
+          if(_DetalleDesglose.CuotaRecargoEquivalencia == null && XmlParser.ToDecimal(_DetalleDesglose.CuotaRecargoEquivalencia) == 0)
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                      $" Si Impuesto = “01” (IVA) o no se cumplimenta (considerándose “01” – IVA) y" +
+                                      $" ClaveRegimen igual a “18”, es obligatorio cumplimentar CuotaRecargoEquivalencia.");
+          }
+        }
+      }
+      Dictionary<ClaveRegimen, IValidator> _ValidatorByClaveRegimen = new Dictionary<ClaveRegimen, IValidator>
+      {
+        // 15.6.1 ClaveRegimen 03. REBU.
+        { ClaveRegimen.Rebu, new ValidatorRegistroAltaDetalleDesgloseClaveRegimenRebu(_Envelope, _RegistroAlta, _DetalleDesglose) },
+        // 15.6.2 ClaveRegimen 04. Operaciones con oro de inversión.
+        { ClaveRegimen.OroInversion, new ValidatorRegistroAltaDetalleDesgloseClaveRegimenOroInversion(_Envelope, _RegistroAlta, _DetalleDesglose) },
+        // 15.6.3 ClaveRegimen 06. Grupo de entidades nivel avanzado.
+        { ClaveRegimen.GrupoEntidades, new ValidatorRegistroAltaDetalleDesgloseClaveRegimenGrupoEntidades(_Envelope, _RegistroAlta, _DetalleDesglose) },
+        // 15.6.4 ClaveRegimen 07. Criterio de caja.
+        { ClaveRegimen.Recc, new ValidatorRegistroAltaDetalleDesgloseClaveRegimenRecc(_Envelope, _RegistroAlta, _DetalleDesglose) },
+        // 15.6.5 ClaveRegimen 08.
+        { ClaveRegimen.IpsiIgic, new ValidatorRegistroAltaDetalleDesgloseClaveRegimenIpsiIgic(_Envelope, _RegistroAlta, _DetalleDesglose) },
+        // 15.6.6 ClaveRegimen 10. Cobro por cuenta de terceros.
+        { ClaveRegimen.CobroTerceros, new ValidatorRegistroAltaDetalleDesgloseClaveRegimenCobroTerceros(_Envelope, _RegistroAlta, _DetalleDesglose) },
+        // 15.6.7 ClaveRegimen 11. Arrendamiento de local de negocio
+        { ClaveRegimen.ArrendamientoLocalNecocio, new ValidatorRegistroAltaDetalleDesgloseClaveRegimenArrendamientoLocalNecocio(_Envelope, _RegistroAlta, _DetalleDesglose) },
+        // 15.6.8 ClaveRegimen 14. IVA pendiente AAPP.
+        { ClaveRegimen.ObraPteDevengoAdmonPublica, new ValidatorRegistroAltaDetalleDesgloseClaveRegimenObraPteDevengoAdmonPublica(_Envelope, _RegistroAlta, _DetalleDesglose) }
+      };
+      if(_DetalleDesglose.ClaveRegimenSpecified)
+      {
+        if(_ValidatorByClaveRegimen.ContainsKey(_DetalleDesglose.ClaveRegimen))
+        {
+          result.AddRange(_ValidatorByClaveRegimen[_DetalleDesglose.ClaveRegimen].GetErrors());
+        }
+      }
+      return result;
+    }
+
+    #endregion
+  }
 }

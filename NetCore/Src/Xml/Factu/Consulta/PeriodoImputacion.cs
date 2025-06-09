@@ -41,56 +41,41 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Consulta
 {
-
-    /// <summary>
-    /// Representa un periodo con información del
-    /// año y el mes.
-    /// </summary>
-    public class PeriodoImputacion
-    {
+  /// <summary>
+  /// Representa un periodo con información del año y el mes.
+  /// </summary>
+  public class PeriodoImputacion
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// <para>
-        /// Año de la fecha de la operación a consultar (obtenido del año de
-        ///  la fecha de operación o en su defecto de la fecha de expedición)
-        ///  </para>
-        ///  <para>
-        ///  Númerico(4) formato YYYY
-        /// </para>
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string Ejercicio { get; set; }
+    /// <summary>
+    /// <para>Año de la fecha de la operación a consultar (obtenido del año de la fecha de operación o en su defecto de
+    /// la fecha de expedición)</para> <para>Númerico(4) formato YYYY</para>
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string Ejercicio { get; set; }
 
-        /// <summary>
-        /// <para>        /// Mes de la fecha de la operación a consultar (obtenido del mes de
-        /// la fecha de operación o en su defecto de la fecha de expedición)
-        ///  </para>
-        ///  <para>
-        ///  Alfanumérico (2) L2C
-        /// </para>
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string Periodo { get; set; }
+    /// <summary>
+    /// <para>/// Mes de la fecha de la operación a consultar (obtenido del mes de la fecha de operación o en su defecto
+    /// de la fecha de expedición)</para> <para>Alfanumérico (2) L2C</para>
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string Periodo { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representacioón textual de la instancia.
-        /// </summary>
-        /// <returns>Representacioón textual de la instancia.</returns>
-        public override string ToString()
-        {
-
-            return $"{Ejercicio}.{Periodo}";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representacioón textual de la instancia.
+    /// </summary>
+    /// <returns>Representacioón textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{Ejercicio}.{Periodo}";
     }
 
+    #endregion
+  }
 }

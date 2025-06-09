@@ -43,84 +43,72 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta FacturasSustituidas.
-    /// </summary>
-    public class ValidatorRegistroAltaFacturasSustituidas : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta FacturasSustituidas.
+  /// </summary>
+  public class ValidatorRegistroAltaFacturasSustituidas : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        /// <param name="registroAlta"> Registro de alta del bloque Body.</param>
-        public ValidatorRegistroAltaFacturasSustituidas(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    /// <param name="registroAlta">Registro de alta del bloque Body.</param>
+    public ValidatorRegistroAltaFacturasSustituidas(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // 5. Agrupación FacturasSustituidas
+      Xml.IDFactura[] facturasSustituidas = _RegistroAlta?.FacturasSustituidas;
+      if(facturasSustituidas != null)
+      {
+        if(facturasSustituidas.Length > 1000)
         {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                               $" La colección FacturasSustituidas no puede" +
+                               $" contener más de 1000 elementos y contiene {facturasSustituidas.Length}”.");
         }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
+        if(_RegistroAlta.TipoFactura == TipoFactura.F3)
         {
-
-            var result = new List<string>();
-
-            // 5. Agrupación FacturasSustituidas
-
-            var facturasSustituidas = _RegistroAlta?.FacturasSustituidas;
-
-            if (facturasSustituidas != null)
+          // El NIF del campo IDEmisorFactura debe estar identificado.
+          foreach(Xml.IDFactura facturasSustituida in facturasSustituidas)
+          {
+            if(facturasSustituida?.IDEmisorFactura != _RegistroAlta?.IDFacturaAlta?.IDEmisorFactura)
             {
-
-                if (facturasSustituidas.Length > 1000)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                       $" La colección FacturasSustituidas no puede" +
-                       $" contener más de 1000 elementos y contiene {facturasSustituidas.Length}”.");
-
-
-                if (_RegistroAlta.TipoFactura == TipoFactura.F3)
-                {
-
-                    // El NIF del campo IDEmisorFactura debe estar identificado.
-                    foreach (var facturasSustituida in facturasSustituidas)
-                    {
-
-                        if (facturasSustituida?.IDEmisorFactura != _RegistroAlta?.IDFacturaAlta?.IDEmisorFactura)
-                            result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                               $" El NIF del campo IDEmisorFactura de FacturasSustituida ({facturasSustituida?.IDEmisorFactura}) debe estar" +
-                               $" identificado y debe se el mismo que IDEmisorFactura ({_RegistroAlta?.IDFacturaAlta?.IDEmisorFactura}).");
-
-                    }
-
-                }
-                else
-                {
-
-                    // Sólo podrá incluirse esta agrupación (no es obligatoria) cuando el campo TipoFactura="F3"
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+              result.Add(
+                $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                           $" El NIF del campo IDEmisorFactura de FacturasSustituida ({facturasSustituida?.IDEmisorFactura}) debe estar" +
+                                           $" identificado y debe se el mismo que IDEmisorFactura ({_RegistroAlta?.IDFacturaAlta?.IDEmisorFactura}).");
+            }
+          }
+        }
+        else
+        {
+          // Sólo podrá incluirse esta agrupación (no es obligatoria) cuando el campo TipoFactura="F3"
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
                         $" La colección FacturasSustituidas sólo puede existir" +
                         $" si TipoFactura es igual a “F3”.");
-
-                }
-
-            }
-
-            return result;
-
         }
-
-        #endregion
-
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

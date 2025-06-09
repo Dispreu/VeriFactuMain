@@ -41,33 +41,25 @@ using System;
 
 namespace VeriFactu.Net.Rest.Json.Serializer
 {
-
-    /// <summary>
-    /// Serializador para enteros.
-    /// </summary>
-    internal class JsonIntSerializer : IJsonSerializer
-    {
+  /// <summary>
+  /// Serializador para enteros.
+  /// </summary>
+  internal class JsonIntSerializer : IJsonSerializer
+  {
 
         #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Devuelve la representación en JSON
-        /// de la propiedad facilitada para la
-        /// instancia facilitada.
-        /// </summary>
-        /// <param name="value">Valor a serializar.</param>
-        /// <returns>Representación JSON de la propiedad.</returns>
-        public string ToJson(object value)
-        {
-
-            var l = Convert.ToInt64(value);
-
-            return $"{l}";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Devuelve la representación en JSON de la propiedad facilitada para la instancia facilitada.
+    /// </summary>
+    /// <param name="value">Valor a serializar.</param>
+    /// <returns>Representación JSON de la propiedad.</returns>
+    public string ToJson(object value)
+    {
+      long l = Convert.ToInt64(value);
+      return $"{l}";
     }
 
+    #endregion
+  }
 }

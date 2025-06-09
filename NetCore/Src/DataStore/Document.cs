@@ -41,93 +41,85 @@ using System.Collections.Generic;
 
 namespace VeriFactu.DataStore
 {
+  /// <summary>
+  /// Representa un documento de factura generado en el sistema. Incluye todos los registros de alta y anulación
+  /// envíados, así como todas las respuestas de la AEAT relacionadas con una factura determinada.
+  /// </summary>
+  public class Document
+  {
+
+    #region Variables Privadas Estáticas
 
     /// <summary>
-    /// Representa un documento de factura generado en el sistema. Incluye todos los registros
-    /// de alta y anulación envíados, así como todas las respuestas de la AEAT relacionadas con
-    /// una factura determinada.
+    /// Información de vendedores y periodos.
     /// </summary>
-    public class Document
+    private static Dictionary<string, List<PeriodOutbox>> _Sellers = Seller.GetSellers();
+
+    #endregion
+
+    #region Propiedades Privadas de Instacia
+
+    /// <summary>
+    /// Bandeja salida periodo.
+    /// </summary>
+    internal PeriodOutbox PeriodOutbox { get; private set; }
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    public Document(string sellerID, string periodID)
     {
-
-        #region Variables Privadas Estáticas
-
-        /// <summary>
-        /// Información de vendedores y periodos.
-        /// </summary>
-        static Dictionary<string, List<PeriodOutbox>> _Sellers = Seller.GetSellers();
-
-        #endregion
-
-        #region Propiedades Privadas de Instacia
-
-        /// <summary>
-        /// Bandeja salida periodo.
-        /// </summary>
-        internal PeriodOutbox PeriodOutbox { get; private set; }
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        public Document(string sellerID, string periodID)
-        {
-
-            PeriodID = periodID;
-            PeriodOutbox = GetPeriodOutbox(sellerID, periodID);
-
-            if (PeriodOutbox == null)
-                return;
-
-            Seller = PeriodOutbox.Seller;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los documentos de la bandeja de salida
-        /// de un vendedor y periodo determinados.
-        /// </summary>
-        /// <param name="sellerID">Id. vendedor.</param>
-        /// <param name="periodID">Periodo.</param>
-        /// <returns>Bandeja de salida del vendedor para un periodo.</returns>
-        private PeriodOutbox GetPeriodOutbox(string sellerID, string periodID)
-        {
-
-            PeriodOutbox periodOutbox = null;
-
-            var periodOutboxes = _Sellers[sellerID];
-
-            foreach (var pOutbox in periodOutboxes)
-                if (pOutbox.PeriodID == periodID)
-                    periodOutbox = pOutbox;
-
-            return periodOutbox;
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// Periodo del documento.
-        /// </summary>
-        public string PeriodID { get; private set; }
-
-        /// <summary>
-        /// Vendedor del documento.
-        /// </summary>
-        public Seller Seller { get; private set; }
-
-        #endregion
-
+      PeriodID = periodID;
+      PeriodOutbox = GetPeriodOutbox(sellerID, periodID);
+      if(PeriodOutbox == null)
+      {
+        return;
+      }
+      Seller = PeriodOutbox.Seller;
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los documentos de la bandeja de salida de un vendedor y periodo determinados.
+    /// </summary>
+    /// <param name="sellerID">Id. vendedor.</param>
+    /// <param name="periodID">Periodo.</param>
+    /// <returns>Bandeja de salida del vendedor para un periodo.</returns>
+    private PeriodOutbox GetPeriodOutbox(string sellerID, string periodID)
+    {
+      PeriodOutbox periodOutbox = null;
+      List<PeriodOutbox> periodOutboxes = _Sellers[sellerID];
+      foreach(PeriodOutbox pOutbox in periodOutboxes)
+      {
+        if(pOutbox.PeriodID == periodID)
+        {
+          periodOutbox = pOutbox;
+        }
+      }
+      return periodOutbox;
+    }
+
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// Periodo del documento.
+    /// </summary>
+    public string PeriodID { get; private set; }
+
+    /// <summary>
+    /// Vendedor del documento.
+    /// </summary>
+    public Seller Seller { get; private set; }
+
+    #endregion
+  }
 }

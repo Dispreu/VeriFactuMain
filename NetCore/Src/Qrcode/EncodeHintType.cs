@@ -37,29 +37,29 @@
     address: info@irenesolutions.com
  */
 
-namespace VeriFactu.Qrcode 
+namespace VeriFactu.Qrcode
 {
-    
-    /// <summary>These are a set of hints that you may pass to Writers to specify their behavior.</summary>
-    /// <author>dswitkin@google.com (Daniel Switkin)</author>
-    public sealed class EncodeHintType 
-    {
+  /// <summary>
+  /// These are a set of hints that you may pass to Writers to specify their behavior.
+  /// </summary>
+  /// <author>dswitkin@google.com (Daniel Switkin)</author>
+  public sealed class EncodeHintType
+  {
+    /// <summary>
+    /// Specifies what degree of error correction to use, for example in QR Codes (type Integer).
+    /// </summary>
+    public static readonly EncodeHintType ERROR_CORRECTION = new EncodeHintType();
 
-        /// <summary>Specifies what degree of error correction to use, for example in QR Codes (type Integer).</summary>
-        public static readonly EncodeHintType ERROR_CORRECTION = new EncodeHintType
-            ();
+    /// <summary>
+    /// Specifies what character encoding to use where applicable (type String)
+    /// </summary>
+    public static readonly EncodeHintType CHARACTER_SET = new EncodeHintType();
 
-        /// <summary>Specifies what character encoding to use where applicable (type String)</summary>
-        public static readonly EncodeHintType CHARACTER_SET = new EncodeHintType
-            ();
+    /// <summary>
+    /// Specifies the minimal version level to use, for example in QR Codes (type Integer).
+    /// </summary>
+    public static readonly EncodeHintType MIN_VERSION_NR = new EncodeHintType();
 
-        /// <summary>Specifies the minimal version level to use, for example in QR Codes (type Integer).</summary>
-        public static readonly EncodeHintType MIN_VERSION_NR = new EncodeHintType
-            ();
-
-        private EncodeHintType() {
-        }
-
-    }
-
+    private EncodeHintType() { }
+  }
 }

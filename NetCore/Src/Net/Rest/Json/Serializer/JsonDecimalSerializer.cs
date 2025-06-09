@@ -42,33 +42,25 @@ using VeriFactu.Config;
 
 namespace VeriFactu.Net.Rest.Json.Serializer
 {
-
-    /// <summary>
-    /// Serializador para decimales.
-    /// </summary>
-    internal class JsonDecimalSerializer : IJsonSerializer
-    {
+  /// <summary>
+  /// Serializador para decimales.
+  /// </summary>
+  internal class JsonDecimalSerializer : IJsonSerializer
+  {
 
         #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Devuelve la representación en JSON
-        /// de la propiedad facilitada para la
-        /// instancia facilitada.
-        /// </summary>
-        /// <param name="value">Valor a serializar.</param>
-        /// <returns>Representación JSON de la propiedad.</returns>
-        public string ToJson(object value)
-        {
-
-            var d = Convert.ToDouble(value);
-
-            return d.ToString(Settings.DefaultNumberFormatInfo);            
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Devuelve la representación en JSON de la propiedad facilitada para la instancia facilitada.
+    /// </summary>
+    /// <param name="value">Valor a serializar.</param>
+    /// <returns>Representación JSON de la propiedad.</returns>
+    public string ToJson(object value)
+    {
+      double d = Convert.ToDouble(value);
+      return d.ToString(Settings.DefaultNumberFormatInfo);
     }
 
+    #endregion
+  }
 }

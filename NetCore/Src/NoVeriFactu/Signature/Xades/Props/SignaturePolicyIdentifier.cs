@@ -41,37 +41,32 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Identificacor de política de firma.
-    /// </summary>
-    internal class SignaturePolicyIdentifier : PropXmlElement
-    {
+  /// <summary>
+  /// Identificacor de política de firma.
+  /// </summary>
+  internal class SignaturePolicyIdentifier : PropXmlElement
+  {
 
         #region Variables Privadas de Instancia
 
-        /// <summary>
-        /// Identificador de política de firma.
-        /// </summary>
-        internal SignaturePolicyId SignaturePolicyId { get; private set; }
+    /// <summary>
+    /// Identificador de política de firma.
+    /// </summary>
+    internal SignaturePolicyId SignaturePolicyId { get; private set; }
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal SignaturePolicyIdentifier(XmlNode parent) : base(parent, "SignaturePolicyIdentifier")
-        {
-
-            SignaturePolicyId = new SignaturePolicyId(XmlElement);
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal SignaturePolicyIdentifier(XmlNode parent) : base(parent, "SignaturePolicyIdentifier")
+    {
+      SignaturePolicyId = new SignaturePolicyId(XmlElement);
     }
 
+    #endregion
+  }
 }

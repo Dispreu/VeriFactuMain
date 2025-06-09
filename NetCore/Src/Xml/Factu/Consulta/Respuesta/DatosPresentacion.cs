@@ -41,53 +41,46 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Consulta.Respuesta
 {
-
-    /// <summary>
-    /// Bloque que contiene los campos con información de la presentación realizada:
-    /// <para> NIFPresentador</para>
-    /// <para> TimestampPresentacion</para>
-    /// <para> IdPeticion</para>
-    /// </summary>
-    public class DatosPresentacion
-    {
+  /// <summary>
+  /// Bloque que contiene los campos con información de la presentación realizada: <para>NIFPresentador</para>
+  /// <para>TimestampPresentacion</para> <para>IdPeticion</para>
+  /// </summary>
+  public class DatosPresentacion
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// NIF presentador.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string NIFPresentador { get; set; }
+    /// <summary>
+    /// NIF presentador.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string NIFPresentador { get; set; }
 
-        /// <summary>
-        /// Marca tiempo presentación.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string TimestampPresentacion { get; set; }
+    /// <summary>
+    /// Marca tiempo presentación.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string TimestampPresentacion { get; set; }
 
-        /// <summary>
-        /// identificador de la petición de presentación.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string IdPeticion { get; set; }
+    /// <summary>
+    /// identificador de la petición de presentación.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string IdPeticion { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representacioón textual de la instancia.
-        /// </summary>
-        /// <returns>Representacioón textual de la instancia.</returns>
-        public override string ToString()
-        {
-
-            return $"{NIFPresentador}, {TimestampPresentacion}";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representacioón textual de la instancia.
+    /// </summary>
+    /// <returns>Representacioón textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{NIFPresentador}, {TimestampPresentacion}";
     }
 
+    #endregion
+  }
 }

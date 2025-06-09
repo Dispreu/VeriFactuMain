@@ -39,73 +39,64 @@
 
 namespace VeriFactu.Net.Rest.Json.Parser.Lexer.Tokens
 {
-
-    /// <summary>
-    /// Fragmento obtenido del análisis léxico de una cadena
-    /// JSON que representa un valor de propiedad null.
-    /// </summary>
-    internal class JsonNull : JsonToken
-    {
+  /// <summary>
+  /// Fragmento obtenido del análisis léxico de una cadena JSON que representa un valor de propiedad null.
+  /// </summary>
+  internal class JsonNull : JsonToken
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Longitud de la cadena de texto.
-        /// </summary>
-        internal override int Length => Value == "null" ? 4 : 0;
+    /// <summary>
+    /// Longitud de la cadena de texto.
+    /// </summary>
+    internal override int Length => Value == "null" ? 4 : 0;
 
-        /// <summary>
-        /// Valor de la cadena de texto.
-        /// </summary>
-        internal override string Value
+    /// <summary>
+    /// Valor de la cadena de texto.
+    /// </summary>
+    internal override string Value
+    {
+      get
+      {
+        string text = JsonLexer.JsonText.Substring(Start, 4);
+        if(text == "null")
         {
-
-            get
-            {
-
-                var text = JsonLexer.JsonText.Substring(Start, 4);
-
-                if (text == "null")
-                    return text;
-
-                return "";
-
-            }
-
+          return text;
         }
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="jsonLexer">Analizador léxico.</param>
-        /// <param name="start">Posición del inicio del
-        /// fragmento de texto dentro de la cadena completa JSON.</param>
-        internal JsonNull(JsonLexer jsonLexer, int start) : base(jsonLexer, start) 
-        {
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Convierte el valor del fragmento de texto
-        /// en el tipo al que se interpreta que pertenece.
-        /// </summary>
-        /// <returns>Valor del fragmento de texto
-        /// en el tipo al que se interpreta que pertenece.</returns>
-        internal override object Covert()
-        {
-
-            return null;
-
-        }
-
-        #endregion
-
+        return string.Empty;
+      }
     }
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="jsonLexer">Analizador léxico.</param>
+    /// <param name="start">
+    /// Posición del inicio del fragmento de texto dentro de la cadena completa JSON.
+    /// </param>
+    internal JsonNull(JsonLexer jsonLexer, int start) : base(jsonLexer, start)
+        { }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Convierte el valor del fragmento de texto en el tipo al que se interpreta que pertenece.
+    /// </summary>
+    /// <returns>
+    /// Valor del fragmento de texto en el tipo al que se interpreta que pertenece.
+    /// </returns>
+    internal override object Covert()
+    {
+      return null;
+    }
+
+    #endregion
+  }
 }

@@ -3,9 +3,9 @@
 
 namespace VeriFactu.NoVeriFactu.Signature.Ms
 {
-    internal enum CertUsageType
-    {
-        Verification = 0,
-        Decryption = 1
-    }
+  internal enum CertUsageType
+  {
+    Verification = 0,
+    Decryption = 1
+  }
 }

@@ -39,30 +39,26 @@
 
 namespace VeriFactu.DataStore
 {
-
-    /// <summary>
-    /// Representa un periodo de facturación de un vendedor o emisor
-    /// de facturas en cuanto a los documentos de salida del sistema
-    /// en forma de registros de alta o anulación.
-    /// </summary>
-    public class PeriodOutbox : PeriodBox
-    {
+  /// <summary>
+  /// Representa un periodo de facturación de un vendedor o emisor de facturas en cuanto a los documentos de salida del
+  /// sistema en forma de registros de alta o anulación.
+  /// </summary>
+  public class PeriodOutbox : PeriodBox
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="seller">Vendedor o emisor de facturas al
-        /// que corresponde el periodo.</param>
-        /// <param name="periodID">Identificador del periodo.</param>
-        /// <param name="invoiceCount">Número de facturas del periodo.</param>
-        public PeriodOutbox(Seller seller, string periodID, int invoiceCount) : base(seller, periodID, invoiceCount)
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="seller">
+    /// Vendedor o emisor de facturas al que corresponde el periodo.
+    /// </param>
+    /// <param name="periodID">Identificador del periodo.</param>
+    /// <param name="invoiceCount">Número de facturas del periodo.</param>
+    public PeriodOutbox(Seller seller, string periodID, int invoiceCount) : base(seller, periodID, invoiceCount)
+        { }
 
-        #endregion       
-
-    }
-
+    #endregion       
+  }
 }

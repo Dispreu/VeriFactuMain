@@ -46,126 +46,111 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta.
-    /// </summary>
-    public class ValidatorRegistroAltaIDFactura : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta.
+  /// </summary>
+  public class ValidatorRegistroAltaIDFactura : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        /// <param name="registroAlta"> Registro de alta del bloque Body.</param>
-        public ValidatorRegistroAltaIDFactura(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    /// <param name="registroAlta">Registro de alta del bloque Body.</param>
+    public ValidatorRegistroAltaIDFactura(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
 
-        #endregion
+    #endregion
 
-        #region Métodos Privados de Instancia
+    #region Métodos Privados de Instancia
 
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // 1. Agrupación IDFactura
-
-            var nifEmisorFactura = $"{_RegistroAlta?.IDFacturaAlta?.IDEmisorFactura}";
-
-            if (string.IsNullOrEmpty(nifEmisorFactura))
-            {
-
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // 1. Agrupación IDFactura
+      string nifEmisorFactura = $"{_RegistroAlta?.IDFacturaAlta?.IDEmisorFactura}";
+      if(string.IsNullOrEmpty(nifEmisorFactura))
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
                     $" La propiedad IDFactura.IDEmisorFactura tiene que tener un valor.");
-
-            }
-            else
-            {
-
-                // El NIF del campo IDEmisorFactura debe ser el mismo que el del campo NIF
-                // de la agrupación ObligadoEmision del bloque Cabecera.
-
-                if (_Cabecera?.ObligadoEmision?.NIF != _RegistroAlta?.IDFacturaAlta?.IDEmisorFactura)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}): El NIF del campo IDEmisorFactura debe ser el mismo que el del campo NIF de la agrupación ObligadoEmision del bloque Cabecera.");
-
-                // La FechaExpedicionFactura no podrá ser superior a la fecha actual.
-                var now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-
-                if (_FechaExpedicion.CompareTo(now) > 0)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" La propiedad IDFactura.FechaExpedicion {_FechaExpedicion:yyyy-MM-dd}" +
-                        $" no puede ser mayor que la fecha actual {now:yyyy-MM-dd}.");
-
-                // La FechaExpedicionFactura no debe ser inferior a 01/07/2024
-                if (_FechaExpedicion.CompareTo(new DateTime(2024, 7, 1)) < 0)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" La propiedad IDFactura.FechaExpedicion {_FechaExpedicion:yyyy-MM-dd}" +
-                        $" no puede ser inferior del 2024-07-01.");
-
-
-                if (_FechaOperacion != null)
-                {
-
-                    // Si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta (considerándose “01” - IVA),
-                    // la FechaExpedicionFactura solo puede ser anterior a la FechaOperacion, si ClaveRegimen = "14" o "15”.
-                    foreach (var desglose in _RegistroAlta.Desglose)
-                    {
-
-                        if ((desglose.ClaveRegimen == ClaveRegimen.ObraPteDevengoAdmonPublica ||
+      }
+      else
+      {
+        // El NIF del campo IDEmisorFactura debe ser el mismo que el del campo NIF
+        // de la agrupación ObligadoEmision del bloque Cabecera.
+        if(_Cabecera?.ObligadoEmision?.NIF != _RegistroAlta?.IDFacturaAlta?.IDEmisorFactura)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}): El NIF del campo IDEmisorFactura debe ser el mismo que el del campo NIF de la agrupación ObligadoEmision del bloque Cabecera.");
+        }
+        // La FechaExpedicionFactura no podrá ser superior a la fecha actual.
+        DateTime now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+        if(_FechaExpedicion.CompareTo(now) > 0)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                $" La propiedad IDFactura.FechaExpedicion {_FechaExpedicion:yyyy-MM-dd}" +
+                                $" no puede ser mayor que la fecha actual {now:yyyy-MM-dd}.");
+        }
+        // La FechaExpedicionFactura no debe ser inferior a 01/07/2024
+        if(_FechaExpedicion.CompareTo(new DateTime(2024, 7, 1)) < 0)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                $" La propiedad IDFactura.FechaExpedicion {_FechaExpedicion:yyyy-MM-dd}" +
+                                $" no puede ser inferior del 2024-07-01.");
+        }
+        if(_FechaOperacion != null)
+        {
+          // Si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta (considerándose “01” - IVA),
+          // la FechaExpedicionFactura solo puede ser anterior a la FechaOperacion, si ClaveRegimen = "14" o "15”.
+          foreach(DetalleDesglose desglose in _RegistroAlta.Desglose)
+          {
+            if((desglose.ClaveRegimen == ClaveRegimen.ObraPteDevengoAdmonPublica ||
                             desglose.ClaveRegimen == ClaveRegimen.TractoSucesivoPteDevengo) &&
                             (desglose.Impuesto == Impuesto.IVA || desglose.Impuesto == Impuesto.IGIC))
-                        {
-
-                            if (_FechaExpedicion.CompareTo(_FechaOperacion) > 0)
-                                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                                    $" Para ClaveRegimen '14' 0 '15' en IVA/IGIC la propiedad IDFactura.FechaExpedicion {_FechaExpedicion:yyyy-MM-dd}" +
-                                    $" no puede ser mayor que la fecha FechaOperacion {_FechaOperacion:yyyy-MM-dd}.");
-
-                        }
-
-                    }
-
-                }
-
-                // NumSerieFactura solo puede contener caracteres ASCII del 32 a 126 (caracteres imprimibles)
-                var numSerie = _RegistroAlta?.IDFacturaAlta?.NumSerie;
-
-                if (string.IsNullOrEmpty(numSerie))
-                {
-
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                    $" La propiedad IDFactura.IDEmisorFactura tiene que tener un valor.");
-
-                }
-                else
-                {
-
-                    var okNumSerie = Regex.Match(numSerie, @"[\x20-\x7E]+").Value;
-
-                    if (numSerie != okNumSerie)
-                        result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                            $" La propiedad IDFactura.IDEmisorFactura tiene que tener un valor.");
-
-                }
-
+            {
+              if(_FechaExpedicion.CompareTo(_FechaOperacion) > 0)
+              {
+                result.Add(
+                  $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                                  $" Para ClaveRegimen '14' 0 '15' en IVA/IGIC la propiedad IDFactura.FechaExpedicion {_FechaExpedicion:yyyy-MM-dd}" +
+                                                  $" no puede ser mayor que la fecha FechaOperacion {_FechaOperacion:yyyy-MM-dd}.");
+              }
             }
-
-            return result;
-
+          }
         }
-
-        #endregion
-
+        // NumSerieFactura solo puede contener caracteres ASCII del 32 a 126 (caracteres imprimibles)
+        string numSerie = _RegistroAlta?.IDFacturaAlta?.NumSerie;
+        if(string.IsNullOrEmpty(numSerie))
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                    $" La propiedad IDFactura.IDEmisorFactura tiene que tener un valor.");
+        }
+        else
+        {
+          string okNumSerie = Regex.Match(numSerie, @"[\x20-\x7E]+").Value;
+          if(numSerie != okNumSerie)
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                      $" La propiedad IDFactura.IDEmisorFactura tiene que tener un valor.");
+          }
+        }
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

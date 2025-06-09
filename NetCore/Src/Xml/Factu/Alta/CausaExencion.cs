@@ -37,53 +37,48 @@
     address: info@irenesolutions.com
  */
 
-
 namespace VeriFactu.Xml.Factu.Alta
 {
+  /// <summary>
+  /// Causas de exención. L10.
+  /// </summary>
+  public enum CausaExencion
+  {
+    /// <summary>
+    /// No asignada causa exención.
+    /// </summary>
+    NA,
 
     /// <summary>
-    /// Causas de exención. L10.
+    /// Exenta por el artículo 20 (Exenciones en operaciones interiores).
     /// </summary>
-    public enum CausaExencion
-    {
+    E1,
 
-        /// <summary>
-        /// No asignada causa exención.
-        /// </summary>
-        NA,
+    /// <summary>
+    /// Exenta por el artículo 21 (Exportaciones).
+    /// </summary>
+    E2,
 
-        /// <summary>
-        /// Exenta por el artículo 20 (Exenciones en operaciones interiores).
-        /// </summary>
-        E1,
+    /// <summary>
+    /// Exenta por el artículo 22 (Operaciones asimiladas a las exportaciones: Navegación marítima internacional,
+    /// aeronaves...).
+    /// </summary>
+    E3,
 
-        /// <summary>
-        /// Exenta por el artículo 21 (Exportaciones).
-        /// </summary>
-        E2,
+    /// <summary>
+    /// Exenta por los artículos 23 y 24 (Exenciones relativas a regímenes aduaneros y fiscales: Depositos
+    /// aduaneros...).
+    /// </summary>
+    E4,
 
-        /// <summary>
-        /// Exenta por el artículo 22 (Operaciones asimiladas a las
-        /// exportaciones: Navegación marítima internacional, aeronaves...).
-        /// </summary>
-        E3,
+    /// <summary>
+    /// Exenta por el artículo 25 (Operaciones UE).
+    /// </summary>
+    E5,
 
-        /// <summary>
-        /// Exenta por los artículos 23 y 24 (Exenciones relativas a
-        /// regímenes aduaneros y fiscales: Depositos aduaneros...).
-        /// </summary>
-        E4,
-
-        /// <summary>
-        /// Exenta por el artículo 25 (Operaciones UE).
-        /// </summary>
-        E5,
-
-        /// <summary>
-        /// Exenta por otros.
-        /// </summary>
-        E6
-
-    }
-
+    /// <summary>
+    /// Exenta por otros.
+    /// </summary>
+    E6
+  }
 }

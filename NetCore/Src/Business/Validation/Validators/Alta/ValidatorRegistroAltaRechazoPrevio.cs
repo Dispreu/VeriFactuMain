@@ -43,61 +43,58 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta RechazoPrevio.
-    /// </summary>
-    public class ValidatorRegistroAltaRechazoPrevio : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta RechazoPrevio.
+  /// </summary>
+  public class ValidatorRegistroAltaRechazoPrevio : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        /// <param name="registroAlta"> Registro de alta del bloque Body.</param>
-        public ValidatorRegistroAltaRechazoPrevio(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    /// <param name="registroAlta">Registro de alta del bloque Body.</param>
+    public ValidatorRegistroAltaRechazoPrevio(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
 
-        #endregion
+    #endregion
 
-        #region Métodos Privados de Instancia
+    #region Métodos Privados de Instancia
 
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // 2. RechazoPrevio
-
-            // Solo podrá incluirse el campo RechazoPrevio con valor “X” si se ha
-            // informado el campo Subsanacion y tiene el valor “S”.
-            if (_RegistroAlta.RechazoPrevio == RechazoPrevio.X && _RegistroAlta.Subsanacion != "S")
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                    $" Solo podrá incluirse el campo RechazoPrevio con valor “X” si se" +
-                    $" ha informado el campo Subsanacion y tiene el valor “S”.");
-
-            // No podrá informarse el campo RechazoPrevio con valor “S” si no se
-            // informa el campo Subsanación o éste tiene el valor “N”
-            if (_RegistroAlta.RechazoPrevio == RechazoPrevio.S &&
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // 2. RechazoPrevio
+      // Solo podrá incluirse el campo RechazoPrevio con valor “X” si se ha
+      // informado el campo Subsanacion y tiene el valor “S”.
+      if(_RegistroAlta.RechazoPrevio == RechazoPrevio.X && _RegistroAlta.Subsanacion != "S")
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                          $" Solo podrá incluirse el campo RechazoPrevio con valor “X” si se" +
+                          $" ha informado el campo Subsanacion y tiene el valor “S”.");
+      }
+      // No podrá informarse el campo RechazoPrevio con valor “S” si no se
+      // informa el campo Subsanación o éste tiene el valor “N”
+      if(_RegistroAlta.RechazoPrevio == RechazoPrevio.S &&
                 (string.IsNullOrEmpty(_RegistroAlta.Subsanacion) || _RegistroAlta.Subsanacion == "N"))
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                    $" No podrá informarse el campo RechazoPrevio con valor “S” si no se" +
-                    $" informa el campo Subsanación o éste tiene el valor “N”.");
-
-            return result;
-
-        }
-
-        #endregion
-
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                          $" No podrá informarse el campo RechazoPrevio con valor “S” si no se" +
+                          $" informa el campo Subsanación o éste tiene el valor “N”.");
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

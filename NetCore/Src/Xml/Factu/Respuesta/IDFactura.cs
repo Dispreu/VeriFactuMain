@@ -41,52 +41,47 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Respuesta
 {
-
-    /// <summary>
-    /// Datos de identificación de factura expedida para operaciones de baja y consulta.
-    /// </summary>
-    [XmlRoot("IDFactura")]
-    public class IDFactura
-    {
+  /// <summary>
+  /// Datos de identificación de factura expedida para operaciones de baja y consulta.
+  /// </summary>
+  [XmlRoot("IDFactura")]
+  public class IDFactura
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// <para>Número de identificación fiscal (NIF) del obligado a expedir la factura.</para>
-        /// <para>FormatoNIF(9).</para>
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string IDEmisorFactura { get; set; }
+    /// <summary>
+    /// <para>Número de identificación fiscal (NIF) del obligado a expedir la factura.</para>
+    /// <para>FormatoNIF(9).</para>
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string IDEmisorFactura { get; set; }
 
-        /// <summary>
-        /// <para>Nº Serie+Nº Factura  que identifica a la factura emitida.</para>
-        /// <para>Alfanumérico(60).</para>
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string NumSerieFactura { get; set; }
+    /// <summary>
+    /// <para>Nº Serie+Nº Factura  que identifica a la factura emitida.</para> <para>Alfanumérico(60).</para>
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string NumSerieFactura { get; set; }
 
-        /// <summary>
-        /// <para>Fecha de expedición de la factura.</para>
-        /// <para>Fecha(dd-mm-yyyy).</para>
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string FechaExpedicionFactura { get; set; }
+    /// <summary>
+    /// <para>Fecha de expedición de la factura.</para> <para>Fecha(dd-mm-yyyy).</para>
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string FechaExpedicionFactura { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{IDEmisorFactura}: {NumSerieFactura} ({FechaExpedicionFactura})";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{IDEmisorFactura}: {NumSerieFactura} ({FechaExpedicionFactura})";
     }
 
+    #endregion
+  }
 }

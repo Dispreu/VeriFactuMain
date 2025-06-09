@@ -41,63 +41,54 @@ using VeriFactu.Net.Rest.Json.Parser.Lexer;
 
 namespace VeriFactu.Net.Rest.Json.Parser
 {
+  /// <summary>
+  /// Deserializador JSON.
+  /// </summary>
+  public class JsonParser
+  {
+
+    #region Variables Privadas de Instacia
 
     /// <summary>
-    /// Deserializador JSON.
+    /// Analizador léxico.
     /// </summary>
-    public class JsonParser 
+    private JsonLexer _JsonLexer;
+
+    /// <summary>
+    /// Lector de fragmentos utilizado para compener el objeto resultado.
+    /// </summary>
+    private JsonParserReader _JsonParserReader;
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="jsonText">Texto JSON.</param>
+    public JsonParser(string jsonText)
     {
-
-        #region Variables Privadas de Instacia
-
-        /// <summary>
-        /// Analizador léxico.
-        /// </summary>
-        JsonLexer _JsonLexer;
-
-        /// <summary>
-        /// Lector de fragmentos utilizado
-        /// para compener el objeto resultado.
-        /// </summary>
-        JsonParserReader _JsonParserReader;
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="jsonText">Texto JSON.</param>
-        public JsonParser(string jsonText)
-        {
-
-            _JsonLexer = new JsonLexer(jsonText);
-            _JsonParserReader = new JsonParserReader(_JsonLexer);
-
-            _JsonParserReader.Read();
-
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Devuelve el resultado de la deserialización
-        /// de la cadena JSON.
-        /// </summary>
-        /// <returns>resultado de la deserialización
-        /// de la cadena JSON.</returns>
-        public dynamic GetResult() 
-        {
-
-            return _JsonParserReader.GetResult();
-
-        }
-
-        #endregion
-
+      _JsonLexer = new JsonLexer(jsonText);
+      _JsonParserReader = new JsonParserReader(_JsonLexer);
+      _JsonParserReader.Read();
     }
 
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Devuelve el resultado de la deserialización de la cadena JSON.
+    /// </summary>
+    /// <returns>
+    /// resultado de la deserialización de la cadena JSON.
+    /// </returns>
+    public dynamic GetResult()
+    {
+      return _JsonParserReader.GetResult();
+    }
+
+    #endregion
+  }
 }

@@ -45,73 +45,69 @@ namespace Verifactu
 
     #region Interfaz COM
 
-    /// <summary>
-    /// Interfaz COM para la clase RectificationItem.
-    /// </summary>
-    [Guid("B3476DFA-59DD-4713-AEB3-EA91E43626CB")]
-    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
-    [ComVisible(true)]
-    public interface IVfRectificationItem
-    {
+  /// <summary>
+  /// Interfaz COM para la clase RectificationItem.
+  /// </summary>
+  [Guid("B3476DFA-59DD-4713-AEB3-EA91E43626CB")]
+  [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+  [ComVisible(true)]
+  public interface IVfRectificationItem
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Identificador de la factura.
-        /// </summary>
-        string InvoiceID { get; set; }
-
-        /// <summary>
-        /// Fecha emisión de documento.
-        /// </summary>        
-        DateTime InvoiceDate { get; set; }
-
-        #endregion
-
-    }
-
-    #endregion
-
-    #region Clase COM
+    /// <summary>
+    /// Identificador de la factura.
+    /// </summary>
+    string InvoiceID { get; set; }
 
     /// <summary>
-    /// Representa una línea de impuestos.
-    /// </summary>
-    [Guid("119A584F-681D-4DE0-BBC1-929057B7F992")]
-    [ClassInterface(ClassInterfaceType.None)]
-    [ComVisible(true)]
-    [ProgId("Verifactu.VfRectificationItem")]
-    public class VfRectificationItem : IVfRectificationItem
-    {
+    /// Fecha emisión de documento.
+    /// </summary>        
+    DateTime InvoiceDate { get; set; }
+
+    #endregion
+  }
+
+  #endregion
+
+  #region Clase COM
+
+  /// <summary>
+  /// Representa una línea de impuestos.
+  /// </summary>
+  [Guid("119A584F-681D-4DE0-BBC1-929057B7F992")]
+  [ClassInterface(ClassInterfaceType.None)]
+  [ComVisible(true)]
+  [ProgId("Verifactu.VfRectificationItem")]
+  public class VfRectificationItem : IVfRectificationItem
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor. Para COM necesitamos un constructor
-        /// sin parametros.
-        /// </summary>
-        public VfRectificationItem()
-        {
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// Identificador de la factura.
-        /// </summary>
-        public string InvoiceID { get; set; }
-
-        /// <summary>
-        /// Fecha emisión de documento.
-        /// </summary>        
-        public DateTime InvoiceDate { get; set; }
-
-        #endregion
-
-    }
+    /// <summary>
+    /// Constructor. Para COM necesitamos un constructor sin parametros.
+    /// </summary>
+    public VfRectificationItem()
+        { }
 
     #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// Identificador de la factura.
+    /// </summary>
+    public string InvoiceID { get; set; }
+
+    /// <summary>
+    /// Fecha emisión de documento.
+    /// </summary>        
+    public DateTime InvoiceDate { get; set; }
+
+    #endregion
+  }
+
+  #endregion
 
 }

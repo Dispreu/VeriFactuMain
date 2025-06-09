@@ -41,25 +41,21 @@ using VeriFactu.Business.Operations;
 
 namespace VeriFactu.Business
 {
-
-    /// <summary>
-    /// Representa una entrada de factura en el sistema.
-    /// </summary>
-    public class InvoiceEntry : InvoiceAction
-    {
+  /// <summary>
+  /// Representa una entrada de factura en el sistema.
+  /// </summary>
+  public class InvoiceEntry : InvoiceAction
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="invoice">Instancia de factura de entrada en el sistema.</param>
-        public InvoiceEntry(Invoice invoice) : base(invoice)
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="invoice">Instancia de factura de entrada en el sistema.</param>
+    public InvoiceEntry(Invoice invoice) : base(invoice)
+        { }
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

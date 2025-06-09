@@ -42,67 +42,58 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Consulta.Respuesta
 {
-
-    /// <summary>
-    ///  Datos parte interviniente en algún modo en la facturación.
-    /// </summary>
-    [Serializable]
-    public class Destinatario
-    {
+  /// <summary>
+  /// Datos parte interviniente en algún modo en la facturación.
+  /// </summary>
+  [Serializable]
+  public class Destinatario
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// <para>Nombre-razón social.</para>
-        /// <para>Alfanumérico(120).</para>
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string NombreRazon { get; set; }
+    /// <summary>
+    /// <para>Nombre-razón social.</para> <para>Alfanumérico(120).</para>
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string NombreRazon { get; set; }
 
-        /// <summary>
-        /// <para>NIF.</para>
-        /// <para>FormatoNIF(9).</para>
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string NIF { get; set; }
+    /// <summary>
+    /// <para>NIF.</para> <para>FormatoNIF(9).</para>
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string NIF { get; set; }
 
-        /// <summary>
-        /// Id. fiscal no español.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public IDOtro IDOtro { get; set; }
+    /// <summary>
+    /// Id. fiscal no español.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public IDOtro IDOtro { get; set; }
 
-        /// <summary>
-        /// <para>Nombre-razón del representante.</para>
-        /// <para>Alfanumérico(120).</para>
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string NombreRazonRepresentante { get; set; }
+    /// <summary>
+    /// <para>Nombre-razón del representante.</para> <para>Alfanumérico(120).</para>
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string NombreRazonRepresentante { get; set; }
 
-        /// <summary>
-        /// <para>NIFRepresentante.</para>
-        /// <para>FormatoNIF(9).</para>
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string NIFRepresentante { get; set; }
+    /// <summary>
+    /// <para>NIFRepresentante.</para> <para>FormatoNIF(9).</para>
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string NIFRepresentante { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representacioón textual de la instancia.
-        /// </summary>
-        /// <returns>Representacioón textual de la instancia.</returns>
-        public override string ToString()
-        {
-
-            return $"{NIF}{IDOtro?.ID}";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representacioón textual de la instancia.
+    /// </summary>
+    /// <returns>Representacioón textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{NIF}{IDOtro?.ID}";
     }
 
+    #endregion
+  }
 }

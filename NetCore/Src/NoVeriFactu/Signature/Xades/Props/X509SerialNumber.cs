@@ -41,25 +41,21 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Número de serie de certificado digital.
-    /// </summary>
-    internal class X509SerialNumber : PropXmlElementWithValue
-    {
+  /// <summary>
+  /// Número de serie de certificado digital.
+  /// </summary>
+  internal class X509SerialNumber : PropXmlElementWithValue
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal X509SerialNumber(XmlNode parent) : base(parent, "X509SerialNumber", "ds", "http://www.w3.org/2000/09/xmldsig#")
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal X509SerialNumber(XmlNode parent) : base(parent, "X509SerialNumber", "ds", "http://www.w3.org/2000/09/xmldsig#")
+        { }
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

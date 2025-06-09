@@ -39,54 +39,46 @@
 
 namespace VeriFactu.Xml.Factu
 {
-
-    /// <summary>
-    /// Información del sistema informático.
-    /// </summary>
-    public class DatosControl
-    {
+  /// <summary>
+  /// Información del sistema informático.
+  /// </summary>
+  public class DatosControl
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// <para>Huella de la factura (Realizada sobre el nodo RegistroFacturacion).</para>
-        /// <para>Alfanumérico(64).</para>
-        /// </summary>
-        public string Huella { get; set; }
+    /// <summary>
+    /// <para>Huella de la factura (Realizada sobre el nodo RegistroFacturacion).</para> <para>Alfanumérico(64).</para>
+    /// </summary>
+    public string Huella { get; set; }
 
-        /// <summary>
-        /// <para>Tipo de hash aplicado para obtener la huella.</para>
-        /// <para>Alfanumérico(2) L12.</para>
-        /// <para>'01': SHA-256.</para>
-        /// </summary>
-        public TipoHuella TipoHuella { get; set; }
+    /// <summary>
+    /// <para>Tipo de hash aplicado para obtener la huella.</para> <para>Alfanumérico(2) L12.</para> <para>'01': SHA-
+    /// 256.</para>
+    /// </summary>
+    public TipoHuella TipoHuella { get; set; }
 
-        /// <summary>
-        /// <para>Identificador que especifica si la generación del registro de
-        /// facturación se ha realizado durante algún tipo de incidencia
-        /// (por ej. no hay electricidad o fallo del sistema informático de facturación).
-        /// Si no se informa este campo se entenderá que tiene valor  “N”.</para>
-        /// <para>Alfanumérico(1) L11.</para>
-        /// <para>'S': Sí.</para>
-        /// <para>'N': No.</para>
-        /// </summary>
-        public string Incidencia { get; set; }
+    /// <summary>
+    /// <para>Identificador que especifica si la generación del registro de facturación se ha realizado durante algún
+    /// tipo de incidencia (por ej. no hay electricidad o fallo del sistema informático de facturación). Si no se
+    /// informa este campo se entenderá que tiene valor  “N”.</para> <para>Alfanumérico(1) L11.</para> <para>'S':
+    /// Sí.</para> <para>'N': No.</para>
+    /// </summary>
+    public string Incidencia { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{TipoHuella} ({Huella})";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{TipoHuella} ({Huella})";
     }
 
+    #endregion
+  }
 }

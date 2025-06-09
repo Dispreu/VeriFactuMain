@@ -41,45 +41,39 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Huella de la política de firma.
-    /// </summary>
-    internal class SigPolicyHash : PropXmlElement
-    {
+  /// <summary>
+  /// Huella de la política de firma.
+  /// </summary>
+  internal class SigPolicyHash : PropXmlElement
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Función hash utilizada para obtener la huella.
-        /// </summary>
-        internal DigestMethod DigestMethod { get; private set; }
+    /// <summary>
+    /// Función hash utilizada para obtener la huella.
+    /// </summary>
+    internal DigestMethod DigestMethod { get; private set; }
 
-        /// <summary>
-        /// Valor de la huella.
-        /// </summary>
-        internal DigestValue DigestValue { get; private set; }
+    /// <summary>
+    /// Valor de la huella.
+    /// </summary>
+    internal DigestValue DigestValue { get; private set; }
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal SigPolicyHash(XmlNode parent) : base(parent, "SigPolicyHash")
-        {
-
-            DigestMethod = new DigestMethod(XmlElement);
-            DigestValue = new DigestValue(XmlElement);
-
-            DigestValue.Value = "G7roucf600+f03r/o0bAOQ6WAs0=";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal SigPolicyHash(XmlNode parent) : base(parent, "SigPolicyHash")
+    {
+      DigestMethod = new DigestMethod(XmlElement);
+      DigestValue = new DigestValue(XmlElement);
+      DigestValue.Value = "G7roucf600+f03r/o0bAOQ6WAs0=";
     }
 
+    #endregion
+  }
 }

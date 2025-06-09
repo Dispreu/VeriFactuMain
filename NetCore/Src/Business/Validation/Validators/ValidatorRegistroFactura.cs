@@ -47,99 +47,94 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroFactura.
-    /// </summary>
-    public class ValidatorRegistroFactura : InvoiceValidation
-    {
+  /// <summary>
+  /// Valida los datos de RegistroFactura.
+  /// </summary>
+  public class ValidatorRegistroFactura : InvoiceValidation
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope">Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        public ValidatorRegistroFactura(Envelope envelope) : base(envelope)
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    public ValidatorRegistroFactura(Envelope envelope) : base(envelope)
+        { }
 
-        #endregion
+    #endregion
 
-        #region Métodos Privados de Instancia
+    #region Métodos Privados de Instancia
 
-        /// <summary>
-        /// Validaciones del bloque de todos los items de RegistroFactura.
-        /// </summary>
-        /// <returns>Lista con los errores encontrados.</returns>
-        private List<string> GetErrorsRegistroFactura(object registro)
-        {
-
-            var result = new List<string>();
-
-            var registroFactura = registro as RegistroFactura;
-
-            if (registroFactura == null)
-                result.Add($"Error en el bloque RegistroFactura: Se ha encontrado un" +
-                    $" elemento de la clase {registro.GetType()} en la colección RegistroFactura" +
-                    $". Esta colección sólo admite elementos del tipo RegistroFactura.");
-
-            var registroAlta = registroFactura.Registro as RegistroAlta;
-            var registroAnulacion = registroFactura.Registro as RegistroAnulacion;
-
-            if (registroAlta == null && registroAnulacion == null)
-                result.Add($"Error en el bloque RegistroFactura.Registro: Se ha encontrado un" +
-                    $" elemento de la clase {registro.GetType()} en la colección RegistroFactura" +
-                    $". Esta colección sólo admite elementos del tipo RegistroAlta o RegistroAnulacion.");
-
-            if (registroAlta != null)
-                result.AddRange(new ValidatorRegistroAlta(_Envelope, registroAlta).GetErrors());
-
-
-            if (registroAnulacion != null)
-                result.AddRange(new ValidatorRegistroAnulacion(_Envelope, registroAnulacion).GetErrors());
-
-            return result;
-
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Ejecuta las validaciones y devuelve una lista
-        /// con los errores encontrados.
-        /// </summary>
-        /// <returns>Lista con las descripciones de los 
-        /// errores encontrado.</returns>
-        public override List<string> GetErrors()
-        {
-
-            var result = new List<string>();
-
-            if (_RegFactuSistemaFacturacion.RegistroFactura.Count > 10000)
-                result.Add($"La colección RegFactuSistemaFacturacion.RegistroFactura" +
-                    $" contiene {_RegFactuSistemaFacturacion.RegistroFactura.Count}" +
-                    $" elementos cuando sólo está permitido un máximo de 1000.");
-
-            //1. Agrupaciones RegistroAlta y RegistroAnulacion: Dentro de cada una de las posibles repeticiones
-            //u “ocurrencias” de RegistroFactura (de 1 a 1000) se pueden incluir registros de facturación de alta
-            //(agrupación RegistroAlta) y de anulación(agrupación RegistroAnulacion) en un mismo mensaje remitido,
-            //pero siempre que vayan en distintas ocurrencias de RegistroFactura(no pueden ir ambas agrupaciones a
-            //la vez dentro de la misma ocurrencia). ?????????????????????
-
-            foreach (var registroFactura in _RegFactuSistemaFacturacion.RegistroFactura)
-                result.AddRange(GetErrorsRegistroFactura(registroFactura));
-
-            return result;
-
-        }
-
-        #endregion
-
-
+    /// <summary>
+    /// Validaciones del bloque de todos los items de RegistroFactura.
+    /// </summary>
+    /// <returns>Lista con los errores encontrados.</returns>
+    private List<string> GetErrorsRegistroFactura(object registro)
+    {
+      List<string> result = new List<string>();
+      RegistroFactura registroFactura = registro as RegistroFactura;
+      if(registroFactura == null)
+      {
+        result.Add(
+          $"Error en el bloque RegistroFactura: Se ha encontrado un" +
+                          $" elemento de la clase {registro.GetType()} en la colección RegistroFactura" +
+                          $". Esta colección sólo admite elementos del tipo RegistroFactura.");
+      }
+      RegistroAlta registroAlta = registroFactura.Registro as RegistroAlta;
+      RegistroAnulacion registroAnulacion = registroFactura.Registro as RegistroAnulacion;
+      if(registroAlta == null && registroAnulacion == null)
+      {
+        result.Add(
+          $"Error en el bloque RegistroFactura.Registro: Se ha encontrado un" +
+                          $" elemento de la clase {registro.GetType()} en la colección RegistroFactura" +
+                          $". Esta colección sólo admite elementos del tipo RegistroAlta o RegistroAnulacion.");
+      }
+      if(registroAlta != null)
+      {
+        result.AddRange(new ValidatorRegistroAlta(_Envelope, registroAlta).GetErrors());
+      }
+      if(registroAnulacion != null)
+      {
+        result.AddRange(new ValidatorRegistroAnulacion(_Envelope, registroAnulacion).GetErrors());
+      }
+      return result;
     }
 
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Ejecuta las validaciones y devuelve una lista con los errores encontrados.
+    /// </summary>
+    /// <returns>
+    /// Lista con las descripciones de los  errores encontrado.
+    /// </returns>
+    public override List<string> GetErrors()
+    {
+      List<string> result = new List<string>();
+      if(_RegFactuSistemaFacturacion.RegistroFactura.Count > 10000)
+      {
+        result.Add(
+          $"La colección RegFactuSistemaFacturacion.RegistroFactura" +
+                          $" contiene {_RegFactuSistemaFacturacion.RegistroFactura.Count}" +
+                          $" elementos cuando sólo está permitido un máximo de 1000.");
+      }
+      //1. Agrupaciones RegistroAlta y RegistroAnulacion: Dentro de cada una de las posibles repeticiones
+      //u “ocurrencias” de RegistroFactura (de 1 a 1000) se pueden incluir registros de facturación de alta
+      //(agrupación RegistroAlta) y de anulación(agrupación RegistroAnulacion) en un mismo mensaje remitido,
+      //pero siempre que vayan en distintas ocurrencias de RegistroFactura(no pueden ir ambas agrupaciones a
+      //la vez dentro de la misma ocurrencia). ?????????????????????
+      foreach(RegistroFactura registroFactura in _RegFactuSistemaFacturacion.RegistroFactura)
+      {
+        result.AddRange(GetErrorsRegistroFactura(registroFactura));
+      }
+      return result;
+    }
+
+    #endregion
+  }
 }

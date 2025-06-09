@@ -47,148 +47,137 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.NIF
 {
+  /// <summary>
+  /// Valida si un NIF está identificado en la AEAT.
+  /// </summary>
+  public class NifValidation
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Valida si un NIF está identificado en la AEAT.
+    /// Url del web service de validación de NIF de la AEAT.
     /// </summary>
-    public class NifValidation
+    private const string Url = "https://www1.agenciatributaria.gob.es/wlpl/BURT-JDIT/ws/VNifV2SOAP";
+
+    /// <summary>
+    /// Action del web service de validación de NIF de la AEAT.
+    /// </summary>
+    private const string Action = "https://www1.agenciatributaria.gob.es/wlpl/BURT-JDIT/ws/VNifV2SOAP?op=VNifV2";
+
+    /// <summary>
+    /// Nombre.
+    /// </summary>
+    private readonly string _Name;
+
+    /// <summary>
+    /// NIF
+    /// </summary>
+    private readonly string _Nif;
+
+    /// <summary>
+    /// Sobre SOAP con la petición
+    /// </summary>
+    private readonly Envelope _Envelope;
+
+    /// <summary>
+    /// Binario del xml de la petición.
+    /// </summary>
+    private readonly byte[] _Xml;
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="nif">NIF</param>
+    /// <param name="name">Nombre</param>
+    public NifValidation(string nif, string name)
     {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Url del web service de validación de NIF de la AEAT.
-        /// </summary>
-        const string Url = "https://www1.agenciatributaria.gob.es/wlpl/BURT-JDIT/ws/VNifV2SOAP";
-
-        /// <summary>
-        /// Action del web service de validación de NIF de la AEAT.
-        /// </summary>
-        const string Action = "https://www1.agenciatributaria.gob.es/wlpl/BURT-JDIT/ws/VNifV2SOAP?op=VNifV2";
-
-        /// <summary>
-        /// Nombre.
-        /// </summary>
-        readonly string _Name;
-
-        /// <summary>
-        /// NIF
-        /// </summary>
-        readonly string _Nif;
-
-        /// <summary>
-        /// Sobre SOAP con la petición
-        /// </summary>
-        readonly Envelope _Envelope;
-
-        /// <summary>
-        /// Binario del xml de la petición.
-        /// </summary>
-        readonly byte[] _Xml;
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="nif">NIF</param>
-        /// <param name="name">Nombre</param>
-        public NifValidation(string nif, string name)
-        {
-
-            _Nif = nif;
-            _Name = name;
-            _Envelope = GetEnvelope(nif, name);
-            _Xml = new XmlParser().GetBytes(_Envelope, Namespaces.NifItems);
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene sobre SOAP de la petición.
-        /// </summary>
-        /// <param name="nif">NIF</param>
-        /// <param name="name">Nombre</param>
-        /// <returns>Sobre SOAP de la petición.</returns>
-        private Envelope GetEnvelope(string nif, string name)
-        {
-
-            Envelope envelope = new Envelope();
-
-            envelope.Body.Registro = new VNifVEnt()
-            {
-                Contribuyente = new List<Contribuyente>()
-                {
-                    new Contribuyente {Nif = nif, Nombre = name }
-                }
-            };
-
-            envelope.Header = null;
-
-            return envelope;
-
-        }
-
-        /// <summary>
-        /// Obtiene sobre SOAP de la respuesta.
-        /// </summary>
-        /// <returns>Sobre SOAP de la respuesta.</returns>
-        private Envelope GetResponse()
-        {
-
-            XmlDocument xmlDocument = new XmlDocument();
-
-            using (var msXml = new MemoryStream(_Xml))
-                xmlDocument.Load(msXml);
-
-
-            var response = Wsd.Call(Url, Action, xmlDocument);
-
-            return Envelope.FromXml(response);
-
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Ejecuta las validaciones del obejeto de negocio.
-        /// </summary>
-        /// <returns>Lista con las descripciones de los errores
-        /// encontrados.</returns>
-        public virtual List<string> GetErrors()
-        {
-
-            var result = new List<string>();
-
-            var responseEnvelope = GetResponse();
-
-            if (responseEnvelope.Body.Contribuyentes[0].Resultado != "IDENTIFICADO")
-                result.Add($"Error en la validación del NIF {_Nif} de {_Name}. Si el NIF es" +
-                    $" de una persona física es necesario que conste también el nombre" +
-                    $" correcto para poderlo validar.");
-
-            return result;
-
-        }
-
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns>Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{_Nif}, {_Name}";
-        }
-
-        #endregion
-
+      _Nif = nif;
+      _Name = name;
+      _Envelope = GetEnvelope(nif, name);
+      _Xml = new XmlParser().GetBytes(_Envelope, Namespaces.NifItems);
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene sobre SOAP de la petición.
+    /// </summary>
+    /// <param name="nif">NIF</param>
+    /// <param name="name">Nombre</param>
+    /// <returns>Sobre SOAP de la petición.</returns>
+    private Envelope GetEnvelope(string nif, string name)
+    {
+      Envelope envelope = new Envelope();
+      envelope.Body.Registro = new VNifVEnt
+      {
+        Contribuyente = new List<Contribuyente>
+        {
+          new Contribuyente
+          {
+            Nif = nif,
+            Nombre = name
+          }
+        }
+      };
+      envelope.Header = null;
+      return envelope;
+    }
+
+    /// <summary>
+    /// Obtiene sobre SOAP de la respuesta.
+    /// </summary>
+    /// <returns>Sobre SOAP de la respuesta.</returns>
+    private Envelope GetResponse()
+    {
+      XmlDocument xmlDocument = new XmlDocument();
+      using(MemoryStream msXml = new MemoryStream(_Xml))
+      {
+        xmlDocument.Load(msXml);
+      }
+      string response = Wsd.Call(Url, Action, xmlDocument);
+      return Envelope.FromXml(response);
+    }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Ejecuta las validaciones del obejeto de negocio.
+    /// </summary>
+    /// <returns>
+    /// Lista con las descripciones de los errores encontrados.
+    /// </returns>
+    public virtual List<string> GetErrors()
+    {
+      List<string> result = new List<string>();
+      Envelope responseEnvelope = GetResponse();
+      if(responseEnvelope.Body.Contribuyentes[0].Resultado != "IDENTIFICADO")
+      {
+        result.Add(
+          $"Error en la validación del NIF {_Nif} de {_Name}. Si el NIF es" +
+                          $" de una persona física es necesario que conste también el nombre" +
+                          $" correcto para poderlo validar.");
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{_Nif}, {_Name}";
+    }
+
+    #endregion
+  }
 }

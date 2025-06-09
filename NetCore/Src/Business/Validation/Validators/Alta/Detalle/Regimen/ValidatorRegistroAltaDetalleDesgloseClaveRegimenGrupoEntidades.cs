@@ -46,79 +46,74 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta.Detalle.Regimen
 {
+  /// <summary>
+  /// Valida los datos de RegistroAlta DetalleDesglose ClaveRegimen 06. Grupo de entidades nivel avanzado.
+  /// </summary>
+  public class ValidatorRegistroAltaDetalleDesgloseClaveRegimenGrupoEntidades : ValidatorRegistroAlta
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Valida los datos de RegistroAlta DetalleDesglose ClaveRegimen 06. Grupo de entidades nivel avanzado.
+    /// Interlocutor a validar.
     /// </summary>
-    public class ValidatorRegistroAltaDetalleDesgloseClaveRegimenGrupoEntidades : ValidatorRegistroAlta
+    private readonly DetalleDesglose _DetalleDesglose;
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">Sobre SOAP envío.</param>
+    /// <param name="registroAlta">Registro alta factura.</param>
+    /// <param name="detalleDesglose">DetalleDesglose a validar.</param>
+    public ValidatorRegistroAltaDetalleDesgloseClaveRegimenGrupoEntidades(
+      Envelope envelope,
+      RegistroAlta registroAlta,
+      DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
     {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Interlocutor a validar.
-        /// </summary>
-        readonly DetalleDesglose _DetalleDesglose;
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Sobre SOAP envío.</param>
-        /// <param name="registroAlta"> Registro alta factura.</param>
-        /// <param name="detalleDesglose"> DetalleDesglose a validar. </param>
-        public ValidatorRegistroAltaDetalleDesgloseClaveRegimenGrupoEntidades(Envelope envelope, RegistroAlta registroAlta,
-            DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
-        {
-
-            _DetalleDesglose = detalleDesglose;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // Si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta (considerándose “01” - IVA):
-            // Si ClaveRegimen es igual a “06”:
-            // Se validará que TipoFactura sea distinto de “F2”, “F3”, “R5”.
-            // Campo BaseImponibleACoste deberá estar cumplimentado.
-            if (_DetalleDesglose.Impuesto != Impuesto.IVA &&
-                _DetalleDesglose.Impuesto != Impuesto.IGIC)
-            {
-
-                if (Array.IndexOf(new TipoFactura[] { TipoFactura.F2, TipoFactura.F3, TipoFactura.R5 }, _RegistroAlta.TipoFactura) != -1)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                        $" Cuando ClaveRegimen sea igual a “06”" +
-                        $" el TipoFactura debe ser distinto de “F2”, “F3”, “R5”.");
-
-                var baseImponibleACoste = XmlParser.ToDecimal(_DetalleDesglose.BaseImponibleACoste);
-
-                if(baseImponibleACoste == 0)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                        $" Cuando ClaveRegimen sea igual a “06”" +
-                        $" campo BaseImponibleACoste deberá estar cumplimentado.");
-            }
-
-
-            return result;
-
-        }
-
-        #endregion
-
+      _DetalleDesglose = detalleDesglose;
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // Si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta (considerándose “01” - IVA):
+      // Si ClaveRegimen es igual a “06”:
+      // Se validará que TipoFactura sea distinto de “F2”, “F3”, “R5”.
+      // Campo BaseImponibleACoste deberá estar cumplimentado.
+      if(_DetalleDesglose.Impuesto != Impuesto.IVA &&
+                _DetalleDesglose.Impuesto != Impuesto.IGIC)
+      {
+        if(Array.IndexOf(new TipoFactura[] { TipoFactura.F2, TipoFactura.F3, TipoFactura.R5 }, _RegistroAlta.TipoFactura) != -1)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                $" Cuando ClaveRegimen sea igual a “06”" +
+                                $" el TipoFactura debe ser distinto de “F2”, “F3”, “R5”.");
+        }
+        decimal baseImponibleACoste = XmlParser.ToDecimal(_DetalleDesglose.BaseImponibleACoste);
+        if(baseImponibleACoste == 0)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                $" Cuando ClaveRegimen sea igual a “06”" +
+                                $" campo BaseImponibleACoste deberá estar cumplimentado.");
+        }
+      }
+      return result;
+    }
+
+    #endregion
+  }
 }

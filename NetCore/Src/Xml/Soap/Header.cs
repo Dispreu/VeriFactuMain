@@ -45,15 +45,14 @@ namespace VeriFactu.Xml.Soap
 
     #region Propiedades Públicas de Instancia
 
-    /// <summary>
-    /// SOAP header.
-    /// </summary>
-    [Serializable]
-    [XmlRoot("Header")]
-    public class Header
-    {
-    }
+  /// <summary>
+  /// SOAP header.
+  /// </summary>
+  [Serializable]
+  [XmlRoot("Header")]
+  public class Header
+    { }
 
-    #endregion
+  #endregion
 
 }

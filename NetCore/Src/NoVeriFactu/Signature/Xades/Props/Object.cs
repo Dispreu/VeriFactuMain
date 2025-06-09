@@ -41,37 +41,32 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Objedto firmado.
-    /// </summary>
-    internal class Object : PropXmlElement
-    {
+  /// <summary>
+  /// Objedto firmado.
+  /// </summary>
+  internal class Object : PropXmlElement
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Propiedades.
-        /// </summary>
-        internal QualifyingProperties QualifyingProperties { get; private set; }
+    /// <summary>
+    /// Propiedades.
+    /// </summary>
+    internal QualifyingProperties QualifyingProperties { get; private set; }
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal Object(XmlNode parent) : base(parent, "Object", "ds", "http://www.w3.org/2000/09/xmldsig#")
-        {
-
-            QualifyingProperties = new QualifyingProperties(XmlElement);
-
-        }
-
-        #endregion      
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal Object(XmlNode parent) : base(parent, "Object", "ds", "http://www.w3.org/2000/09/xmldsig#")
+    {
+      QualifyingProperties = new QualifyingProperties(XmlElement);
     }
 
+    #endregion      
+  }
 }

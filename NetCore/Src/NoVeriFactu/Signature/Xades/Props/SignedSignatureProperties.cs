@@ -41,49 +41,44 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Propiedades firmadas.
-    /// </summary>
-    internal class SignedSignatureProperties : PropXmlElement
-    {
+  /// <summary>
+  /// Propiedades firmadas.
+  /// </summary>
+  internal class SignedSignatureProperties : PropXmlElement
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Hora firma.
-        /// </summary>
-        internal SigningTime SigningTime { get; private set; }
+    /// <summary>
+    /// Hora firma.
+    /// </summary>
+    internal SigningTime SigningTime { get; private set; }
 
-        /// <summary>
-        /// Certificado firma.
-        /// </summary>
-        internal SigningCertificate SigningCertificate { get; private set; }
+    /// <summary>
+    /// Certificado firma.
+    /// </summary>
+    internal SigningCertificate SigningCertificate { get; private set; }
 
-        /// <summary>
-        /// Política de firma.
-        /// </summary>
-        internal SignaturePolicyIdentifier SignaturePolicyIdentifier { get; private set; }
+    /// <summary>
+    /// Política de firma.
+    /// </summary>
+    internal SignaturePolicyIdentifier SignaturePolicyIdentifier { get; private set; }
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal SignedSignatureProperties(XmlNode parent) : base(parent, "SignedSignatureProperties")
-        {
-
-            SigningTime = new SigningTime(XmlElement);
-            SigningCertificate = new SigningCertificate(XmlElement);
-            SignaturePolicyIdentifier = new SignaturePolicyIdentifier(XmlElement);
-
-        }
-
-        #endregion
-       
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal SignedSignatureProperties(XmlNode parent) : base(parent, "SignedSignatureProperties")
+    {
+      SigningTime = new SigningTime(XmlElement);
+      SigningCertificate = new SigningCertificate(XmlElement);
+      SignaturePolicyIdentifier = new SignaturePolicyIdentifier(XmlElement);
     }
 
+    #endregion
+  }
 }

@@ -45,82 +45,67 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta DetalleDesglose ImporteTotal.
-    /// </summary>
-    public class ValidatorRegistroAltaImporteTotal : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta DetalleDesglose ImporteTotal.
+  /// </summary>
+  public class ValidatorRegistroAltaImporteTotal : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Sobre SOAP envío.</param>
-        /// <param name="registroAlta"> Registro alta factura.</param>
-        public ValidatorRegistroAltaImporteTotal(Envelope envelope, 
-            RegistroAlta registroAlta) : base(envelope, registroAlta)
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">Sobre SOAP envío.</param>
+    /// <param name="registroAlta">Registro alta factura.</param>
+    public ValidatorRegistroAltaImporteTotal(
+      Envelope envelope,
+      RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // Se validará que sea igual a Ʃ (CuotaRepercutida + CuotaRecargoEquivalencia) de todas
+      // las líneas de detalle de desglose.En caso contrario se devolverá un aviso de error
+      // (no generará rechazo), admitiéndose un margen de error de +/ -10,00 euros.
+      if(string.IsNullOrEmpty(_RegistroAlta.NumRegistroAcuerdoFacturacion) &&
+                _RegistroAlta.FacturaSinIdentifDestinatarioArt61d != "S")
+      {
+        decimal total = 0m;
+        foreach(DetalleDesglose desglose in _RegistroAlta.Desglose)
         {
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-
-            // Se validará que sea igual a Ʃ (CuotaRepercutida + CuotaRecargoEquivalencia) de todas
-            // las líneas de detalle de desglose.En caso contrario se devolverá un aviso de error
-            // (no generará rechazo), admitiéndose un margen de error de +/ -10,00 euros.
-
-            if (string.IsNullOrEmpty(_RegistroAlta.NumRegistroAcuerdoFacturacion) && 
-                _RegistroAlta.FacturaSinIdentifDestinatarioArt61d != "S") 
-            {
-
-                var total = 0m;
-
-                foreach (var desglose in _RegistroAlta.Desglose) 
-                {
-
-                    var baseImponibleOimporteNoSujeto = XmlParser.ToDecimal(desglose.BaseImponibleOimporteNoSujeto);
-                    var cuotaRepercutida = XmlParser.ToDecimal(desglose.CuotaRepercutida);
-                    var cuotaRecargoEquivalencia = XmlParser.ToDecimal(desglose.CuotaRecargoEquivalencia);
-
-                    total += cuotaRepercutida + cuotaRecargoEquivalencia + baseImponibleOimporteNoSujeto;
-
-                    // Esta validación no se aplicará cuando ClaveRegimen sea “03”, “05”, “06” o “09”.
-                    var clavesExcluidas = new ClaveRegimen[]{ ClaveRegimen.Rebu, ClaveRegimen.AgenciasViajes, ClaveRegimen.GrupoEntidades, ClaveRegimen.MediadoresAgenciasViaje};
-                    
-                    if (Array.IndexOf(clavesExcluidas, desglose.ClaveRegimen) != -1)
-                        return result;
-
-
-                }
-
-                var importeTotal = XmlParser.ToDecimal(_RegistroAlta.ImporteTotal);
-
-                if (Math.Abs(importeTotal - total) > 10)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" Ʃ (BaseImponibleOimporteNoSujeto + CuotaRepercutida + CuotaRecargoEquivalencia)" +
-                        $" debe ser igual a ImporteTotal +/ -10,00 euros.");
-
-            }
-
+          decimal baseImponibleOimporteNoSujeto = XmlParser.ToDecimal(desglose.BaseImponibleOimporteNoSujeto);
+          decimal cuotaRepercutida = XmlParser.ToDecimal(desglose.CuotaRepercutida);
+          decimal cuotaRecargoEquivalencia = XmlParser.ToDecimal(desglose.CuotaRecargoEquivalencia);
+          total += cuotaRepercutida + cuotaRecargoEquivalencia + baseImponibleOimporteNoSujeto;
+          // Esta validación no se aplicará cuando ClaveRegimen sea “03”, “05”, “06” o “09”.
+          ClaveRegimen[] clavesExcluidas = new ClaveRegimen[] { ClaveRegimen.Rebu, ClaveRegimen.AgenciasViajes, ClaveRegimen.GrupoEntidades, ClaveRegimen.MediadoresAgenciasViaje };
+          if(Array.IndexOf(clavesExcluidas, desglose.ClaveRegimen) != -1)
+          {
             return result;
-
+          }
         }
-
-        #endregion
-
+        decimal importeTotal = XmlParser.ToDecimal(_RegistroAlta.ImporteTotal);
+        if(Math.Abs(importeTotal - total) > 10)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                $" Ʃ (BaseImponibleOimporteNoSujeto + CuotaRepercutida + CuotaRecargoEquivalencia)" +
+                                $" debe ser igual a ImporteTotal +/ -10,00 euros.");
+        }
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

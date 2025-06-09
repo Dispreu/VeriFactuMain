@@ -39,48 +39,42 @@
 
 namespace VeriFactu.Xml.Factu.Alta
 {
-
-    /// <summary>
-    /// Información importes rectificados.
-    /// </summary>
-    public class ImporteRectificacion
-    {
+  /// <summary>
+  /// Información importes rectificados.
+  /// </summary>
+  public class ImporteRectificacion
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// <para>Base imponible de la factura.</para>
-        /// <para>Decimal(12,2).</para>
-        /// </summary>
-        public string BaseRectificada { get; set; }
+    /// <summary>
+    /// <para>Base imponible de la factura.</para> <para>Decimal(12,2).</para>
+    /// </summary>
+    public string BaseRectificada { get; set; }
 
-        /// <summary>
-        /// <para>Cuota repercutida o soportada de la factura.</para>
-        /// <para>Decimal(12,2).</para>
-        /// </summary>
-        public string CuotaRectificada { get; set; }
+    /// <summary>
+    /// <para>Cuota repercutida o soportada de la factura.</para> <para>Decimal(12,2).</para>
+    /// </summary>
+    public string CuotaRectificada { get; set; }
 
-        /// <summary>
-        /// <para>Cuota recargo de equivalencia de la factura.</para>
-        /// <para>Decimal(12,2).</para>
-        /// </summary>
-        public string CuotaRecargoRectificado { get; set; }
+    /// <summary>
+    /// <para>Cuota recargo de equivalencia de la factura.</para> <para>Decimal(12,2).</para>
+    /// </summary>
+    public string CuotaRecargoRectificado { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"Base = {BaseRectificada} - Cuota= {CuotaRectificada} - Cuota Recargo ={CuotaRecargoRectificado}";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"Base = {BaseRectificada} - Cuota= {CuotaRectificada} - Cuota Recargo ={CuotaRecargoRectificado}";
     }
 
+    #endregion
+  }
 }

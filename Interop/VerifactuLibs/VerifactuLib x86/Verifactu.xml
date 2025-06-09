@@ -58,6 +58,7 @@
             <summary>
             Elimina el útlimo elemento añadido a la cadena.
             </summary>
+            <exception cref="T:System.InvalidOperationException">Se lanza si no se encuentra el último eslabón.</exception>
         </member>
         <member name="M:VeriFactu.Blockchain.Blockchain.Write(System.Collections.Generic.List{System.String})">
             <summary>
@@ -94,6 +95,7 @@
             </summary>
             <param name="blockchainDataFileName">Archivo de datos a restaurar.</param>
             <param name="blockchainDataPreviousFileName">Copia anterior utilizada para restaurar.</param>
+            <exception cref="T:System.InvalidOperationException">Se lanza si no se encuentra archivo previo a restaurar.</exception>
         </member>
         <member name="P:VeriFactu.Blockchain.Blockchain.Initialized">
             <summary>
@@ -176,18 +178,21 @@
             <summary>
             Carga todas las cadenas de bloques.
             </summary>
+            <exception cref="T:System.InvalidOperationException">Se lanza si BlockchainPath no es un directorio válido.</exception>
         </member>
         <member name="M:VeriFactu.Blockchain.Blockchain.Add(VeriFactu.Xml.Factu.Registro)">
             <summary>
             Añade un elemento a la cadena de bloques.
             </summary>
             <param name="registro">Registro a añadir.</param>
+            <exception cref="T:System.Exception">Si no se puede añadir el eslabón en la cadena.</exception>
         </member>
         <member name="M:VeriFactu.Blockchain.Blockchain.Add(System.Collections.Generic.List{VeriFactu.Xml.Factu.Registro})">
             <summary>
             Añade una lista de elementos a la cadena de bloques.
             </summary>
             <param name="registros">Registros a añadir.</param>
+            <exception cref="T:System.Exception">Si no se puede añadir el eslabón en la cadena.</exception>
         </member>
         <member name="M:VeriFactu.Blockchain.Blockchain.Delete(VeriFactu.Xml.Factu.Registro)">
             <summary>
@@ -195,6 +200,9 @@
             </summary>
             <param name="registro">Registro a eliminar.
             Sólo puede eliminarse el último elemento añadido.</param> 
+            <exception cref="T:System.InvalidOperationException">
+            Si se itenta eliminar un registro que no es el último.
+            </exception>
         </member>
         <member name="M:VeriFactu.Blockchain.Blockchain.ToString">
             <summary>
@@ -540,12 +548,6 @@
             Suma de las bases imponibles.
             </summary>   
         </member>
-        <member name="F:VeriFactu.Business.Invoice._RegistroAltaSource">
-            <summary>
-            Registro de alta a partir del cual se ha
-            generado la factura
-            </summary>
-        </member>
         <member name="M:VeriFactu.Business.Invoice.#ctor(System.String,System.DateTime,System.String)">
             <summary>
             Constructor.
@@ -563,11 +565,10 @@
         </member>
         <member name="M:VeriFactu.Business.Invoice.FromDesglose(System.Collections.Generic.List{VeriFactu.Xml.Factu.Alta.DetalleDesglose})">
             <summary>
-            Devuelve una lista de TaxItem a partir
-            de una lista de objetos DetalleDesglose.
+            Devuelve una lista de TaxItem a partir de una lista de objetos DetalleDesglose.
             </summary>
-            <param name="Desglose"> Lista de objetos DetalleDesglose.</param>
-            <returns> Lista de TaxItems</returns>
+            <param name="Desglose">Lista de objetos DetalleDesglose.</param>
+            <returns>Lista de TaxItems</returns>
         </member>
         <member name="M:VeriFactu.Business.Invoice.CalculateTotals">
             <summary>
@@ -593,8 +594,7 @@
         </member>
         <member name="P:VeriFactu.Business.Invoice.RectificationType">
             <summary>
-             Identifica si el tipo de factura rectificativa
-             es por sustitución o por diferencia (L3).
+            Identifica si el tipo de factura rectificativa es por sustitución o por diferencia (L3).
             </summary>
         </member>
         <member name="P:VeriFactu.Business.Invoice.InvoiceID">
@@ -614,10 +614,8 @@
         </member>
         <member name="P:VeriFactu.Business.Invoice.SellerID">
             <summary>
-            Identificador del vendedor.
-            Debe utilizarse el identificador fiscal si existe (NIF, VAT Number...).
-            En caso de no existir, se puede utilizar el número DUNS 
-            o cualquier otro identificador acordado.
+            Identificador del vendedor. Debe utilizarse el identificador fiscal si existe (NIF, VAT Number...). En caso de
+            no existir, se puede utilizar el número DUNS  o cualquier otro identificador acordado.
             </summary>        
         </member>
         <member name="P:VeriFactu.Business.Invoice.SellerName">
@@ -627,10 +625,8 @@
         </member>
         <member name="P:VeriFactu.Business.Invoice.BuyerID">
             <summary>
-            Identidicador del comprador.
-            Debe utilizarse el identificador fiscal si existe (NIF, VAT Number...).
-            En caso de no existir, se puede utilizar el número DUNS 
-            o cualquier otro identificador acordado.
+            Identidicador del comprador. Debe utilizarse el identificador fiscal si existe (NIF, VAT Number...). En caso de
+            no existir, se puede utilizar el número DUNS  o cualquier otro identificador acordado.
             </summary>        
         </member>
         <member name="P:VeriFactu.Business.Invoice.BuyerName">
@@ -640,21 +636,18 @@
         </member>
         <member name="P:VeriFactu.Business.Invoice.BuyerCountryID">
             <summary>
-            Código del país del destinatario (a veces también denominado contraparte,
-            es decir, el cliente) de la operación de la factura expedida.
-            <para>Alfanumérico (2) (ISO 3166-1 alpha-2 codes) </para>
+            Código del país del destinatario (a veces también denominado contraparte, es decir, el cliente) de la operación
+            de la factura expedida. <para>Alfanumérico (2) (ISO 3166-1 alpha-2 codes)</para>
             </summary>        
         </member>
         <member name="P:VeriFactu.Business.Invoice.BuyerIDType">
             <summary>
-            Clave para establecer el tipo de identificación
-            en el pais de residencia. L7.
+            Clave para establecer el tipo de identificación en el pais de residencia. L7.
             </summary>        
         </member>
         <member name="P:VeriFactu.Business.Invoice.TotalAmount">
             <summary>
-            Importe total: Total neto + impuestos soportado
-            - impuestos retenidos.
+            Importe total: Total neto + impuestos soportado - impuestos retenidos.
             </summary>        
         </member>
         <member name="P:VeriFactu.Business.Invoice.TotalTaxOutput">
@@ -689,9 +682,8 @@
         </member>
         <member name="P:VeriFactu.Business.Invoice.RegistroAltaSource">
             <summary>
-            RegistroAlta a partir del cual se ha creado la factura, en el
-            caso de que la instancia se haya creado a partir de un registro
-            de alta.
+            RegistroAlta a partir del cual se ha creado la factura, en el caso de que la instancia se haya creado a partir
+            de un registro de alta.
             </summary>
         </member>
         <member name="M:VeriFactu.Business.Invoice.GetRegistroAlta">
@@ -710,7 +702,7 @@
             <summary>
             Representación textual de la instancia.
             </summary>
-            <returns> Representación textual de la instancia.</returns>
+            <returns>Representación textual de la instancia.</returns>
         </member>
         <member name="T:VeriFactu.Business.InvoiceCancellation">
             <summary>
@@ -5080,12 +5072,15 @@
             Obtiene el certificado configurado y verifica la validez.
             </summary>
             <returns>Certificado validado.</returns>
+            <exception cref="T:System.ArgumentNullException">Se lanza si no se encuentra el certificado configurado.</exception>
+            <exception cref="T:System.InvalidOperationException">Se lanza si el certificado ha expirado (fecha NotAfter en el pasado).</exception>
         </member>
         <member name="M:VeriFactu.Net.Wsd.CheckCertificate(System.Security.Cryptography.X509Certificates.X509Certificate2)">
             <summary>
             Verifica la validez del certificado.
             </summary>
             <param name="certificate">Verifica la validez del certificado.</param>
+            <exception cref="T:System.InvalidOperationException">Se lanza si el certificado ha expirado (fecha NotAfter en el pasado).</exception>
         </member>
         <member name="M:VeriFactu.Net.Wsd.Call(System.String,System.String,System.Xml.XmlDocument)">
             <summary>
@@ -5104,6 +5099,13 @@
             <param name="url">Url del web service.</param>
             <param name="action">Acción del web service.</param>
             <returns></returns>
+        </member>
+        <member name="P:VeriFactu.Net.Wsd.Certificate">
+            <summary>
+            Certificado a utilizar en la comunicaciones con la AEAT.
+            Si su valor no está establecido, se intentará cargar el certificado
+            con los valores establecidos en la configuración de VeriFactu.
+            </summary>
         </member>
         <member name="M:VeriFactu.Net.Wsd.GetCertificate">
             <summary>

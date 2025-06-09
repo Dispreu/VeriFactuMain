@@ -42,28 +42,23 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Hora de la firma.
-    /// </summary>
-    internal class SigningTime : PropXmlElement
-    {
+  /// <summary>
+  /// Hora de la firma.
+  /// </summary>
+  internal class SigningTime : PropXmlElement
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal SigningTime(XmlNode parent) : base(parent, "SigningTime")
-        {
-
-            XmlElement.InnerText = $"{DateTime.Now:yyyy-MM-ddTHH:mm:ss}Z";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal SigningTime(XmlNode parent) : base(parent, "SigningTime")
+    {
+      XmlElement.InnerText = $"{DateTime.Now:yyyy-MM-ddTHH:mm:ss}Z";
     }
 
+    #endregion
+  }
 }

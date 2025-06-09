@@ -45,73 +45,60 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta DetalleDesglose CuotaTotal.
-    /// </summary>
-    public class ValidatorRegistroAltaCuotaTotal : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta DetalleDesglose CuotaTotal.
+  /// </summary>
+  public class ValidatorRegistroAltaCuotaTotal : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Sobre SOAP envío.</param>
-        /// <param name="registroAlta"> Registro alta factura.</param>
-        public ValidatorRegistroAltaCuotaTotal(Envelope envelope, 
-            RegistroAlta registroAlta) : base(envelope, registroAlta)
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">Sobre SOAP envío.</param>
+    /// <param name="registroAlta">Registro alta factura.</param>
+    public ValidatorRegistroAltaCuotaTotal(
+      Envelope envelope,
+      RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // Se validará que sea igual a Ʃ (CuotaRepercutida + CuotaRecargoEquivalencia) de todas
+      // las líneas de detalle de desglose.En caso contrario se devolverá un aviso de error
+      // (no generará rechazo), admitiéndose un margen de error de +/ -10,00 euros.
+      if(string.IsNullOrEmpty(_RegistroAlta.NumRegistroAcuerdoFacturacion) &&
+                _RegistroAlta.FacturaSinIdentifDestinatarioArt61d != "S")
+      {
+        decimal total = 0m;
+        foreach(DetalleDesglose desglose in _RegistroAlta.Desglose)
         {
+          decimal cuotaRepercutida = XmlParser.ToDecimal(desglose.CuotaRepercutida);
+          decimal cuotaRecargoEquivalencia = XmlParser.ToDecimal(desglose.CuotaRecargoEquivalencia);
+          total += cuotaRepercutida + cuotaRecargoEquivalencia;
         }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
+        decimal cuotaTotal = XmlParser.ToDecimal(_RegistroAlta.CuotaTotal);
+        if(Math.Abs(cuotaTotal - total) > 10)
         {
-
-            var result = new List<string>();
-
-            // Se validará que sea igual a Ʃ (CuotaRepercutida + CuotaRecargoEquivalencia) de todas
-            // las líneas de detalle de desglose.En caso contrario se devolverá un aviso de error
-            // (no generará rechazo), admitiéndose un margen de error de +/ -10,00 euros.
-
-            if (string.IsNullOrEmpty(_RegistroAlta.NumRegistroAcuerdoFacturacion) && 
-                _RegistroAlta.FacturaSinIdentifDestinatarioArt61d != "S") 
-            {
-
-                var total = 0m;
-
-                foreach (var desglose in _RegistroAlta.Desglose) 
-                {
-
-                    var cuotaRepercutida = XmlParser.ToDecimal(desglose.CuotaRepercutida);
-                    var cuotaRecargoEquivalencia = XmlParser.ToDecimal(desglose.CuotaRecargoEquivalencia);
-
-                    total += cuotaRepercutida + cuotaRecargoEquivalencia;
-
-                }
-
-                var cuotaTotal = XmlParser.ToDecimal(_RegistroAlta.CuotaTotal);
-
-                if (Math.Abs(cuotaTotal - total) > 10)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" Ʃ (CuotaRepercutida + CuotaRecargoEquivalencia)" +
-                        $" debe ser igual a CuotaTotal +/ -10,00 euros.");
-
-            }
-
-            return result;
-
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                $" Ʃ (CuotaRepercutida + CuotaRecargoEquivalencia)" +
+                                $" debe ser igual a CuotaTotal +/ -10,00 euros.");
         }
-
-        #endregion
-
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

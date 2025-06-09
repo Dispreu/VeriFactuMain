@@ -39,22 +39,19 @@
 
 namespace VeriFactu.Net.Rest.List
 {
-    /// <summary>
-    /// Representa un filtro para recuperar
-    /// datos.
-    /// </summary>
-    public class Filter : FieldOperation
-    {
+  /// <summary>
+  /// Representa un filtro para recuperar datos.
+  /// </summary>
+  public class Filter : FieldOperation
+  {
 
         #region Public Properties
 
-        /// <summary>
-        /// Valor de filtro.
-        /// </summary>
-        public object Value { get; set; }
+    /// <summary>
+    /// Valor de filtro.
+    /// </summary>
+    public object Value { get; set; }
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

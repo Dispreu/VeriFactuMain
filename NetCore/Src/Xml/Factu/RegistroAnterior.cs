@@ -39,71 +39,56 @@
 
 namespace VeriFactu.Xml.Factu
 {
-
-    /// <summary>
-    /// Datos registro anterior. Artículo 7 de la Orden HAC/1177/2024 de 17 de octubre.
-    /// <para>Datos del registro anterior: </para>
-    /// NIF + NumSerieFactura + FechaExpedicionFactura + HuellaAnterior.Substring(0, 64)
-    /// </summary>
-    public class RegistroAnterior
-    {
+  /// <summary>
+  /// Datos registro anterior. Artículo 7 de la Orden HAC/1177/2024 de 17 de octubre. <para>Datos del registro
+  /// anterior:</para> NIF + NumSerieFactura + FechaExpedicionFactura + HuellaAnterior.Substring(0, 64)
+  /// </summary>
+  public class RegistroAnterior
+  {
 
         #region Propiedades Públicas de Instancia   
 
-        /// <summary>
-        /// <para>NIF del obligado a expedir la factura a que se refiere el
-        /// registro de facturación anterior (sea de alta o de anulación)
-        /// generado en este sistema informático. Este campo forma parte del
-        /// detalle de las circunstancias de generación de los registros de
-        /// facturación, ya que es necesario para completar la identificación
-        /// de la factura contenida en el registro de facturación anterior
-        /// a encadenar en casos excepcionales y puntuales en los que no
-        /// coincida con el actual, como al cambiar en un momento dado el
-        /// NIF tras fusiones, absorciones, etc.</para>
-        /// <para>FormatoNIF(9).</para>
-        /// </summary>
-        public string IDEmisorFactura { get; set; }
+    /// <summary>
+    /// <para>NIF del obligado a expedir la factura a que se refiere el registro de facturación anterior (sea de alta o
+    /// de anulación) generado en este sistema informático. Este campo forma parte del detalle de las circunstancias de
+    /// generación de los registros de facturación, ya que es necesario para completar la identificación de la factura
+    /// contenida en el registro de facturación anterior a encadenar en casos excepcionales y puntuales en los que no
+    /// coincida con el actual, como al cambiar en un momento dado el NIF tras fusiones, absorciones, etc.</para>
+    /// <para>FormatoNIF(9).</para>
+    /// </summary>
+    public string IDEmisorFactura { get; set; }
 
-        /// <summary>
-        /// <para>Nº Serie+Nº Factura que identifica a la factura a que
-        /// se refiere el registro de facturación anterior
-        /// (sea de alta o de anulación) generado en este sistema
-        /// informático.</para>
-        /// <para>Alfanumérico(60).</para>
-        /// </summary>
-        public string NumSerieFactura { get; set; }
+    /// <summary>
+    /// <para>Nº Serie+Nº Factura que identifica a la factura a que se refiere el registro de facturación anterior (sea
+    /// de alta o de anulación) generado en este sistema informático.</para> <para>Alfanumérico(60).</para>
+    /// </summary>
+    public string NumSerieFactura { get; set; }
 
-        /// <summary>
-        /// <para>Fecha de expedición de la factura a que se refiere
-        /// el registro de facturación anterior (sea de alta o de anulación)
-        /// generado en este sistema informático.</para>
-        /// <para>Fecha(dd-mm-yyyy).</para>
-        /// </summary>
-        public string FechaExpedicionFactura { get; set; }
+    /// <summary>
+    /// <para>Fecha de expedición de la factura a que se refiere el registro de facturación anterior (sea de alta o de
+    /// anulación) generado en este sistema informático.</para> <para>Fecha(dd-mm-yyyy).</para>
+    /// </summary>
+    public string FechaExpedicionFactura { get; set; }
 
-        /// <summary>
-        /// <para>Primeros 64 caracteres de la huella o «hash» del registro
-        /// de facturación anterior (sea de alta o de anulación) generado
-        /// en este sistema informático.</para>
-        /// <para>Alfanumérico(64).</para>
-        /// </summary>
-        public string Huella { get; set; }
+    /// <summary>
+    /// <para>Primeros 64 caracteres de la huella o «hash» del registro de facturación anterior (sea de alta o de
+    /// anulación) generado en este sistema informático.</para> <para>Alfanumérico(64).</para>
+    /// </summary>
+    public string Huella { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{NumSerieFactura} ({FechaExpedicionFactura})";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{NumSerieFactura} ({FechaExpedicionFactura})";
     }
 
+    #endregion
+  }
 }

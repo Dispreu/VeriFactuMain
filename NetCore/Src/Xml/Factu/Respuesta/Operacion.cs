@@ -41,36 +41,33 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Respuesta
 {
-
-    /// <summary>
-    /// Contiene el tipo de operación y los parámetros opcionales asociados al mismo. 
-    /// </summary>
-    public class Operacion
-    {
+  /// <summary>
+  /// Contiene el tipo de operación y los parámetros opcionales asociados al mismo.
+  /// </summary>
+  public class Operacion
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Tipo operación Alta o Anulacion.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string TipoOperacion { get; set; }
+    /// <summary>
+    /// Tipo operación Alta o Anulacion.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string TipoOperacion { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns>Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{TipoOperacion}";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{TipoOperacion}";
     }
 
+    #endregion
+  }
 }

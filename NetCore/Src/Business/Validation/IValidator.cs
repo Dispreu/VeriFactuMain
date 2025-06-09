@@ -41,25 +41,22 @@ using System.Collections.Generic;
 
 namespace VeriFactu.Business.Validation
 {
-
-    /// <summary>
-    /// Representa un validador.
-    /// </summary>
-    public interface IValidator
-    {
+  /// <summary>
+  /// Representa un validador.
+  /// </summary>
+  public interface IValidator
+  {
 
         #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Ejecuta las validaciones y devuelve una lista
-        /// con los errores encontrados.
-        /// </summary>
-        /// <returns>Lista con las descripciones de los 
-        /// errores encontrado.</returns>
-        List<string> GetErrors();
+    /// <summary>
+    /// Ejecuta las validaciones y devuelve una lista con los errores encontrados.
+    /// </summary>
+    /// <returns>
+    /// Lista con las descripciones de los  errores encontrado.
+    /// </returns>
+    List<string> GetErrors();
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

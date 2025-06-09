@@ -41,72 +41,67 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
+  /// <summary>
+  /// Representa un elemento xml que contiene información del id de firma.
+  /// </summary>
+  internal class PropertyElementWithSigId : PropXmlElement
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Representa un elemento xml que contiene
-    /// información del id de firma.
+    /// Id de firma.
     /// </summary>
-    internal class PropertyElementWithSigId : PropXmlElement
+    private string _SignatureId;
+
+    #endregion
+
+    #region Propiedades Privadas de Instacia
+
+    /// <summary>
+    /// Id de la firma.
+    /// </summary>
+    internal string SignatureId
     {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Id de firma.
-        /// </summary>
-        string _SignatureId;
-
-        #endregion
-
-        #region Propiedades Privadas de Instacia
-
-        /// <summary>
-        /// Id de la firma.
-        /// </summary>
-        internal string SignatureId
-        {
-            get
-            {
-                return _SignatureId;
-            }
-            set
-            {
-                _SignatureId = value;
-                SetSignatureId(_SignatureId);
-            }
-        }
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        /// <param name="name">Nombre elemento.</param>
-        /// <param name="prefix">Prefijo espacio de nombres.</param>
-        /// <param name="nms">Espacio de nombres.</param>
-        internal PropertyElementWithSigId(XmlNode parent, string name, string prefix = "xades",
-            string nms = VerifactuSignedXml.XadesNamespaceUrl) : base(parent, name, prefix, nms)
-        {
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Añade información del id de firmna.
-        /// </summary>
-        /// <param name="signatureId">Id de firma.</param>
-        protected virtual void SetSignatureId(string signatureId)
-        {
-            XmlElement.SetAttribute("Target", signatureId);
-        }
-
-        #endregion
-
+      get => _SignatureId;
+      set
+      {
+        _SignatureId = value;
+        SetSignatureId(_SignatureId);
+      }
     }
 
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    /// <param name="name">Nombre elemento.</param>
+    /// <param name="prefix">Prefijo espacio de nombres.</param>
+    /// <param name="nms">Espacio de nombres.</param>
+    internal PropertyElementWithSigId(
+      XmlNode parent,
+      string name,
+      string prefix = "xades",
+      string nms = VerifactuSignedXml.XadesNamespaceUrl) : base(parent, name, prefix, nms)
+        { }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Añade información del id de firmna.
+    /// </summary>
+    /// <param name="signatureId">Id de firma.</param>
+    protected virtual void SetSignatureId(string signatureId)
+    {
+      XmlElement.SetAttribute("Target", signatureId);
+    }
+
+    #endregion
+  }
 }

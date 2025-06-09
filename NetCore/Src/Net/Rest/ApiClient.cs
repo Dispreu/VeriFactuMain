@@ -51,220 +51,178 @@ using VeriFactu.Net.Rest.List;
 
 namespace VeriFactu.Net.Rest
 {
+  /// <summary>
+  /// Representa un cliente API REST de Irene Solutions para Verifactu.
+  /// </summary>
+  public static class ApiClient
+  {
+
+    #region Variables Privadas Estáticas
+
+    private static Settings _Settings;
+
+    #endregion
+
+    #region Construtores Estáticos
 
     /// <summary>
-    /// Representa un cliente API REST de Irene Solutions para Verifactu.
+    /// Constructor.
     /// </summary>
-    public static class ApiClient
+    static ApiClient()
     {
-
-        #region Variables Privadas Estáticas
-
-        static Settings _Settings;
-
-        #endregion
-
-        #region Construtores Estáticos
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        static ApiClient() 
-        {
-
-            _Settings = Settings.Current;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados Estáticos
-
-        /// <summary>
-        /// Realiza una llamada al API y recupera el 
-        /// resultado.
-        /// </summary>
-        /// <param name="input">Entrada para realizar la llamada.</param>
-        /// <param name="url">Endpoint de la llamada.</param>
-        /// <returns>Resultado llamada API.</returns>
-        public static ExpandoObject Post(JsonSerializable input, string url)
-        {
-
-            byte[] buff = null;
-
-            input.ServiceKey = Settings.Current.Api.ServiceKey;
-
-            using (WebClient wc = new WebClient())
-            {
-                wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-                buff = wc.UploadData(url, Encoding.UTF8.GetBytes(input.ToJson()));
-            }
-
-            var json = Encoding.UTF8.GetString(buff);
-            var jsonParser = new JsonParser(json);
-
-            return jsonParser.GetResult();
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas Estáticas
-
-        /// <summary>
-        /// Datos API cargados de configuración.
-        /// </summary>
-        public static Api Api 
-        { 
-            get 
-            { 
-                return _Settings.Api;
-            } 
-        }
-
-        #endregion
-
-        #region Métodos Públicos Estáticos
-
-        /// <summary>
-        /// Crea un registro de alta mediante el API.
-        /// </summary>
-        /// <param name="invoice">Factura a remitir de alta.</param>
-        /// <returns>Resultado llamada API.</returns>
-        public static ExpandoObject Create(Invoice invoice) 
-        {
-
-            return Post(invoice, Api.EndPointCreate);
-
-        }
-
-        /// <summary>
-        /// Crea un registro de alta de subsanación mediante el API.
-        /// </summary>
-        /// <param name="invoice">Factura a remitir de alta como subsanación.</param>
-        /// <returns>Resultado llamada API.</returns>
-        public static ExpandoObject CreateFix(Invoice invoice)
-        {
-            
-            var invoiceFix = new ApiInvoiceFix(invoice);
-            return Post(invoiceFix, Api.EndPointCreate);
-
-        }
-
-
-        /// <summary>
-        /// Crea un registro de anulación mediante el API.
-        /// </summary>
-        /// <param name="invoice">Factura a anular.</param>
-        /// <returns>Resultado llamada API.</returns>
-        public static ExpandoObject Delete(Invoice invoice)
-        {
-
-            return Post(invoice, Api.EndPointCancel);
-
-        }
-
-        /// <summary>
-        /// Crea un código QR mediante el API.
-        /// </summary>
-        /// <param name="invoice">Factura para el QR.</param>
-        /// <returns>Resultado llamada API.</returns>
-        public static ExpandoObject GetQr(Invoice invoice)
-        {
-
-            return Post(invoice, Api.EndPointGetQrCode);
-
-        }
-
-        /// <summary>
-        /// Crea un código QR mediante el API.
-        /// </summary>
-        /// <returns>Resultado llamada API.</returns>
-        public static ExpandoObject GetSellers()
-        {
-
-            var invoice = new Invoice("", new DateTime(1, 1, 1), "");
-            return Post(invoice, Api.EndPointGetSellers);
-
-        }
-
-        /// <summary>
-        /// Crea un código QR mediante el API.
-        /// </summary>
-        /// <param name="invoice">Factura para el QR.</param>
-        /// <returns>Resultado llamada API.</returns>
-        public static ExpandoObject ValidateNIF(Invoice invoice)
-        {
-
-            return Post(invoice, Api.EndPointValidateNIF);
-
-        }
-
-        /// <summary>
-        /// Recupera los registros en la AEAT realcionados
-        /// con un obligado tributario determinado.
-        /// </summary>
-        /// <param name="invoice">Factura con datos del obligado tributario
-        /// y una fecha del periodo mes/año que se desea recuperar.</param>
-        /// <returns>Resultado llamada API.</returns>
-        public static ExpandoObject GetAeatInvoices(Invoice invoice)
-        {
-
-            return Post(invoice, Api.EndPointGetAeatInvoices);
-
-        }
-
-        /// <summary>
-        /// Recupera los registros envíados según el
-        /// filtro pasado como parametro.
-        /// </summary>
-        /// <param name="filterSet">Filtro.</param>
-        /// <returns>Resultado llamada API.</returns>
-        public static ExpandoObject GetFilteredList(FilterSet filterSet)
-        {
-
-            return Post(filterSet, Api.EndPointGetFilteredList);
-
-        }
-
-        /// <summary>
-        /// Envía un lote de facturas.
-        /// </summary>
-        /// <param name="invoicesBatch">Lote de facturas.</param>
-        /// <returns>Resultado llamada API.</returns>
-        public static ExpandoObject CreateBatch(InvoicesBatch invoicesBatch)
-        {
-
-            return Post(invoicesBatch, Api.EndPointCreateBatch);
-
-        }
-
-        /// <summary>
-        /// Crea Ct.
-        /// </summary>
-        /// <returns>Resultado llamada API.</returns>
-        public static ExpandoObject Ct()
-        {
-
-            try
-            {
-
-                var ct = new Ct();
-                return Post(ct, Api.EndPointCt);
-
-            }
-            catch (Exception ex)
-            {
-
-                Utils.Log($"Error ApiClient.Ct:\n{ex.Message}");
-                return null;
-
-            }
-
-        }
-
-        #endregion
-
+      _Settings = Settings.Current;
     }
 
+    #endregion
+
+    #region Métodos Privados Estáticos
+
+    /// <summary>
+    /// Realiza una llamada al API y recupera el  resultado.
+    /// </summary>
+    /// <param name="input">Entrada para realizar la llamada.</param>
+    /// <param name="url">Endpoint de la llamada.</param>
+    /// <returns>Resultado llamada API.</returns>
+    public static ExpandoObject Post(JsonSerializable input, string url)
+    {
+      byte[] buff = null;
+      input.ServiceKey = Settings.Current.Api.ServiceKey;
+      #pragma warning disable SYSLIB0014
+      using(WebClient wc = new WebClient())
+      #pragma warning restore SYSLIB0014
+      {
+        wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+        buff = wc.UploadData(url, Encoding.UTF8.GetBytes(input.ToJson()));
+      }
+      string json = Encoding.UTF8.GetString(buff);
+      JsonParser jsonParser = new JsonParser(json);
+      return jsonParser.GetResult();
+    }
+
+    #endregion
+
+    #region Propiedades Públicas Estáticas
+
+    /// <summary>
+    /// Datos API cargados de configuración.
+    /// </summary>
+    public static Api Api => _Settings.Api;
+
+    #endregion
+
+    #region Métodos Públicos Estáticos
+
+    /// <summary>
+    /// Crea un registro de alta mediante el API.
+    /// </summary>
+    /// <param name="invoice">Factura a remitir de alta.</param>
+    /// <returns>Resultado llamada API.</returns>
+    public static ExpandoObject Create(Invoice invoice)
+    {
+      return Post(invoice, Api.EndPointCreate);
+    }
+
+    /// <summary>
+    /// Crea un registro de alta de subsanación mediante el API.
+    /// </summary>
+    /// <param name="invoice">Factura a remitir de alta como subsanación.</param>
+    /// <returns>Resultado llamada API.</returns>
+    public static ExpandoObject CreateFix(Invoice invoice)
+    {
+      ApiInvoiceFix invoiceFix = new ApiInvoiceFix(invoice);
+      return Post(invoiceFix, Api.EndPointCreate);
+    }
+
+    /// <summary>
+    /// Crea un registro de anulación mediante el API.
+    /// </summary>
+    /// <param name="invoice">Factura a anular.</param>
+    /// <returns>Resultado llamada API.</returns>
+    public static ExpandoObject Delete(Invoice invoice)
+    {
+      return Post(invoice, Api.EndPointCancel);
+    }
+
+    /// <summary>
+    /// Crea un código QR mediante el API.
+    /// </summary>
+    /// <param name="invoice">Factura para el QR.</param>
+    /// <returns>Resultado llamada API.</returns>
+    public static ExpandoObject GetQr(Invoice invoice)
+    {
+      return Post(invoice, Api.EndPointGetQrCode);
+    }
+
+    /// <summary>
+    /// Crea un código QR mediante el API.
+    /// </summary>
+    /// <returns>Resultado llamada API.</returns>
+    public static ExpandoObject GetSellers()
+    {
+      Invoice invoice = new Invoice(string.Empty, new DateTime(1, 1, 1), string.Empty);
+      return Post(invoice, Api.EndPointGetSellers);
+    }
+
+    /// <summary>
+    /// Crea un código QR mediante el API.
+    /// </summary>
+    /// <param name="invoice">Factura para el QR.</param>
+    /// <returns>Resultado llamada API.</returns>
+    public static ExpandoObject ValidateNIF(Invoice invoice)
+    {
+      return Post(invoice, Api.EndPointValidateNIF);
+    }
+
+    /// <summary>
+    /// Recupera los registros en la AEAT realcionados con un obligado tributario determinado.
+    /// </summary>
+    /// <param name="invoice">
+    /// Factura con datos del obligado tributario y una fecha del periodo mes/año que se desea recuperar.
+    /// </param>
+    /// <returns>Resultado llamada API.</returns>
+    public static ExpandoObject GetAeatInvoices(Invoice invoice)
+    {
+      return Post(invoice, Api.EndPointGetAeatInvoices);
+    }
+
+    /// <summary>
+    /// Recupera los registros envíados según el filtro pasado como parametro.
+    /// </summary>
+    /// <param name="filterSet">Filtro.</param>
+    /// <returns>Resultado llamada API.</returns>
+    public static ExpandoObject GetFilteredList(FilterSet filterSet)
+    {
+      return Post(filterSet, Api.EndPointGetFilteredList);
+    }
+
+    /// <summary>
+    /// Envía un lote de facturas.
+    /// </summary>
+    /// <param name="invoicesBatch">Lote de facturas.</param>
+    /// <returns>Resultado llamada API.</returns>
+    public static ExpandoObject CreateBatch(InvoicesBatch invoicesBatch)
+    {
+      return Post(invoicesBatch, Api.EndPointCreateBatch);
+    }
+
+    /// <summary>
+    /// Crea Ct.
+    /// </summary>
+    /// <returns>Resultado llamada API.</returns>
+    public static ExpandoObject Ct()
+    {
+      try
+      {
+        Ct ct = new Ct();
+        return Post(ct, Api.EndPointCt);
+      }
+      catch(Exception ex)
+      {
+        Utils.Log($"Error ApiClient.Ct:\n{ex.Message}");
+        return null;
+      }
+    }
+
+    #endregion
+  }
 }

@@ -39,54 +39,44 @@
 
 namespace VeriFactu.Xml.Factu
 {
-
-    /// <summary>
-    /// Datos de la remisión por requerimiento de la AEAT del registro.
-    /// </summary>
-    public class RemisionRequerimiento
-    {
+  /// <summary>
+  /// Datos de la remisión por requerimiento de la AEAT del registro.
+  /// </summary>
+  public class RemisionRequerimiento
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// <para>Sólo cuando el motivo de la remisión sea para dar respuesta a un
-        /// requerimiento de información previo efectuado por parte de la AEAT,
-        /// se deberá indicar aquí la referencia de dicho requerimiento, lo que
-        /// forma parte del detalle de las circunstancias de generación del
-        /// registro de facturación. Por lo tanto, NO deberá informarse este
-        /// campo en el caso de una remisión voluntaria «VERI*FACTU».</para>
-        /// <para>Alfanumérico (18)</para>
-        /// </summary>
-        public string RefRequerimiento { get; set; }
+    /// <summary>
+    /// <para>Sólo cuando el motivo de la remisión sea para dar respuesta a un requerimiento de información previo
+    /// efectuado por parte de la AEAT, se deberá indicar aquí la referencia de dicho requerimiento, lo que forma parte
+    /// del detalle de las circunstancias de generación del registro de facturación. Por lo tanto, NO deberá informarse
+    /// este campo en el caso de una remisión voluntaria «VERI*FACTU».</para> <para>Alfanumérico (18)</para>
+    /// </summary>
+    public string RefRequerimiento { get; set; }
 
-        /// <summary>
-        /// <para>Indicador que especifica que se ha finalizado la remisión de registros
-        /// de facturación tras un requerimiento, especialmente útil cuando se realice
-        /// un envío o remisión múltiple y se ha de dejar constancia de que se trata del
-        /// último envío. Si no se informa este campo se entenderá que tiene valor “N”.
-        /// Solo puede cumplimentarse si el campo RefRequerimiento viene informado.</para>
-        /// <para>Alfanumérico (1) L4:</para>
-        /// <para>S: Sí</para>
-        /// <para>N: No</para>
-        /// </summary>
-        public string FinRequerimiento { get; set; }
+    /// <summary>
+    /// <para>Indicador que especifica que se ha finalizado la remisión de registros de facturación tras un
+    /// requerimiento, especialmente útil cuando se realice un envío o remisión múltiple y se ha de dejar constancia de
+    /// que se trata del último envío. Si no se informa este campo se entenderá que tiene valor “N”. Solo puede
+    /// cumplimentarse si el campo RefRequerimiento viene informado.</para> <para>Alfanumérico (1) L4:</para> <para>S:
+    /// Sí</para> <para>N: No</para>
+    /// </summary>
+    public string FinRequerimiento { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{RefRequerimiento}-{FinRequerimiento}";
-        }
-
-        #endregion
-
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{RefRequerimiento}-{FinRequerimiento}";
     }
 
+    #endregion
+  }
 }

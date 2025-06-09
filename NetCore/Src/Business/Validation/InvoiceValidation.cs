@@ -46,112 +46,95 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation
 {
-
-    /// <summary>
-    /// Implementa las validaciones establecidas en el documento
-    /// de especificaciones de Validaciones.
-    /// <para>Documento: Validaciones_Errores_Veri-Factu_BORRADOR.pdf</para>
-    /// <para>Fecha: 2024-10-15</para>
-    /// <para>Versión: 0.9.1</para>
-    /// </summary>
-    public class InvoiceValidation : IValidator
-    {
+  /// <summary>
+  /// Implementa las validaciones establecidas en el documento de especificaciones de Validaciones. <para>Documento:
+  /// Validaciones_Errores_Veri-Factu_BORRADOR.pdf</para> <para>Fecha: 2024-10-15</para> <para>Versión: 0.9.1</para>
+  /// </summary>
+  public class InvoiceValidation : IValidator
+  {
 
         #region Variables Privadas de Instancia
 
-        /// <summary>
-        /// Objeto Envelope a validar.
-        /// </summary>
-        internal Envelope _Envelope;
+    /// <summary>
+    /// Objeto Envelope a validar.
+    /// </summary>
+    internal Envelope _Envelope;
 
-        /// <summary>
-        /// Objeto RegFactuSistemaFacturacion contenido en el bloque
-        /// Body del objeto Envelope a validar.
-        /// </summary>
-        protected RegFactuSistemaFacturacion _RegFactuSistemaFacturacion;
+    /// <summary>
+    /// Objeto RegFactuSistemaFacturacion contenido en el bloque Body del objeto Envelope a validar.
+    /// </summary>
+    protected RegFactuSistemaFacturacion _RegFactuSistemaFacturacion;
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="invoiceAction">Objeto InvoiceAction a validar.</param>
-        public InvoiceValidation(InvoiceAction invoiceAction) : this(invoiceAction.Envelope)
-        {
-
-            _RegFactuSistemaFacturacion = _Envelope.Body.Registro as RegFactuSistemaFacturacion;
-
-        }
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope">Objeto Envelope a validar.</param>
-        public InvoiceValidation(Envelope envelope)
-        {
-
-            _Envelope = envelope;
-
-            _RegFactuSistemaFacturacion = envelope.Body.Registro as RegFactuSistemaFacturacion;
-
-            if (_RegFactuSistemaFacturacion == null)
-                throw new Exception($"El registro Envelope ({_Envelope})" +
-                    $" no contiene un valor del tipo 'RegFactuSistemaFacturacion'.");
-
-        }
-
-        #endregion
-
-        #region Métodos Privados Estáticos
-
-        /// <summary>
-        /// Obtiene un DateTime de la cadena de representación
-        /// de una fecha en un archivo xml.
-        /// </summary>
-        /// <param name="xmlDate">Cadena de fecha xml.</param>
-        /// <returns>DateTime de la cadena de representación
-        /// de una fecha en un archivo xml.</returns>
-        protected static DateTime FromXmlDate(string xmlDate)
-        {
-
-            var year = Convert.ToInt32(xmlDate.Substring(6, 4));
-            var month = Convert.ToInt32(xmlDate.Substring(3, 2));
-            var day = Convert.ToInt32(xmlDate.Substring(0, 2));
-
-            return new DateTime(year, month, day);
-
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Ejecuta las validaciones del obejeto de negocio.
-        /// </summary>
-        /// <returns>Lista con las descripciones de los errores
-        /// encontrados.</returns>
-        public virtual List<string> GetErrors()
-        {
-
-            var result = new List<string>();
-
-            var errorsCabecera = new ValidatorCabecera(_Envelope).GetErrors();
-            var errorsRegistrosFactura = new ValidatorRegistroFactura(_Envelope).GetErrors();
-            var errorsSistemaInrformatico = new ValidatorSistemaInformatico(_Envelope).GetErrors();
-
-            result.AddRange(errorsCabecera);
-            result.AddRange(errorsRegistrosFactura);
-            result.AddRange(errorsSistemaInrformatico);
-
-            return result;
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="invoiceAction">Objeto InvoiceAction a validar.</param>
+    public InvoiceValidation(InvoiceAction invoiceAction) : this(invoiceAction.Envelope)
+    {
+      _RegFactuSistemaFacturacion = _Envelope.Body.Registro as RegFactuSistemaFacturacion;
     }
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">Objeto Envelope a validar.</param>
+    public InvoiceValidation(Envelope envelope)
+    {
+      _Envelope = envelope;
+      _RegFactuSistemaFacturacion = envelope.Body.Registro as RegFactuSistemaFacturacion;
+      if(_RegFactuSistemaFacturacion == null)
+      {
+        throw new Exception(
+          $"El registro Envelope ({_Envelope})" +
+                          $" no contiene un valor del tipo 'RegFactuSistemaFacturacion'.");
+      }
+    }
+
+    #endregion
+
+    #region Métodos Privados Estáticos
+
+    /// <summary>
+    /// Obtiene un DateTime de la cadena de representación de una fecha en un archivo xml.
+    /// </summary>
+    /// <param name="xmlDate">Cadena de fecha xml.</param>
+    /// <returns>
+    /// DateTime de la cadena de representación de una fecha en un archivo xml.
+    /// </returns>
+    protected static DateTime FromXmlDate(string xmlDate)
+    {
+      int year = Convert.ToInt32(xmlDate.Substring(6, 4));
+      int month = Convert.ToInt32(xmlDate.Substring(3, 2));
+      int day = Convert.ToInt32(xmlDate.Substring(0, 2));
+      return new DateTime(year, month, day);
+    }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Ejecuta las validaciones del obejeto de negocio.
+    /// </summary>
+    /// <returns>
+    /// Lista con las descripciones de los errores encontrados.
+    /// </returns>
+    public virtual List<string> GetErrors()
+    {
+      List<string> result = new List<string>();
+      List<string> errorsCabecera = new ValidatorCabecera(_Envelope).GetErrors();
+      List<string> errorsRegistrosFactura = new ValidatorRegistroFactura(_Envelope).GetErrors();
+      List<string> errorsSistemaInrformatico = new ValidatorSistemaInformatico(_Envelope).GetErrors();
+      result.AddRange(errorsCabecera);
+      result.AddRange(errorsRegistrosFactura);
+      result.AddRange(errorsSistemaInrformatico);
+      return result;
+    }
+
+    #endregion
+  }
 }

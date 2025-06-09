@@ -39,63 +39,53 @@
 
 namespace VeriFactu.Xml.Factu.Alta
 {
+  /// <summary>
+  /// Clave del tipo de factura (L2).
+  /// </summary>
+  public enum TipoFactura
+  {
+    /// <summary>
+    /// Factura (art. 6, 7.2 y 7.3 del RD 1619/2012).
+    /// </summary>
+    F1,
 
     /// <summary>
-    /// Clave del tipo de factura (L2).
+    /// Factura Simplificada y Facturas sin identificación del destinatario art. 6.1.d) RD 1619/2012.
     /// </summary>
-    public enum TipoFactura
-    {
+    F2,
 
-        /// <summary>
-        /// Factura (art. 6, 7.2 y 7.3 del RD 1619/2012).
-        /// </summary>
-        F1,
+    /// <summary>
+    /// Factura emitida en sustitución de facturas simplificadas facturadas y declaradas.
+    /// </summary>
+    F3,
 
-        /// <summary>
-        /// Factura Simplificada y Facturas sin identificación
-        /// del destinatario art. 6.1.d) RD 1619/2012.
-        /// </summary>
-        F2,
+    /// <summary>
+    /// Factura Rectificativa (Error fundado en derecho y Art. 80 Uno Dos y Seis LIVA).
+    /// </summary>
+    R1,
 
-        /// <summary>
-        /// Factura emitida en sustitución de facturas
-        /// simplificadas facturadas y declaradas.
-        /// </summary>
-        F3,
+    /// <summary>
+    /// Factura Rectificativa (Art. 80.3). Cuando el destinatario de las operaciones sujetas al Impuesto no haya hecho
+    /// efectivo el pago de las cuotas repercutidas y siempre que, con posterioridad al devengo de la operación, se
+    /// dicte auto de declaración de concurso.
+    /// </summary>
+    R2,
 
-        /// <summary>
-        /// Factura Rectificativa (Error fundado en derecho y
-        /// Art. 80 Uno Dos y Seis LIVA).
-        /// </summary>
-        R1,
+    /// <summary>
+    /// Factura Rectificativa (Art. 80.4). Cuando los créditos correspondientes a las cuotas repercutidas por las
+    /// operaciones gravadas sean total o parcialmente incobrables.
+    /// </summary>
+    R3,
 
-        /// <summary>
-        /// Factura Rectificativa (Art. 80.3). Cuando el destinatario
-        /// de las operaciones sujetas al Impuesto no haya hecho
-        /// efectivo el pago de las cuotas repercutidas y siempre que,
-        /// con posterioridad al devengo de la operación, se dicte
-        /// auto de declaración de concurso.
-        /// </summary>
-        R2,
+    /// <summary>
+    /// Factura Rectificativa (Resto).
+    /// </summary>
+    R4,
 
-        /// <summary>
-        /// Factura Rectificativa (Art. 80.4). Cuando los créditos
-        /// correspondientes a las cuotas repercutidas por las
-        /// operaciones gravadas sean total o parcialmente incobrables.
-        /// </summary>
-        R3,
-
-        /// <summary>
-        /// Factura Rectificativa (Resto).
-        /// </summary>
-        R4,
-
-        /// <summary>
-        /// Factura Rectificativa en facturas simplificadas. Factura
-        /// emitida en sustitución de facturas simplificadas facturadas y declaradas
-        /// </summary>
-        R5
-
-    }
-
+    /// <summary>
+    /// Factura Rectificativa en facturas simplificadas. Factura emitida en sustitución de facturas simplificadas
+    /// facturadas y declaradas
+    /// </summary>
+    R5
+  }
 }

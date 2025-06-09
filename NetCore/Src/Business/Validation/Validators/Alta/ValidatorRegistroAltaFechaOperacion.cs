@@ -44,60 +44,55 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta FechaOperacion.
-    /// </summary>
-    public class ValidatorRegistroAltaFechaOperacion : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta FechaOperacion.
+  /// </summary>
+  public class ValidatorRegistroAltaFechaOperacion : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        /// <param name="registroAlta"> Registro de alta del bloque Body.</param>
-        public ValidatorRegistroAltaFechaOperacion(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    /// <param name="registroAlta">Registro de alta del bloque Body.</param>
+    public ValidatorRegistroAltaFechaOperacion(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // 7. FechaOperacion
+      if(_FechaOperacion != null)
+      {
+        // La FechaOperacion no debe ser inferior a la fecha actual menos veinte años y no debe ser superior al año siguiente de la fecha actual.
+        if(DateTime.Now.AddYears(-20).CompareTo(_FechaOperacion) > 0)
         {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                $" La FechaOperacion ({_FechaOperacion:yyyy-MM-dd}) no debe ser inferior a la fecha actual menos veinte años.");
         }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
+        if((_FechaOperacion ?? DateTime.Now).Year > DateTime.Now.Year)
         {
-
-            var result = new List<string>();
-
-            // 7. FechaOperacion
-
-            if (_FechaOperacion != null)
-            {
-
-                // La FechaOperacion no debe ser inferior a la fecha actual menos veinte años y no debe ser superior al año siguiente de la fecha actual.
-                if (DateTime.Now.AddYears(-20).CompareTo(_FechaOperacion) > 0)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" La FechaOperacion ({_FechaOperacion:yyyy-MM-dd}) no debe ser inferior a la fecha actual menos veinte años.");
-
-                if ((_FechaOperacion ?? DateTime.Now).Year > DateTime.Now.Year)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" La FechaOperacion ({_FechaOperacion:yyyy-MM-dd}) no debe ser superior al año siguiente de la fecha actual.");
-
-            }
-
-            return result;
-
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                $" La FechaOperacion ({_FechaOperacion:yyyy-MM-dd}) no debe ser superior al año siguiente de la fecha actual.");
         }
-
-        #endregion
-
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

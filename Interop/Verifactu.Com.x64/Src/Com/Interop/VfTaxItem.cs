@@ -45,161 +45,147 @@ namespace Verifactu
 
     #region Interfaz COM
 
-    /// <summary>
-    /// Interfaz COM para la clase TaxItem.
-    /// </summary>
-    [Guid("3F7B92A3-71FA-4D34-8ACF-5CDD9C5738CA")]
-    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
-    [ComVisible(true)]
-    public interface IVfTaxItem
-    {
+  /// <summary>
+  /// Interfaz COM para la clase TaxItem.
+  /// </summary>
+  [Guid("3F7B92A3-71FA-4D34-8ACF-5CDD9C5738CA")]
+  [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+  [ComVisible(true)]
+  public interface IVfTaxItem
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// <para>Impuesto de aplicación. Si no se informa este campo
-        /// se entenderá que el impuesto de aplicación es el IVA.
-        /// Este campo es necesario porque contribuye a completar el
-        /// detalle de la tipología de la factura.</para>
-        /// <para>Alfanumérico (1) L1:</para>
-        /// <para>01: Impuesto sobre el Valor Añadido (IVA)</para>
-        /// <para>02: Impuesto sobre la Producción, los Servicios y la Importación (IPSI) de Ceuta y Melilla</para>
-        /// <para>03: Impuesto General Indirecto Canario (IGIC)</para>
-        /// <para>05: Otros</para>
-        /// </summary>
-        string Tax { get; set; }
-
-        /// <summary>
-        /// Esquema impositivo.
-        /// </summary>        
-        string TaxScheme { get; set; }
-
-        /// <summary>
-        /// Identificador la categoría de impuestos.
-        /// </summary>        
-        string TaxType { get; set; }
-
-        /// <summary>
-        /// <para>Campo que especifica la causa de exención.</para>
-        /// <para>Alfanumérico(2). L10.</para>
-        /// </summary>
-        string TaxException { get; set; }
-
-        /// <summary>
-        /// Base imponible.
-        /// </summary>
-        float TaxBase { get; set; }
-
-        /// <summary>
-        /// Tipo impositivo.
-        /// </summary>
-        float TaxRate { get; set; }
-
-        /// <summary>
-        /// Importe cuota impuesto.
-        /// </summary>
-        float TaxAmount { get; set; }
-
-        /// <summary>
-        /// Tipo impositivo recargo.
-        /// </summary>
-        float TaxRateSurcharge { get; set; }
-
-        /// <summary>
-        /// Importe cuota recargo impuesto.
-        /// </summary>
-        float TaxAmountSurcharge { get; set; }
-
-        #endregion
-
-    }
-
-    #endregion
-
-    #region Clase COM
+    /// <summary>
+    /// <para>Impuesto de aplicación. Si no se informa este campo se entenderá que el impuesto de aplicación es el IVA. Este
+    /// campo es necesario porque contribuye a completar el detalle de la tipología de la factura.</para> <para>Alfanumérico
+    /// (1) L1:</para> <para>01: Impuesto sobre el Valor Añadido (IVA)</para> <para>02: Impuesto sobre la Producción, los
+    /// Servicios y la Importación (IPSI) de Ceuta y Melilla</para> <para>03: Impuesto General Indirecto Canario
+    /// (IGIC)</para> <para>05: Otros</para>
+    /// </summary>
+    string Tax { get; set; }
 
     /// <summary>
-    /// Representa una línea de impuestos.
+    /// Esquema impositivo.
+    /// </summary>        
+    string TaxScheme { get; set; }
+
+    /// <summary>
+    /// Identificador la categoría de impuestos.
+    /// </summary>        
+    string TaxType { get; set; }
+
+    /// <summary>
+    /// <para>Campo que especifica la causa de exención.</para> <para>Alfanumérico(2). L10.</para>
     /// </summary>
-    [Guid("F861507A-AFB0-4922-B694-554112103F75")]    
-    [ClassInterface(ClassInterfaceType.None)]
-    [ComVisible(true)]
-    [ProgId("Verifactu.VfTaxItem")]
-    public class VfTaxItem : IVfTaxItem
-    {
+    string TaxException { get; set; }
+
+    /// <summary>
+    /// Base imponible.
+    /// </summary>
+    float TaxBase { get; set; }
+
+    /// <summary>
+    /// Tipo impositivo.
+    /// </summary>
+    float TaxRate { get; set; }
+
+    /// <summary>
+    /// Importe cuota impuesto.
+    /// </summary>
+    float TaxAmount { get; set; }
+
+    /// <summary>
+    /// Tipo impositivo recargo.
+    /// </summary>
+    float TaxRateSurcharge { get; set; }
+
+    /// <summary>
+    /// Importe cuota recargo impuesto.
+    /// </summary>
+    float TaxAmountSurcharge { get; set; }
+
+    #endregion
+  }
+
+  #endregion
+
+  #region Clase COM
+
+  /// <summary>
+  /// Representa una línea de impuestos.
+  /// </summary>
+  [Guid("F861507A-AFB0-4922-B694-554112103F75")]
+  [ClassInterface(ClassInterfaceType.None)]
+  [ComVisible(true)]
+  [ProgId("Verifactu.VfTaxItem")]
+  public class VfTaxItem : IVfTaxItem
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor. Para COM necesitamos un constructor
-        /// sin parametros.
-        /// </summary>
-        public VfTaxItem()
-        {
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// <para>Impuesto de aplicación. Si no se informa este campo
-        /// se entenderá que el impuesto de aplicación es el IVA.
-        /// Este campo es necesario porque contribuye a completar el
-        /// detalle de la tipología de la factura.</para>
-        /// <para>Alfanumérico (1) L1:</para>
-        /// <para>01: Impuesto sobre el Valor Añadido (IVA)</para>
-        /// <para>02: Impuesto sobre la Producción, los Servicios y la Importación (IPSI) de Ceuta y Melilla</para>
-        /// <para>03: Impuesto General Indirecto Canario (IGIC)</para>
-        /// <para>05: Otros</para>
-        /// </summary>
-        public string Tax { get; set; }
-
-        /// <summary>
-        /// Esquema impositivo.
-        /// </summary>        
-        public string TaxScheme { get; set; }
-
-        /// <summary>
-        /// Identificador la categoría de impuestos.
-        /// </summary>        
-        public string TaxType { get; set; }
-
-        /// <summary>
-        /// <para>Campo que especifica la causa de exención.</para>
-        /// <para>Alfanumérico(2). L10.</para>
-        /// </summary>
-        public string TaxException { get; set; }
-
-        /// <summary>
-        /// Base imponible.
-        /// </summary>
-        public float TaxBase { get; set; }
-
-        /// <summary>
-        /// Tipo impositivo.
-        /// </summary>
-        public float TaxRate { get; set; }
-
-        /// <summary>
-        /// Importe cuota impuesto.
-        /// </summary>
-        public float TaxAmount { get; set; }
-
-        /// <summary>
-        /// Tipo impositivo recargo.
-        /// </summary>
-        public float TaxRateSurcharge { get; set; }
-
-        /// <summary>
-        /// Importe cuota recargo impuesto.
-        /// </summary>
-        public float TaxAmountSurcharge { get; set; }
-
-        #endregion
-
-    }
+    /// <summary>
+    /// Constructor. Para COM necesitamos un constructor sin parametros.
+    /// </summary>
+    public VfTaxItem()
+        { }
 
     #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// <para>Impuesto de aplicación. Si no se informa este campo se entenderá que el impuesto de aplicación es el IVA.
+    /// Este campo es necesario porque contribuye a completar el detalle de la tipología de la factura.</para>
+    /// <para>Alfanumérico (1) L1:</para> <para>01: Impuesto sobre el Valor Añadido (IVA)</para> <para>02: Impuesto
+    /// sobre la Producción, los Servicios y la Importación (IPSI) de Ceuta y Melilla</para> <para>03: Impuesto General
+    /// Indirecto Canario (IGIC)</para> <para>05: Otros</para>
+    /// </summary>
+    public string Tax { get; set; }
+
+    /// <summary>
+    /// Esquema impositivo.
+    /// </summary>        
+    public string TaxScheme { get; set; }
+
+    /// <summary>
+    /// Identificador la categoría de impuestos.
+    /// </summary>        
+    public string TaxType { get; set; }
+
+    /// <summary>
+    /// <para>Campo que especifica la causa de exención.</para> <para>Alfanumérico(2). L10.</para>
+    /// </summary>
+    public string TaxException { get; set; }
+
+    /// <summary>
+    /// Base imponible.
+    /// </summary>
+    public float TaxBase { get; set; }
+
+    /// <summary>
+    /// Tipo impositivo.
+    /// </summary>
+    public float TaxRate { get; set; }
+
+    /// <summary>
+    /// Importe cuota impuesto.
+    /// </summary>
+    public float TaxAmount { get; set; }
+
+    /// <summary>
+    /// Tipo impositivo recargo.
+    /// </summary>
+    public float TaxRateSurcharge { get; set; }
+
+    /// <summary>
+    /// Importe cuota recargo impuesto.
+    /// </summary>
+    public float TaxAmountSurcharge { get; set; }
+
+    #endregion
+  }
+
+  #endregion
 
 }

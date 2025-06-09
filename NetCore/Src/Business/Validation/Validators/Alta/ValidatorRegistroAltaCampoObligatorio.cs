@@ -43,144 +43,157 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta DetalleDesglose CuotaTotal.
-    /// </summary>
-    public class ValidatorRegistroAltaCampoObligatorio : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta DetalleDesglose CuotaTotal.
+  /// </summary>
+  public class ValidatorRegistroAltaCampoObligatorio : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Sobre SOAP envío.</param>
-        /// <param name="registroAlta"> Registro alta factura.</param>
-        public ValidatorRegistroAltaCampoObligatorio(Envelope envelope, 
-            RegistroAlta registroAlta) : base(envelope, registroAlta)
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">Sobre SOAP envío.</param>
+    /// <param name="registroAlta">Registro alta factura.</param>
+    public ValidatorRegistroAltaCampoObligatorio(
+      Envelope envelope,
+      RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      if(string.IsNullOrEmpty(_RegistroAlta.IDVersion))
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                              $" El campo IDVersion es obligatorio");
+      }
+      if(string.IsNullOrEmpty(_RegistroAlta.IDFacturaAlta.IDEmisorFactura))
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                              $" El campo IDFactura.IDEmisorFactura es obligatorio");
+      }
+      if(string.IsNullOrEmpty(_RegistroAlta.IDFacturaAlta.NumSerieFactura))
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                              $" El campo IDFactura.NumSerieFactura es obligatorio");
+      }
+      if(string.IsNullOrEmpty(_RegistroAlta.IDFacturaAlta.FechaExpedicionFactura))
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                              $" El campo IDFactura.FechaExpedicionFactura es obligatorio");
+      }
+      if(string.IsNullOrEmpty(_RegistroAlta.NombreRazonEmisor))
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                              $" El campo NombreRazonEmisor es obligatorio");
+      }
+      if(_RegistroAlta.FacturasRectificadas != null && _RegistroAlta.FacturasRectificadas.Length > 0)
+      {
+        foreach(Xml.IDFactura rectificada in _RegistroAlta.FacturasRectificadas)
         {
+          if(string.IsNullOrEmpty(rectificada.IDEmisorFactura))
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta.FacturasRectificadas ({rectificada}):" +
+                                          $" El campo IDEmisorFactura es obligatorio");
+          }
+          if(string.IsNullOrEmpty(rectificada.NumSerieFactura))
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta.FacturasRectificadas ({rectificada}):" +
+                                          $" El campo NumSerieFactura es obligatorio");
+          }
+          if(string.IsNullOrEmpty(rectificada.FechaExpedicionFactura))
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta.FacturasRectificadas ({rectificada}):" +
+                                          $" El campo FechaExpedicionFactura es obligatorio");
+          }
         }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
+      }
+      if(string.IsNullOrEmpty(_RegistroAlta.DescripcionOperacion))
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                              $" El campo DescripcionOperacion es obligatorio");
+      }
+      // Tercero
+      if(_RegistroAlta.Tercero != null)
+      {
+        if(string.IsNullOrEmpty(_RegistroAlta.Tercero.NombreRazon))
         {
-
-            var result = new List<string>();
-
-            if (string.IsNullOrEmpty(_RegistroAlta.IDVersion))
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" El campo IDVersion es obligatorio");
-
-            if (string.IsNullOrEmpty(_RegistroAlta.IDFacturaAlta.IDEmisorFactura))
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" El campo IDFactura.IDEmisorFactura es obligatorio");
-
-            if (string.IsNullOrEmpty(_RegistroAlta.IDFacturaAlta.NumSerieFactura))
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" El campo IDFactura.NumSerieFactura es obligatorio");
-
-            if (string.IsNullOrEmpty(_RegistroAlta.IDFacturaAlta.FechaExpedicionFactura))
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" El campo IDFactura.FechaExpedicionFactura es obligatorio");
-
-            if (string.IsNullOrEmpty(_RegistroAlta.NombreRazonEmisor))
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" El campo NombreRazonEmisor es obligatorio");
-
-            if (_RegistroAlta.FacturasRectificadas!= null &&_RegistroAlta.FacturasRectificadas.Length > 0) 
-            {
-
-                foreach (var rectificada in _RegistroAlta.FacturasRectificadas) 
-                {
-
-                    if (string.IsNullOrEmpty(rectificada.IDEmisorFactura))
-                        result.Add($"Error en el bloque RegistroAlta.FacturasRectificadas ({rectificada}):" +
-                                $" El campo IDEmisorFactura es obligatorio");
-
-                    if (string.IsNullOrEmpty(rectificada.NumSerieFactura))
-                        result.Add($"Error en el bloque RegistroAlta.FacturasRectificadas ({rectificada}):" +
-                                $" El campo NumSerieFactura es obligatorio");
-
-                    if (string.IsNullOrEmpty(rectificada.FechaExpedicionFactura))
-                        result.Add($"Error en el bloque RegistroAlta.FacturasRectificadas ({rectificada}):" +
-                                $" El campo FechaExpedicionFactura es obligatorio");
-
-                }
-
-            }
-
-            if (string.IsNullOrEmpty(_RegistroAlta.DescripcionOperacion))
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" El campo DescripcionOperacion es obligatorio");
-
-            // Tercero
-            if (_RegistroAlta.Tercero != null) 
-            {
-
-                if (string.IsNullOrEmpty(_RegistroAlta.Tercero.NombreRazon))
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                            $" El campo Tercero.NombreRazon es obligatorio");
-
-                if (_RegistroAlta.Tercero.IDOtro == null  && string.IsNullOrEmpty(_RegistroAlta.Tercero.NIF))
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                            $" El campo Tercero.NIF es obligatorio");
-
-                if (_RegistroAlta.Tercero.IDOtro != null && string.IsNullOrEmpty(_RegistroAlta.Tercero.IDOtro.ID))
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                            $" El campo Tercero.IDOtro.ID es obligatorio");
-
-            }
-
-
-            // Destinatarios
-
-            if (_RegistroAlta.Destinatarios?.Count > 0)
-            {
-
-                foreach (var destinatario in _RegistroAlta.Destinatarios)
-                {
-
-                    if (string.IsNullOrEmpty(destinatario.NombreRazon))
-                        result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                                $" El campo Destinatarios.NombreRazon es obligatorio");
-
-                    if (destinatario.IDOtro == null && string.IsNullOrEmpty(destinatario.NIF))
-                        result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                                $" El campo Destinatarios.NIF es obligatorio");
-
-                    if (destinatario.IDOtro != null && string.IsNullOrEmpty(destinatario.IDOtro.ID))
-                        result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                                $" El campo Destinatarios.IDOtro.ID es obligatorio");
-
-
-                }
-
-            }
-
-
-            if (string.IsNullOrEmpty(_RegistroAlta.CuotaTotal))
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" El campo CuotaTotal es obligatorio");
-
-
-            if (string.IsNullOrEmpty(_RegistroAlta.ImporteTotal))
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" El campo ImporteTotal es obligatorio");
-
-            return result;
-
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                    $" El campo Tercero.NombreRazon es obligatorio");
         }
-
-        #endregion
-
+        if(_RegistroAlta.Tercero.IDOtro == null && string.IsNullOrEmpty(_RegistroAlta.Tercero.NIF))
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                    $" El campo Tercero.NIF es obligatorio");
+        }
+        if(_RegistroAlta.Tercero.IDOtro != null && string.IsNullOrEmpty(_RegistroAlta.Tercero.IDOtro.ID))
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                    $" El campo Tercero.IDOtro.ID es obligatorio");
+        }
+      }
+      // Destinatarios
+      if(_RegistroAlta.Destinatarios?.Count > 0)
+      {
+        foreach(Xml.Factu.Interlocutor destinatario in _RegistroAlta.Destinatarios)
+        {
+          if(string.IsNullOrEmpty(destinatario.NombreRazon))
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                          $" El campo Destinatarios.NombreRazon es obligatorio");
+          }
+          if(destinatario.IDOtro == null && string.IsNullOrEmpty(destinatario.NIF))
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                          $" El campo Destinatarios.NIF es obligatorio");
+          }
+          if(destinatario.IDOtro != null && string.IsNullOrEmpty(destinatario.IDOtro.ID))
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                                          $" El campo Destinatarios.IDOtro.ID es obligatorio");
+          }
+        }
+      }
+      if(string.IsNullOrEmpty(_RegistroAlta.CuotaTotal))
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                              $" El campo CuotaTotal es obligatorio");
+      }
+      if(string.IsNullOrEmpty(_RegistroAlta.ImporteTotal))
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                              $" El campo ImporteTotal es obligatorio");
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

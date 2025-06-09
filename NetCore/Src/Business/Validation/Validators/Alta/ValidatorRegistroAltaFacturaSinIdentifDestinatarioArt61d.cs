@@ -43,53 +43,47 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta FacturaSinIdentifDestinatarioArt61d.
-    /// </summary>
-    public class ValidatorRegistroAltaFacturaSinIdentifDestinatarioArt61d : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta FacturaSinIdentifDestinatarioArt61d.
+  /// </summary>
+  public class ValidatorRegistroAltaFacturaSinIdentifDestinatarioArt61d : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        /// <param name="registroAlta"> Registro de alta del bloque Body.</param>
-        public ValidatorRegistroAltaFacturaSinIdentifDestinatarioArt61d(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    /// <param name="registroAlta">Registro de alta del bloque Body.</param>
+    public ValidatorRegistroAltaFacturaSinIdentifDestinatarioArt61d(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
 
-        #endregion
+    #endregion
 
-        #region Métodos Privados de Instancia
+    #region Métodos Privados de Instancia
 
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // 9.FacturaSinIdentifDestinatarioArt61d
-
-            // Sólo se podrá rellenar con “S” si TipoFactura=”F2” o “R5”.
-
-            if (_RegistroAlta.FacturaSinIdentifDestinatarioArt61d == "S" && !_IsSimplificada)
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" La propiedad FacturaSinIdentifDestinatarioArt61d sólo se puede rellenar" +
-                        $" con “S” si TipoFactura=”F2” o “R5”.");
-
-            return result;
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // 9.FacturaSinIdentifDestinatarioArt61d
+      // Sólo se podrá rellenar con “S” si TipoFactura=”F2” o “R5”.
+      if(_RegistroAlta.FacturaSinIdentifDestinatarioArt61d == "S" && !_IsSimplificada)
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                              $" La propiedad FacturaSinIdentifDestinatarioArt61d sólo se puede rellenar" +
+                              $" con “S” si TipoFactura=”F2” o “R5”.");
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

@@ -39,31 +39,24 @@
 
 namespace VeriFactu.Net.Rest.Json.Serializer
 {
-
-    /// <summary>
-    /// Serializador para cadenas.
-    /// </summary>
-    internal class JsonDefaulSerializer : IJsonSerializer
-    {
+  /// <summary>
+  /// Serializador para cadenas.
+  /// </summary>
+  internal class JsonDefaulSerializer : IJsonSerializer
+  {
 
         #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Devuelve la representación en JSON
-        /// de la propiedad facilitada para la
-        /// instancia facilitada.
-        /// </summary>
-        /// <param name="value">Valor a serializar.</param>
-        /// <returns>Representación JSON de la propiedad.</returns>
-        public string ToJson(object value)
-        {
-
-            return $"{value}";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Devuelve la representación en JSON de la propiedad facilitada para la instancia facilitada.
+    /// </summary>
+    /// <param name="value">Valor a serializar.</param>
+    /// <returns>Representación JSON de la propiedad.</returns>
+    public string ToJson(object value)
+    {
+      return $"{value}";
     }
 
+    #endregion
+  }
 }

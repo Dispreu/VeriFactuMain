@@ -37,159 +37,135 @@
     address: info@irenesolutions.com
  */
 
-using VeriFactu.Net.Rest.Json.Serializer;
 using System.Collections;
 using System.Reflection;
 using System.Text;
+using VeriFactu.Net.Rest.Json.Serializer;
 
 namespace VeriFactu.Net.Rest.Json
 {
-
-    /// <summary>
-    /// Clase serializable en JSON.
-    /// </summary>
-    public class JsonSerializable
-    {
+  /// <summary>
+  /// Clase serializable en JSON.
+  /// </summary>
+  public class JsonSerializable
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        public JsonSerializable() 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    public JsonSerializable()
+    {
+      TransactionID = $"{Assembly.GetExecutingAssembly().GetName().Name}.{Assembly.GetExecutingAssembly().GetName().Version}";
+    }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Añade fragmento json al StringBuilder de  destino.
+    /// </summary>
+    /// <param name="stringBuilder">
+    /// StringBuilder de  destino.
+    /// </param>
+    /// <param name="keyValueText">Fragmento json clave-valor.</param>
+    private void AppendTokenJson(StringBuilder stringBuilder, string keyValueText)
+    {
+      string json = (stringBuilder.Length == 0) ? string.Empty : ",";
+      json += keyValueText;
+      stringBuilder.Append(json);
+    }
+
+    /// <summary>
+    /// Añade fragmento json al StringBuilder de  destino.
+    /// </summary>
+    /// <param name="stringBuilder">
+    /// StringBuilder de  destino.
+    /// </param>
+    /// <param name="pInf">
+    /// Info de propiedad que contiene el valor a serializar.
+    /// </param>
+    /// <param name="value">Valor a serializar.</param>
+    private void AppendJson(StringBuilder stringBuilder, PropertyInfo pInf, object value)
+    {
+      if(typeof(JsonSerializable).IsAssignableFrom(pInf.PropertyType))
+      {
+        AppendTokenJson(stringBuilder, $"\"{pInf.Name}\"={{{this}}}");
+      }
+      else
+      {
+        string keyValueJson = new JsonSerializer(pInf, value).ToJson();
+        if(keyValueJson != null)
         {
-
-            TransactionID = $"{Assembly.GetExecutingAssembly().GetName().Name}.{Assembly.GetExecutingAssembly().GetName().Version}";
-
+          AppendTokenJson(stringBuilder, new JsonSerializer(pInf, value).ToJson());
         }
+      }
+    }
 
-        #endregion
+    #endregion      
 
-        #region Métodos Privados de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Añade fragmento json al StringBuilder de 
-        /// destino.
-        /// </summary>
-        /// <param name="stringBuilder">StringBuilder de 
-        /// destino.</param>
-        /// <param name="keyValueText">Fragmento json clave-valor.</param>
-        private void AppendTokenJson(StringBuilder stringBuilder, string keyValueText)
+    /// <summary>
+    /// Representación de la clase en formato JSON.
+    /// </summary>
+    /// <returns>
+    /// Representación de la clase en formato JSON.
+    /// </returns>
+    public string ToJson()
+    {
+      StringBuilder stringBuilder = new StringBuilder();
+      foreach(PropertyInfo pInf in GetType().GetProperties())
+      {
+        object value = pInf.GetValue(this);
+        if(value == null)
         {
-
-            string json = (stringBuilder.Length == 0) ? "" : ",";
-            json += keyValueText;
-            stringBuilder.Append(json);
-
+          continue;
         }
-
-        /// <summary>
-        /// Añade fragmento json al StringBuilder de 
-        /// destino.
-        /// </summary>
-        /// <param name="stringBuilder">StringBuilder de 
-        /// destino.</param>
-        /// <param name="pInf">Info de propiedad que contiene el valor
-        /// a serializar.</param>
-        /// <param name="value">Valor a serializar.</param>
-        private void AppendJson(StringBuilder stringBuilder, PropertyInfo pInf, object value)
+        IList iList = value as IList;
+        if(iList == null || pInf.PropertyType == typeof(byte[]))
         {
-
-            if (typeof(JsonSerializable).IsAssignableFrom(pInf.PropertyType))
+          AppendJson(stringBuilder, pInf, value);
+          continue;
+        }
+        else
+        {
+          string[] jsons = new string[iList.Count];
+          for(int i = 0; i < iList.Count; i++)
+          {
+            object item = iList[i];
+            if(typeof(JsonSerializable).IsAssignableFrom(item.GetType()))
             {
-
-                AppendTokenJson(stringBuilder, $"\"{pInf.Name}\"={{{this}}}");
-
+              jsons[i] = (item as JsonSerializable)?.ToJson();
             }
             else
             {
-
-                var keyValueJson = new JsonSerializer(pInf, value).ToJson();
-
-                if (keyValueJson != null)
-                    AppendTokenJson(stringBuilder, new JsonSerializer(pInf, value).ToJson());
-
+              jsons[i] = new JsonSerializer(string.Empty, item).ToJson();
             }
-
+          }
+          AppendTokenJson(stringBuilder, $"\"{pInf.Name}\":[{string.Join(",", jsons)}]");
         }
-
-        #endregion      
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Representación de la clase en formato
-        /// JSON.
-        /// </summary>
-        /// <returns>Representación de la clase en formato
-        /// JSON.</returns>
-        public string ToJson()
-        {
-
-            var stringBuilder = new StringBuilder();
-
-            foreach (var pInf in GetType().GetProperties())
-            {
-
-                var value = pInf.GetValue(this);
-
-                if (value == null)
-                    continue;
-
-                var iList = value as IList;
-
-                if (iList == null || pInf.PropertyType == typeof(byte[]))
-                {
-
-                    AppendJson(stringBuilder, pInf, value);
-                    continue;
-
-                }
-                else
-                {
-
-                    string[] jsons = new string[iList.Count];
-
-                    for (int i = 0; i < iList.Count; i++)
-                    {
-
-                        var item = iList[i];
-
-                        if (typeof(JsonSerializable).IsAssignableFrom(item.GetType()))
-                            jsons[i] = (item as JsonSerializable)?.ToJson();
-                        else
-                            jsons[i] = new JsonSerializer("", item).ToJson();
-
-                    }
-
-                    AppendTokenJson(stringBuilder, $"\"{pInf.Name}\":[{string.Join(",", jsons)}]");
-
-                }
-
-            }
-
-            return $"{{{stringBuilder}}}";
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// Clave de acceso al API REST para Verifactu de
-        /// Irene Solutions. Puede conseguir su clave en
-        /// https://facturae.irenesolutions.com/verifactu/go
-        /// </summary>
-        public string ServiceKey { get; set; }
-
-        /// <summary>
-        /// Identificación transacción.
-        /// </summary>
-        public string TransactionID { get; set; }
-
-        #endregion
-
+      }
+      return $"{{{stringBuilder}}}";
     }
 
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// Clave de acceso al API REST para Verifactu de Irene Solutions. Puede conseguir su clave en
+    /// https://facturae.irenesolutions.com/verifactu/go
+    /// </summary>
+    public string ServiceKey { get; set; }
+
+    /// <summary>
+    /// Identificación transacción.
+    /// </summary>
+    public string TransactionID { get; set; }
+
+    #endregion
+  }
 }

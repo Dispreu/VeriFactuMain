@@ -42,114 +42,82 @@ using System.Text.RegularExpressions;
 
 namespace VeriFactu.Net.Rest.Json.Parser.Lexer.Tokens
 {
-
-    /// <summary>
-    /// Fragmento obtenido del análisis léxico de una cadena
-    /// JSON que representa un valor de propiedad string.
-    /// </summary>
-    internal class JsonString : JsonToken
-    {
+  /// <summary>
+  /// Fragmento obtenido del análisis léxico de una cadena JSON que representa un valor de propiedad string.
+  /// </summary>
+  internal class JsonString : JsonToken
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Longitud de la cadena de texto.
-        /// </summary>
+    /// <summary>
+    /// Longitud de la cadena de texto.
+    /// </summary>
 
-        internal override int Length
-        {
+    internal override int Length => GetLength();
 
-            get
-            {
+    /// <summary>
+    /// Valor de la cadena de texto.
+    /// </summary>
+    internal override string Value => JsonLexer.JsonText.Substring(Start, Length);
 
-                return GetLength();
+    #endregion
 
-            }
+    #region Construtores de Instancia
 
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="jsonLexer">Analizador léxico.</param>
+    /// <param name="start">
+    /// Posición del inicio del fragmento de texto dentro de la cadena completa JSON.
+    /// </param>
+    internal JsonString(JsonLexer jsonLexer, int start) : base(jsonLexer, start)
+        { }
 
-        /// <summary>
-        /// Valor de la cadena de texto.
-        /// </summary>
-        internal override string Value
-        {
+    #endregion
 
-            get
-            {
+    #region Métodos Privados de Instancia
 
-                return JsonLexer.JsonText.Substring(Start, Length);
-
-            }
-
-        }
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="jsonLexer">Analizador léxico.</param>
-        /// <param name="start">Posición del inicio del
-        /// fragmento de texto dentro de la cadena completa JSON.</param>
-        internal JsonString(JsonLexer jsonLexer, int start) : base(jsonLexer, start)
-        {
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Devuelve un entero que representa la longitud
-        /// de la cadena de texto.
-        /// </summary>
-        /// <returns> Entero que representa la longitud
-        /// de la cadena de texto.</returns>
-        internal int GetLength() 
-        {
-
-            var curCharIndex = Start;
-            var prevChar = JsonLexer.JsonText[curCharIndex];
-            var curChar = JsonLexer.JsonText[++curCharIndex];
-
-            while (curCharIndex < JsonLexer.JsonText.Length && (curChar != '"' || prevChar == '\\'))
-            {
-
-                prevChar = JsonLexer.JsonText[curCharIndex];
-                curChar = JsonLexer.JsonText[++curCharIndex];
-
-            }
-
-            return curCharIndex - Start + 1;
-
-
-        }
-
-        /// <summary>
-        /// Convierte el valor del fragmento de texto
-        /// en el tipo al que se interpreta que pertenece.
-        /// </summary>
-        /// <returns>Valor del fragmento de texto
-        /// en el tipo al que se interpreta que pertenece.</returns>
-        internal override object Covert()
-        {
-
-            if (Value.Length == 2)
-                return "";
-
-            var value = Value.Substring(1, Value.Length - 2);
-
-            if (Regex.IsMatch(value, @"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z"))
-                return Convert.ToDateTime(value);
-
-            return value;
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Devuelve un entero que representa la longitud de la cadena de texto.
+    /// </summary>
+    /// <returns>
+    /// Entero que representa la longitud de la cadena de texto.
+    /// </returns>
+    internal int GetLength()
+    {
+      int curCharIndex = Start;
+      char prevChar = JsonLexer.JsonText[curCharIndex];
+      char curChar = JsonLexer.JsonText[++curCharIndex];
+      while(curCharIndex < JsonLexer.JsonText.Length && (curChar != '"' || prevChar == '\\'))
+      {
+        prevChar = JsonLexer.JsonText[curCharIndex];
+        curChar = JsonLexer.JsonText[++curCharIndex];
+      }
+      return curCharIndex - Start + 1;
     }
 
+    /// <summary>
+    /// Convierte el valor del fragmento de texto en el tipo al que se interpreta que pertenece.
+    /// </summary>
+    /// <returns>
+    /// Valor del fragmento de texto en el tipo al que se interpreta que pertenece.
+    /// </returns>
+    internal override object Covert()
+    {
+      if(Value.Length == 2)
+      {
+        return string.Empty;
+      }
+      string value = Value.Substring(1, Value.Length - 2);
+      if(Regex.IsMatch(value, @"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z"))
+      {
+        return Convert.ToDateTime(value);
+      }
+      return value;
+    }
+
+    #endregion
+  }
 }

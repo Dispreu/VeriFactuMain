@@ -42,63 +42,59 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Respuesta
 {
-
-    /// <summary>
-    /// Respuesta a una presentación.
-    /// </summary>
-    [XmlRoot(Namespace = Namespaces.NamespaceTikR)]
-    public class RespuestaRegFactuSistemaFacturacion
-    {
+  /// <summary>
+  /// Respuesta a una presentación.
+  /// </summary>
+  [XmlRoot(Namespace = Namespaces.NamespaceTikR)]
+  public class RespuestaRegFactuSistemaFacturacion
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Código seguro de verificación.
-        /// </summary>
-        public string CSV { get; set; }
+    /// <summary>
+    /// Código seguro de verificación.
+    /// </summary>
+    public string CSV { get; set; }
 
-        /// <summary>
-        /// Datos de la presentación a la que se 
-        /// refiere la respuesta.
-        /// </summary>
-        public DatosPresentacion DatosPresentacion { get; set; }
+    /// <summary>
+    /// Datos de la presentación a la que se  refiere la respuesta.
+    /// </summary>
+    public DatosPresentacion DatosPresentacion { get; set; }
 
-        /// <summary>
-        /// Cabecera de la respuesta.
-        /// </summary>
-        public Cabecera Cabecera { get; set; }
+    /// <summary>
+    /// Cabecera de la respuesta.
+    /// </summary>
+    public Cabecera Cabecera { get; set; }
 
-        /// <summary>
-        /// Tiempo espera envío.
-        /// </summary>
-        public byte TiempoEsperaEnvio { get; set; }
+    /// <summary>
+    /// Tiempo espera envío.
+    /// </summary>
+    public byte TiempoEsperaEnvio { get; set; }
 
-        /// <summary>
-        /// Estado del envío.
-        /// </summary>
-        public string EstadoEnvio { get; set; }
+    /// <summary>
+    /// Estado del envío.
+    /// </summary>
+    public string EstadoEnvio { get; set; }
 
-        /// <summary>
-        /// Líneas de respuestas.
-        /// </summary>
-        [XmlElement("RespuestaLinea")]
-        public List<RespuestaLinea> RespuestaLinea { get; set; }
+    /// <summary>
+    /// Líneas de respuestas.
+    /// </summary>
+    [XmlElement("RespuestaLinea")]
+    public List<RespuestaLinea> RespuestaLinea { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{EstadoEnvio}-{CSV}";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{EstadoEnvio}-{CSV}";
     }
 
+    #endregion
+  }
 }

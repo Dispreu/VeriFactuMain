@@ -41,90 +41,104 @@ using System;
 
 namespace VeriFactu.Qrcode
 {
+  /// <summary>
+  /// See ISO 18004:2006, 6.5.1.
+  /// </summary>
+  /// <remarks>
+  /// See ISO 18004:2006, 6.5.1. This enum encapsulates the four error correction levels defined by the QR code
+  /// standard.
+  /// </remarks>
+  /// <author>Sean Owen</author>
+  public sealed class ErrorCorrectionLevel
+  {
+    /// <summary>
+    /// L = ~7% correction
+    /// </summary>
+    public static readonly ErrorCorrectionLevel L = new ErrorCorrectionLevel(0, 0x01, "L");
 
-    /// <summary>See ISO 18004:2006, 6.5.1.</summary>
-    /// <remarks>
-    /// See ISO 18004:2006, 6.5.1. This enum encapsulates the four error correction levels
-    /// defined by the QR code standard.
-    /// </remarks>
-    /// <author>Sean Owen</author>
-    public sealed class ErrorCorrectionLevel 
+    /// <summary>
+    /// M = ~15% correction
+    /// </summary>
+    public static readonly ErrorCorrectionLevel M = new ErrorCorrectionLevel(1, 0x00, "M");
+
+    /// <summary>
+    /// Q = ~25% correction
+    /// </summary>
+    public static readonly ErrorCorrectionLevel Q = new ErrorCorrectionLevel(2, 0x03, "Q");
+
+    /// <summary>
+    /// H = ~30% correction
+    /// </summary>
+    public static readonly ErrorCorrectionLevel H = new ErrorCorrectionLevel(3, 0x02, "H");
+
+    private static readonly ErrorCorrectionLevel[] FOR_BITS = new ErrorCorrectionLevel
+            []
     {
+      M, L, H, Q
+    };
 
-        /// <summary>L = ~7% correction</summary>
-        public static readonly ErrorCorrectionLevel L = new ErrorCorrectionLevel
-            (0, 0x01, "L");
+    private readonly int ordinal;
 
-        /// <summary>M = ~15% correction</summary>
-        public static readonly ErrorCorrectionLevel M = new ErrorCorrectionLevel
-            (1, 0x00, "M");
+    private readonly int bits;
 
-        /// <summary>Q = ~25% correction</summary>
-        public static readonly ErrorCorrectionLevel Q = new ErrorCorrectionLevel
-            (2, 0x03, "Q");
+    private readonly string name;
 
-        /// <summary>H = ~30% correction</summary>
-        public static readonly ErrorCorrectionLevel H = new ErrorCorrectionLevel
-            (3, 0x02, "H");
-
-        private static readonly ErrorCorrectionLevel[] FOR_BITS = new ErrorCorrectionLevel
-            [] { M, L, H, Q };
-
-        private readonly int ordinal;
-
-        private readonly int bits;
-
-        private readonly String name;
-
-        private ErrorCorrectionLevel(int ordinal, int bits, String name) {
-            this.ordinal = ordinal;
-            this.bits = bits;
-            this.name = name;
-        }
-
-        /// <summary>Gets the ordinal value.</summary>
-        /// <returns>the ordinal</returns>
-        public int Ordinal() {
-            return ordinal;
-        }
-
-        /// <summary>
-        /// Returns bits.
-        /// </summary>
-        /// <returns>bits</returns>
-        public int GetBits() {
-            return bits;
-        }
-
-        /// <summary>
-        /// Returns name.
-        /// </summary>
-        /// <returns>name</returns>
-        public String GetName() {
-            return name;
-        }
-
-        /// <summary>
-        /// Textual representation of the instance. 
-        /// </summary>
-        /// <returns>Textual representation of the instance. </returns>
-        public override String ToString() {
-            return name;
-        }  
-
-        /// <summary>
-        ///  error correction level
-        /// </summary>
-        /// <param name="bits">int containing the two bits encoding a QR Code's error correction level</param>
-        /// <see cref="ErrorCorrectionLevel"/>
-        /// <returns> error correction level</returns>
-        public static ErrorCorrectionLevel ForBits(int bits) {
-            if (bits < 0 || bits >= FOR_BITS.Length) {
-                throw new ArgumentException();
-            }
-            return FOR_BITS[bits];
-        }
-
+    private ErrorCorrectionLevel(int ordinal, int bits, string name)
+    {
+      this.ordinal = ordinal;
+      this.bits = bits;
+      this.name = name;
     }
 
+    /// <summary>
+    /// Gets the ordinal value.
+    /// </summary>
+    /// <returns>the ordinal</returns>
+    public int Ordinal()
+    {
+      return ordinal;
+    }
+
+    /// <summary>
+    /// Returns bits.
+    /// </summary>
+    /// <returns>bits</returns>
+    public int GetBits()
+    {
+      return bits;
+    }
+
+    /// <summary>
+    /// Returns name.
+    /// </summary>
+    /// <returns>name</returns>
+    public string GetName()
+    {
+      return name;
+    }
+
+    /// <summary>
+    /// Textual representation of the instance.
+    /// </summary>
+    /// <returns>Textual representation of the instance.</returns>
+    public override string ToString()
+    {
+      return name;
+    }
+
+    /// <summary>
+    /// error correction level
+    /// </summary>
+    /// <param name="bits">int containing the two bits encoding a QR Code's error correction level</param>
+    /// <see cref="ErrorCorrectionLevel"/>
+    /// <returns>error correction level</returns>
+    public static ErrorCorrectionLevel ForBits(int bits)
+    {
+      if(bits < 0 || bits >= FOR_BITS.Length)
+      {
+        throw new ArgumentException();
+      }
+      return FOR_BITS[bits];
+    }
+  }
 }

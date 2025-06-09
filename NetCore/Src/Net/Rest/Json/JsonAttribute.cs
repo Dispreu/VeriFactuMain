@@ -41,79 +41,37 @@ using System;
 
 namespace VeriFactu.Net.Rest.Json
 {
-
-    /// <summary>
-    /// Esta clase se define para asociar a los objetos y a sus propiedades los datos necesarios
-    /// para la serialización de datos. La serialización de datos se encarga de convertir los 
-    /// objetos definidos mediante clases en cadenas formato JSON.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Class)]
-    public class JsonAttribute : Attribute
-    {
-
-        #region Private Member Variables
-
-        /// <summary>
-        /// Excluir si el valor del tipo
-        /// es el valor por defecto.
-        /// </summary>
-        private bool _ExcludeOnDefault;
-
-        /// <summary>
-        /// Nombre a asignar a la propiedad en el 
-        /// proceso de serialización.
-        /// </summary>
-        private string _Name;
-
-        #endregion
+  /// <summary>
+  /// Esta clase se define para asociar a los objetos y a sus propiedades los datos necesarios para la serialización de
+  /// datos. La serialización de datos se encarga de convertir los  objetos definidos mediante clases en cadenas formato
+  /// JSON.
+  /// </summary>
+  [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Class)]
+  public class JsonAttribute : Attribute
+  {
 
         #region Constructors
 
-        /// <summary>
-        /// Construye una nueva instancia de la clase JsonAttribute.
-        /// </summary>
-        public JsonAttribute()
-        {
-        }
+    /// <summary>
+    /// Construye una nueva instancia de la clase JsonAttribute.
+    /// </summary>
+    public JsonAttribute()
+        { }
 
-        #endregion
+    #endregion
 
-        #region Public Properties
+    #region Public Properties
 
-        /// <summary>
-        /// Indica que la serialización no se debe realizar si la propiedad
-        /// tiene el valor por defecto.
-        /// </summary>
-        public virtual bool ExcludeOnDefault
-        {
-            get
-            {
-                return _ExcludeOnDefault;
-            }
-            set
-            {
-                _ExcludeOnDefault = value;
-            }
-        }
+    /// <summary>
+    /// Indica que la serialización no se debe realizar si la propiedad tiene el valor por defecto.
+    /// </summary>
+    public virtual bool ExcludeOnDefault { get; set; }
 
-        /// <summary>
-        /// Nombre a asignar a la propiedad en el 
-        /// proceso de serialización.
-        /// </summary>
-        public virtual string Name
-        {
-            get
-            {
-                return _Name;
-            }
-            set
-            {
-                _Name = value;
-            }
-        }
+    /// <summary>
+    /// Nombre a asignar a la propiedad en el  proceso de serialización.
+    /// </summary>
+    public virtual string Name { get; set; }
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

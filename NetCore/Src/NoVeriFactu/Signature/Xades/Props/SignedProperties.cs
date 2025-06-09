@@ -41,59 +41,51 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Propiedades incluidas en la firma.
-    /// </summary>
-    internal class SignedProperties : PropertyElementWithSigId
-    {
+  /// <summary>
+  /// Propiedades incluidas en la firma.
+  /// </summary>
+  internal class SignedProperties : PropertyElementWithSigId
+  {
 
         #region Variables Privadas de Instancia
 
-        /// <summary>
-        /// Propiedades de la firma.
-        /// </summary>
-        internal SignedSignatureProperties SignedSignatureProperties { get; private set; }
+    /// <summary>
+    /// Propiedades de la firma.
+    /// </summary>
+    internal SignedSignatureProperties SignedSignatureProperties { get; private set; }
 
-        /// <summary>
-        /// Propiedades del objeto firmado.
-        /// </summary>
-        internal SignedDataObjectProperties SignedDataObjectProperties { get; private set; }
+    /// <summary>
+    /// Propiedades del objeto firmado.
+    /// </summary>
+    internal SignedDataObjectProperties SignedDataObjectProperties { get; private set; }
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal SignedProperties(XmlNode parent) : base(parent, "SignedProperties")
-        {
-
-            SignedSignatureProperties = new SignedSignatureProperties(XmlElement);
-            SignedDataObjectProperties = new SignedDataObjectProperties(XmlElement);
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Incluye el valor del id de firma en el lugar que
-        /// corresponde del elemento xml.
-        /// </summary>
-        /// <param name="signatureId">Id de firma.</param>
-        protected override void SetSignatureId(string signatureId)
-        {
-
-            XmlElement.SetAttribute("Id", $"{signatureId}-signedprops");
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal SignedProperties(XmlNode parent) : base(parent, "SignedProperties")
+    {
+      SignedSignatureProperties = new SignedSignatureProperties(XmlElement);
+      SignedDataObjectProperties = new SignedDataObjectProperties(XmlElement);
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Incluye el valor del id de firma en el lugar que corresponde del elemento xml.
+    /// </summary>
+    /// <param name="signatureId">Id de firma.</param>
+    protected override void SetSignatureId(string signatureId)
+    {
+      XmlElement.SetAttribute("Id", $"{signatureId}-signedprops");
+    }
+
+    #endregion
+  }
 }

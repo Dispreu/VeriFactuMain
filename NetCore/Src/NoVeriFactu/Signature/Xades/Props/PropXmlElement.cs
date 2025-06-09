@@ -41,76 +41,72 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Elemento xml de la firma.
-    /// </summary>
-    internal class PropXmlElement
-    {
+  /// <summary>
+  /// Elemento xml de la firma.
+  /// </summary>
+  internal class PropXmlElement
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Documento xml al que pertenece el elemento.
-        /// </summary>
-        internal XmlDocument XmlDocument { get; private set; }
+    /// <summary>
+    /// Documento xml al que pertenece el elemento.
+    /// </summary>
+    internal XmlDocument XmlDocument { get; private set; }
 
-        /// <summary>
-        /// XNode al que pertenece el elemento, o del cual
-        /// es hijo.
-        /// </summary>
-        internal XmlNode Parent { get; private set; }
+    /// <summary>
+    /// XNode al que pertenece el elemento, o del cual es hijo.
+    /// </summary>
+    internal XmlNode Parent { get; private set; }
 
-        /// <summary>
-        /// Elemento xml.
-        /// </summary>
-        internal XmlElement XmlElement { get; private set; }
+    /// <summary>
+    /// Elemento xml.
+    /// </summary>
+    internal XmlElement XmlElement { get; private set; }
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo al que pertenece el elemento a crear.</param>
-        /// <param name="name">LocalName del elemento.</param>
-        /// <param name="prefix">Prefijo.</param>
-        /// <param name="nms">Espacio de nombres.</param>
-        /// <param name="notAppendChild">Con true no se añade el elemento hijo al padre.</param>
-        internal PropXmlElement(XmlNode parent, string name, string prefix = "xades",
-            string nms = VerifactuSignedXml.XadesNamespaceUrl, bool notAppendChild = false)
-        {
-
-            Parent = parent;
-            XmlDocument = GetXmlDocument(Parent);
-            XmlElement = XmlDocument.CreateElement(name, nms);
-            XmlElement.Prefix = prefix;
-
-            if (Parent != null && !notAppendChild)
-                Parent.AppendChild(XmlElement);
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Devuelve el documento xml a partir de un
-        /// nodo xml padre.
-        /// </summary>
-        /// <param name="node">No xml que contiene el elemento.</param>
-        /// <returns>Documento xml del elemento.</returns>
-        private XmlDocument GetXmlDocument(XmlNode node)
-        {
-
-            return (node as XmlDocument) ?? (node?.OwnerDocument);
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo al que pertenece el elemento a crear.</param>
+    /// <param name="name">LocalName del elemento.</param>
+    /// <param name="prefix">Prefijo.</param>
+    /// <param name="nms">Espacio de nombres.</param>
+    /// <param name="notAppendChild">Con true no se añade el elemento hijo al padre.</param>
+    internal PropXmlElement(
+      XmlNode parent,
+      string name,
+      string prefix = "xades",
+      string nms = VerifactuSignedXml.XadesNamespaceUrl,
+      bool notAppendChild = false)
+    {
+      Parent = parent;
+      XmlDocument = GetXmlDocument(Parent);
+      XmlElement = XmlDocument.CreateElement(name, nms);
+      XmlElement.Prefix = prefix;
+      if(Parent != null && !notAppendChild)
+      {
+        Parent.AppendChild(XmlElement);
+      }
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Devuelve el documento xml a partir de un nodo xml padre.
+    /// </summary>
+    /// <param name="node">No xml que contiene el elemento.</param>
+    /// <returns>Documento xml del elemento.</returns>
+    private XmlDocument GetXmlDocument(XmlNode node)
+    {
+      return (node as XmlDocument) ?? (node?.OwnerDocument);
+    }
+
+    #endregion
+  }
 }

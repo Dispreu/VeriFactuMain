@@ -45,89 +45,79 @@ namespace Verifactu
 
     #region Interfaz COM
 
-    /// <summary>
-    /// Interfaz COM para la clase RectificationItem.
-    /// </summary>
-    [Guid("075AAC41-84F6-4C97-A7F5-2E234FCC75F5")]
-    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
-    [ComVisible(true)]
-    public interface IVfInvoiceResult
-    {
+  /// <summary>
+  /// Interfaz COM para la clase RectificationItem.
+  /// </summary>
+  [Guid("075AAC41-84F6-4C97-A7F5-2E234FCC75F5")]
+  [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+  [ComVisible(true)]
+  public interface IVfInvoiceResult
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Código del resultado de la operación. '0' si todo
-        /// ha ido vien.
-        /// </summary>
-        string ResultCode { get; set; }
-
-        /// <summary>
-        /// Mensaje del resultado de la petición. 'OK' si todo ha ido
-        /// bien.
-        /// </summary>
-        string ResultMessage { get; set; }
-
-        /// <summary>
-        /// Código seguro de verificación devuelto por la AEAT
-        /// si todo ha ido bien.
-        /// </summary>
-        string CSV { get; set; }
-
-        #endregion
-
-    }
-
-    #endregion
-
-    #region Clase COM
+    /// <summary>
+    /// Código del resultado de la operación. '0' si todo ha ido vien.
+    /// </summary>
+    string ResultCode { get; set; }
 
     /// <summary>
-    /// Resultado de un envio de alta o anulación a la AEAT.
+    /// Mensaje del resultado de la petición. 'OK' si todo ha ido bien.
     /// </summary>
-    [Guid("674199D6-27FE-4C42-B980-0BEC549CF304")]
-    [ClassInterface(ClassInterfaceType.None)]
-    [ComVisible(true)]
-    [ProgId("Verifactu.VfInvoiceResult")]
-    public class VfInvoiceResult : IVfInvoiceResult
-    {
+    string ResultMessage { get; set; }
+
+    /// <summary>
+    /// Código seguro de verificación devuelto por la AEAT si todo ha ido bien.
+    /// </summary>
+    string CSV { get; set; }
+
+    #endregion
+  }
+
+  #endregion
+
+  #region Clase COM
+
+  /// <summary>
+  /// Resultado de un envio de alta o anulación a la AEAT.
+  /// </summary>
+  [Guid("674199D6-27FE-4C42-B980-0BEC549CF304")]
+  [ClassInterface(ClassInterfaceType.None)]
+  [ComVisible(true)]
+  [ProgId("Verifactu.VfInvoiceResult")]
+  public class VfInvoiceResult : IVfInvoiceResult
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor. Para COM necesitamos un constructor
-        /// sin parametros.
-        /// </summary>
-        public VfInvoiceResult()
-        {
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// Código del resultado de la operación. '0' si todo
-        /// ha ido vien.
-        /// </summary>
-        public string ResultCode { get; set; }
-
-        /// <summary>
-        /// Mensaje del resultado de la petición. 'OK' si todo ha ido
-        /// bien.
-        /// </summary>
-        public string ResultMessage { get; set; }
-
-        /// <summary>
-        /// Código seguro de verificación devuelto por la AEAT
-        /// si todo ha ido bien.
-        /// </summary>
-        public string CSV { get; set; }
-
-        #endregion
-
-    }
+    /// <summary>
+    /// Constructor. Para COM necesitamos un constructor sin parametros.
+    /// </summary>
+    public VfInvoiceResult()
+        { }
 
     #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// Código del resultado de la operación. '0' si todo ha ido vien.
+    /// </summary>
+    public string ResultCode { get; set; }
+
+    /// <summary>
+    /// Mensaje del resultado de la petición. 'OK' si todo ha ido bien.
+    /// </summary>
+    public string ResultMessage { get; set; }
+
+    /// <summary>
+    /// Código seguro de verificación devuelto por la AEAT si todo ha ido bien.
+    /// </summary>
+    public string CSV { get; set; }
+
+    #endregion
+  }
+
+  #endregion
 
 }

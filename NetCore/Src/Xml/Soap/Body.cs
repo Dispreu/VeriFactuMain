@@ -48,61 +48,57 @@ using VeriFactu.Xml.Nif;
 
 namespace VeriFactu.Xml.Soap
 {
-    /// <summary>
-    /// SOAP body.
-    /// </summary>
-    [Serializable]
-    [XmlRoot("Body")]
-    public class Body
-    {      
+  /// <summary>
+  /// SOAP body.
+  /// </summary>
+  [Serializable]
+  [XmlRoot("Body")]
+  public class Body
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Body del envelope.
-        /// </summary>
-        public Body()
-        {
-        }
+    /// <summary>
+    /// Body del envelope.
+    /// </summary>
+    public Body()
+        { }
 
-        #endregion
+    #endregion
 
-        #region Propiedades Públicas de Instancia
+    #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Registro.
-        /// </summary>
-        [XmlElement("RegFactuSistemaFacturacion", typeof(RegFactuSistemaFacturacion), Namespace = Namespaces.NamespaceSFLR)]
-        [XmlElement("ConsultaFactuSistemaFacturacion", typeof(ConsultaFactuSistemaFacturacion), Namespace = Namespaces.NamespaceCon)]
-        [XmlElement("RespuestaRegFactuSistemaFacturacion", typeof(RespuestaRegFactuSistemaFacturacion), Namespace = Namespaces.NamespaceTikR)]
-        [XmlElement("RespuestaConsultaFactuSistemaFacturacion", typeof(RespuestaConsultaFactuSistemaFacturacion), Namespace = Namespaces.NamespaceTikLRRC)]
-        [XmlElement("Fault", typeof(Fault), Namespace = Namespaces.NamespaceSoap)]
-        [XmlElement("VNifV2Ent", typeof(VNifVEnt), Namespace = Namespaces.NamespaceVNifV2Ent)]
-        public object Registro { get; set; }
+    /// <summary>
+    /// Registro.
+    /// </summary>
+    [XmlElement("RegFactuSistemaFacturacion", typeof(RegFactuSistemaFacturacion), Namespace = Namespaces.NamespaceSFLR)]
+    [XmlElement("ConsultaFactuSistemaFacturacion", typeof(ConsultaFactuSistemaFacturacion), Namespace = Namespaces.NamespaceCon)]
+    [XmlElement("RespuestaRegFactuSistemaFacturacion", typeof(RespuestaRegFactuSistemaFacturacion), Namespace = Namespaces.NamespaceTikR)]
+    [XmlElement("RespuestaConsultaFactuSistemaFacturacion", typeof(RespuestaConsultaFactuSistemaFacturacion), Namespace = Namespaces.NamespaceTikLRRC)]
+    [XmlElement("Fault", typeof(Fault), Namespace = Namespaces.NamespaceSoap)]
+    [XmlElement("VNifV2Ent", typeof(VNifVEnt), Namespace = Namespaces.NamespaceVNifV2Ent)]
+    public object Registro { get; set; }
 
-        /// <summary>
-        /// Lista de contribuyentes en respuesta web service
-        /// de validación de NIF.
-        /// </summary>
-        [XmlArray("VNifV2Sal", Namespace = Namespaces.NamespaceVNifV2Sal)]
-        [XmlArrayItem("Contribuyente", Namespace = Namespaces.NamespaceVNifV2Sal)]
-        public ContribuyenteSal[] Contribuyentes { get; set; }
+    /// <summary>
+    /// Lista de contribuyentes en respuesta web service de validación de NIF.
+    /// </summary>
+    [XmlArray("VNifV2Sal", Namespace = Namespaces.NamespaceVNifV2Sal)]
+    [XmlArrayItem("Contribuyente", Namespace = Namespaces.NamespaceVNifV2Sal)]
+    public ContribuyenteSal[] Contribuyentes { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{Registro}";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{Registro}";
     }
 
+    #endregion
+  }
 }

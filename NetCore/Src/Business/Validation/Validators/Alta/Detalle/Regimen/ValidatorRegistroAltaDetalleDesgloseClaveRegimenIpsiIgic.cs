@@ -44,72 +44,65 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta.Detalle.Regimen
 {
+  /// <summary>
+  /// Valida los datos de RegistroAlta DetalleDesglose ClaveRegimen 08.
+  /// </summary>
+  public class ValidatorRegistroAltaDetalleDesgloseClaveRegimenIpsiIgic : ValidatorRegistroAlta
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Valida los datos de RegistroAlta DetalleDesglose ClaveRegimen 08.
+    /// Interlocutor a validar.
     /// </summary>
-    public class ValidatorRegistroAltaDetalleDesgloseClaveRegimenIpsiIgic : ValidatorRegistroAlta
+    private readonly DetalleDesglose _DetalleDesglose;
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">Sobre SOAP envío.</param>
+    /// <param name="registroAlta">Registro alta factura.</param>
+    /// <param name="detalleDesglose">DetalleDesglose a validar.</param>
+    public ValidatorRegistroAltaDetalleDesgloseClaveRegimenIpsiIgic(
+      Envelope envelope,
+      RegistroAlta registroAlta,
+      DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
     {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Interlocutor a validar.
-        /// </summary>
-        readonly DetalleDesglose _DetalleDesglose;
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Sobre SOAP envío.</param>
-        /// <param name="registroAlta"> Registro alta factura.</param>
-        /// <param name="detalleDesglose"> DetalleDesglose a validar. </param>
-        public ValidatorRegistroAltaDetalleDesgloseClaveRegimenIpsiIgic(Envelope envelope, RegistroAlta registroAlta,
-            DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
-        {
-
-            _DetalleDesglose = detalleDesglose;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // Si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta (considerándose “01” - IVA):
-            // Si ClaveRegimen = “08”:
-            // CalificacionOperacion tiene que ser “N2” y siempre debe ir relleno.
-            if (_DetalleDesglose.Impuesto != Impuesto.IVA &&
-                _DetalleDesglose.Impuesto != Impuesto.IGIC)
-            {
-
-                if (_DetalleDesglose.CalificacionOperacion != CalificacionOperacion.N2)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                        $" Cuando ClaveRegimen sea igual a “08”" +
-                        $" CalificacionOperacion tiene que ser “N2” y siempre debe ir relleno.");
-
-            }
-
-
-            return result;
-
-        }
-
-        #endregion
-
+      _DetalleDesglose = detalleDesglose;
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // Si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta (considerándose “01” - IVA):
+      // Si ClaveRegimen = “08”:
+      // CalificacionOperacion tiene que ser “N2” y siempre debe ir relleno.
+      if(_DetalleDesglose.Impuesto != Impuesto.IVA &&
+                _DetalleDesglose.Impuesto != Impuesto.IGIC)
+      {
+        if(_DetalleDesglose.CalificacionOperacion != CalificacionOperacion.N2)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                $" Cuando ClaveRegimen sea igual a “08”" +
+                                $" CalificacionOperacion tiene que ser “N2” y siempre debe ir relleno.");
+        }
+      }
+      return result;
+    }
+
+    #endregion
+  }
 }

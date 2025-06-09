@@ -39,99 +39,81 @@
 
 namespace VeriFactu.Net.Rest.Json.Parser.Lexer.Tokens
 {
-
-    /// <summary>
-    /// Representa un fragmento de texto resultado
-    /// del análisis léxico de la cadena JSON.
-    /// </summary>
-    internal class JsonToken
-    {
+  /// <summary>
+  /// Representa un fragmento de texto resultado del análisis léxico de la cadena JSON.
+  /// </summary>
+  internal class JsonToken
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Analizador léxico al cual pertenece
-        /// el fragmento de texto obtenido.
-        /// </summary>
-        internal JsonLexer JsonLexer { get; private set; }
+    /// <summary>
+    /// Analizador léxico al cual pertenece el fragmento de texto obtenido.
+    /// </summary>
+    internal JsonLexer JsonLexer { get; private set; }
 
-        /// <summary>
-        /// Posición del inicio del
-        /// fragmento de texto dentro de la cadena completa JSON.
-        /// </summary>
-        internal int Start { get; private set; }
+    /// <summary>
+    /// Posición del inicio del fragmento de texto dentro de la cadena completa JSON.
+    /// </summary>
+    internal int Start { get; private set; }
 
-        /// <summary>
-        /// Longitud de la cadena de texto.
-        /// </summary>
-        internal virtual int Length => 1;
+    /// <summary>
+    /// Longitud de la cadena de texto.
+    /// </summary>
+    internal virtual int Length => 1;
 
-        /// <summary>
-        /// Valor de la cadena de texto.
-        /// </summary>
-        internal virtual string Value
-        {
+    /// <summary>
+    /// Valor de la cadena de texto.
+    /// </summary>
+    internal virtual string Value => $"{JsonLexer.JsonText[Start]}";
 
-            get
-            {
+    #endregion
 
-                return $"{JsonLexer.JsonText[Start]}";
+    #region Construtores de Instancia
 
-            }
-
-        }
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="jsonLexer">Analizador léxico al que
-        /// pertenece el fragmento de texto.</param>
-        /// <param name="start">Posición del inicio del
-        /// fragmento de texto dentro de la cadena completa JSON.</param>
-        internal JsonToken(JsonLexer jsonLexer, int start)
-        {
-
-            JsonLexer = jsonLexer;
-            Start = start;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Convierte el valor del fragmento de texto
-        /// en el tipo al que se interpreta que pertenece.
-        /// </summary>
-        /// <returns>Valor del fragmento de texto
-        /// en el tipo al que se interpreta que pertenece.</returns>
-        internal virtual object Covert()
-        {
-
-            return Value;
-
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns>Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{Value}";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="jsonLexer">
+    /// Analizador léxico al que pertenece el fragmento de texto.
+    /// </param>
+    /// <param name="start">
+    /// Posición del inicio del fragmento de texto dentro de la cadena completa JSON.
+    /// </param>
+    internal JsonToken(JsonLexer jsonLexer, int start)
+    {
+      JsonLexer = jsonLexer;
+      Start = start;
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Convierte el valor del fragmento de texto en el tipo al que se interpreta que pertenece.
+    /// </summary>
+    /// <returns>
+    /// Valor del fragmento de texto en el tipo al que se interpreta que pertenece.
+    /// </returns>
+    internal virtual object Covert()
+    {
+      return Value;
+    }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{Value}";
+    }
+
+    #endregion
+  }
 }

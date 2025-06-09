@@ -44,102 +44,90 @@ using VeriFactu.Common;
 
 namespace VeriFactu.Business.FlowControl
 {
+  /// <summary>
+  /// Clase para ejecutar en un hilo de fondo una tarea de manera periodica.
+  /// </summary>
+  public class IntervalWorker
+  {
+
+    #region Private Members Variables
 
     /// <summary>
-    /// Clase para ejecutar en un hilo de fondo
-    /// una tarea de manera periodica.
+    /// Utilizado para esperar el intervalo determinado, y para finalizar definitivamente el hilo de trabajo.
     /// </summary>
-    public class IntervalWorker
+    private ManualResetEvent _End;
+
+    #endregion
+
+    #region Private Methods
+
+    /// <summary>
+    /// Procedimiento en bucle en el que ejecuta periódicamente el método Execute.
+    /// </summary>
+    private void Process()
     {
-
-        #region Private Members Variables
-
-        /// <summary>
-        /// Utilizado para esperar el intervalo determinado,
-        /// y para finalizar definitivamente el hilo de trabajo.
-        /// </summary>
-        ManualResetEvent _End;
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Procedimiento en bucle en el que ejecuta periódicamente
-        /// el método Execute.
-        /// </summary>
-        private void Process()
+      while(true)
+      {
+        if(_End.WaitOne(Interval))
         {
-            while (true)
-            {
-                if (_End.WaitOne(Interval))
-                    break;
-
-                Execute();
-
-            }
+          break;
         }
-
-        #endregion
-
-        #region Public Properties
-
-        /// <summary>
-        /// Intervalo en milegundos entre cada ejecución. Por defecto
-        /// 30 segundos.
-        /// </summary>
-        public int Interval = 5000;
-
-        #endregion
-
-        #region Public Methods
-
-        /// <summary>
-        /// Proceso a ejecutar periódicamente entre
-        /// intervalos.
-        /// </summary>
-        public virtual void Execute()
-        {
-        }
-
-        /// <summary>
-        /// Comienza a ejecutar el proceso de manera
-        /// continua y periodica hasta que se finaliza
-        /// el trabajo con End.
-        /// </summary>
-        public void Start()
-        {
-            try
-            {
-                _End = new ManualResetEvent(false);
-                new Thread(Process).Start();
-            }
-            catch (Exception ex)
-            {
-                Utils.Log($"Error IntervalWorker.Start:\n{ex.Message}");
-                Debug.Print($"Error IntervalWorker.Start:\n{ex.Message}");
-            }
-        }
-
-
-        /// <summary>
-        /// Finaliza el trabajo.
-        /// </summary>
-        public void End()
-        {
-            try
-            {
-                _End.Set();
-            }
-            catch (Exception ex)
-            {
-                Utils.Log($"Error IntervalWorker.End:\n{ex.Message}");
-                Debug.Print($"Error IntervalWorker.End:\n{ex.Message}");
-            }
-        }
-
-        #endregion
-
+        Execute();
+      }
     }
 
+    #endregion
+
+    #region Public Properties
+
+    /// <summary>
+    /// Intervalo en milegundos entre cada ejecución. Por defecto 30 segundos.
+    /// </summary>
+    public int Interval = 5000;
+
+    #endregion
+
+    #region Public Methods
+
+    /// <summary>
+    /// Proceso a ejecutar periódicamente entre intervalos.
+    /// </summary>
+    public virtual void Execute()
+        { }
+
+    /// <summary>
+    /// Comienza a ejecutar el proceso de manera continua y periodica hasta que se finaliza el trabajo con End.
+    /// </summary>
+    public void Start()
+    {
+      try
+      {
+        _End = new ManualResetEvent(false);
+        new Thread(Process).Start();
+      }
+      catch(Exception ex)
+      {
+        Utils.Log($"Error IntervalWorker.Start:\n{ex.Message}");
+        Debug.Print($"Error IntervalWorker.Start:\n{ex.Message}");
+      }
+    }
+
+    /// <summary>
+    /// Finaliza el trabajo.
+    /// </summary>
+    public void End()
+    {
+      try
+      {
+        _End.Set();
+      }
+      catch(Exception ex)
+      {
+        Utils.Log($"Error IntervalWorker.End:\n{ex.Message}");
+        Debug.Print($"Error IntervalWorker.End:\n{ex.Message}");
+      }
+    }
+
+    #endregion
+  }
 }

@@ -44,52 +44,49 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta Huella.
-    /// </summary>
-    public class ValidatorRegistroAltaHuella : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta Huella.
+  /// </summary>
+  public class ValidatorRegistroAltaHuella : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        /// <param name="registroAlta"> Registro de alta del bloque Body.</param>
-        public ValidatorRegistroAltaHuella(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    /// <param name="registroAlta">Registro de alta del bloque Body.</param>
+    public ValidatorRegistroAltaHuella(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
 
-        #endregion
+    #endregion
 
-        #region Métodos Privados de Instancia
+    #region Métodos Privados de Instancia
 
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            if (_RegistroAlta.Encadenamiento == null ||_RegistroAlta.Encadenamiento.PrimerRegistro == "S")
-                return result;
-
-            if (Regex.IsMatch(_RegistroAlta.Encadenamiento.RegistroAnterior.Huella, @"[0-9ABCDEF]{64}"))
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                    $" La huella del encadenamiento del registro anterior debe cumplir el formato de salida" +
-                    $" del algoritmo SHA-256, siendo de 64 caracteres en hexadecimal y en mayúsculas");
-
-            return result;
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      if(_RegistroAlta.Encadenamiento == null || _RegistroAlta.Encadenamiento.PrimerRegistro == "S")
+      {
+        return result;
+      }
+      if(Regex.IsMatch(_RegistroAlta.Encadenamiento.RegistroAnterior.Huella, @"[0-9ABCDEF]{64}"))
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                          $" La huella del encadenamiento del registro anterior debe cumplir el formato de salida" +
+                          $" del algoritmo SHA-256, siendo de 64 caracteres en hexadecimal y en mayúsculas");
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

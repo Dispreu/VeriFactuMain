@@ -39,93 +39,78 @@
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props.BigInt
 {
-
-    /// <summary>
-    /// Representa un byte de un número entero grande.
-    /// </summary>
-    internal class BByte
-    {
+  /// <summary>
+  /// Representa un byte de un número entero grande.
+  /// </summary>
+  internal class BByte
+  {
 
         #region Variables Privadas de Instancia
 
-        /// <summary>
-        /// Valor del byte.
-        /// </summary>
-        internal int Position { get; private set; }
+    /// <summary>
+    /// Valor del byte.
+    /// </summary>
+    internal int Position { get; private set; }
 
-        /// <summary>
-        /// Posición en la cadena de bytes.
-        /// </summary>
-        internal byte ByteValue { get; private set; }
+    /// <summary>
+    /// Posición en la cadena de bytes.
+    /// </summary>
+    internal byte ByteValue { get; private set; }
 
-        /// <summary>
-        /// Base 256 elevada a la posición. Cálcula
-        /// el número por el que hay que multiplicar el byte
-        /// para calcular el valor que adiciona al número entero grande.
-        /// </summary>
-        internal string MultiplyValue
+    /// <summary>
+    /// Base 256 elevada a la posición. Cálcula el número por el que hay que multiplicar el byte para calcular el valor
+    /// que adiciona al número entero grande.
+    /// </summary>
+    internal string MultiplyValue
+    {
+      get
+      {
+        string result = "1";
+        if(ByteValue == 0)
         {
-            get
-            {
-
-                string result = "1";
-
-                if (ByteValue == 0)
-                    return "0";
-
-                for (int p = 0; p < Position; p++)
-                    result = BInt.Multiply(result, "256");
-
-                return result;
-
-            }
+          return "0";
         }
-
-        /// <summary>
-        /// Valor que adiciona al número entero grande.
-        /// </summary>
-        internal string Value
+        for(int p = 0; p < Position; p++)
         {
-            get
-            {
-
-                return BInt.Multiply(MultiplyValue, $"{ByteValue:0}"); 
-
-            }
+          result = BInt.Multiply(result, "256");
         }
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="byteValue">Valor del byte.</param>
-        /// <param name="position">Posición en la cadena de bytes.</param>
-        internal BByte(byte byteValue, int position)
-        {
-
-            ByteValue = byteValue;
-            Position = position;
-
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns>Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{ByteValue:0} X {MultiplyValue:0} = {Value:0}";
-        }
-
-        #endregion
-
+        return result;
+      }
     }
 
+    /// <summary>
+    /// Valor que adiciona al número entero grande.
+    /// </summary>
+    internal string Value => BInt.Multiply(MultiplyValue, $"{ByteValue:0}");
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="byteValue">Valor del byte.</param>
+    /// <param name="position">Posición en la cadena de bytes.</param>
+    internal BByte(byte byteValue, int position)
+    {
+      ByteValue = byteValue;
+      Position = position;
+    }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{ByteValue:0} X {MultiplyValue:0} = {Value:0}";
+    }
+
+    #endregion
+  }
 }

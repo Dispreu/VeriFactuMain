@@ -41,32 +41,27 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Consulta
 {
-
-    /// <summary>
-    /// Consulta de la información presentada por el emisor de la factura.
-    /// La cosulta la puede realizar tanto el emisor del registro de
-    /// facturación como el destinatario (servicio solo disponible en.
-    /// remisión voluntaria «VERI*FACTU»).
-    /// </summary>
-    public class ConsultaFactuSistemaFacturacion
-    {
+  /// <summary>
+  /// Consulta de la información presentada por el emisor de la factura. La cosulta la puede realizar tanto el emisor
+  /// del registro de facturación como el destinatario (servicio solo disponible en. remisión voluntaria «VERI*FACTU»).
+  /// </summary>
+  public class ConsultaFactuSistemaFacturacion
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Cabecera de la consulta.
-        /// </summary>
-        [XmlElement("Cabecera", Namespace = Namespaces.NamespaceCon)]
-        public Cabecera Cabecera { get; set; }
+    /// <summary>
+    /// Cabecera de la consulta.
+    /// </summary>
+    [XmlElement("Cabecera", Namespace = Namespaces.NamespaceCon)]
+    public Cabecera Cabecera { get; set; }
 
-        /// <summary>
-        /// Filtro consulta.
-        /// </summary>
-        [XmlElement("FiltroConsulta", Namespace = Namespaces.NamespaceCon)]
-        public FiltroConsulta FiltroConsulta { get; set; }
+    /// <summary>
+    /// Filtro consulta.
+    /// </summary>
+    [XmlElement("FiltroConsulta", Namespace = Namespaces.NamespaceCon)]
+    public FiltroConsulta FiltroConsulta { get; set; }
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

@@ -43,37 +43,34 @@ using VeriFactu.Xml.Factu.Anulacion;
 
 namespace VeriFactu.Xml.Factu
 {
-
-    /// <summary>
-    /// Representa un registro de alta o de anulación.
-    /// </summary>
-    public class RegistroFactura
-    {
+  /// <summary>
+  /// Representa un registro de alta o de anulación.
+  /// </summary>
+  public class RegistroFactura
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Representa un registro de alta o anulación.
-        /// </summary>
-        [XmlElement("RegistroAlta", typeof(RegistroAlta), Namespace = Namespaces.NamespaceSF)]
-        [XmlElement("RegistroAnulacion", typeof(RegistroAnulacion), Namespace = Namespaces.NamespaceSF)]
-        public object Registro { get; set; }
+    /// <summary>
+    /// Representa un registro de alta o anulación.
+    /// </summary>
+    [XmlElement("RegistroAlta", typeof(RegistroAlta), Namespace = Namespaces.NamespaceSF)]
+    [XmlElement("RegistroAnulacion", typeof(RegistroAnulacion), Namespace = Namespaces.NamespaceSF)]
+    public object Registro { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{Registro}";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{Registro}";
     }
 
+    #endregion
+  }
 }

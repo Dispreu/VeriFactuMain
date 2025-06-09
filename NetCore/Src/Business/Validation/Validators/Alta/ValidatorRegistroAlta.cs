@@ -47,182 +47,168 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta.
-    /// </summary>
-    public class ValidatorRegistroAlta : InvoiceValidation
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta.
+  /// </summary>
+  public class ValidatorRegistroAlta : InvoiceValidation
+  {
 
         #region Variables Privadas de Instancia
 
-        /// <summary>
-        /// Registro de alta a validar.
-        /// </summary>
-        protected RegistroAlta _RegistroAlta;
+    /// <summary>
+    /// Registro de alta a validar.
+    /// </summary>
+    protected RegistroAlta _RegistroAlta;
 
-        /// <summary>
-        /// Cabecera 
-        /// </summary>
-        protected Cabecera _Cabecera;
+    /// <summary>
+    /// Cabecera
+    /// </summary>
+    protected Cabecera _Cabecera;
 
-        /// <summary>
-        /// Fecha operación.
-        /// </summary>
-        protected DateTime? _FechaOperacion = null;
+    /// <summary>
+    /// Fecha operación.
+    /// </summary>
+    protected DateTime? _FechaOperacion = null;
 
-        /// <summary>
-        /// Fecha operación.
-        /// </summary>
-        protected DateTime _FechaExpedicion;
+    /// <summary>
+    /// Fecha operación.
+    /// </summary>
+    protected DateTime _FechaExpedicion;
 
-        /// <summary>
-        /// Indicador de si la factura es rectificativa.
-        /// </summary>
-        protected bool _IsRectificativa = false;
+    /// <summary>
+    /// Indicador de si la factura es rectificativa.
+    /// </summary>
+    protected bool _IsRectificativa = false;
 
-        /// <summary>
-        /// Indicador de si la factura es simplificada F2 o R5.
-        /// </summary>
-        protected bool _IsSimplificada = false;
+    /// <summary>
+    /// Indicador de si la factura es simplificada F2 o R5.
+    /// </summary>
+    protected bool _IsSimplificada = false;
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        /// <param name="registroAlta"> Registro de alta del bloque Body.</param>
-        public ValidatorRegistroAlta(Envelope envelope, RegistroAlta registroAlta) : base(envelope)
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    /// <param name="registroAlta">Registro de alta del bloque Body.</param>
+    public ValidatorRegistroAlta(Envelope envelope, RegistroAlta registroAlta) : base(envelope)
+    {
+      _RegistroAlta = registroAlta;
+      _Cabecera = _RegFactuSistemaFacturacion?.Cabecera;
+      string fechaOperacion = _RegistroAlta?.FechaOperacion;
+      if(!string.IsNullOrEmpty(fechaOperacion))
+      {
+        _FechaOperacion = FromXmlDate(fechaOperacion);
+      }
+      string fechaExpedicion = _RegistroAlta?.IDFacturaAlta?.FechaExpedicion;
+      if(string.IsNullOrEmpty(fechaExpedicion) && !Regex.IsMatch(fechaExpedicion, @"\d{2}-\d{2}-\d{4}"))
+      {
+        throw new ArgumentException(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                      $" La propiedad IDFactura.FechaExpedicion tiene que tener un valor con formato dd-mm-yyyy.");
+      }
+      _FechaExpedicion = FromXmlDate(fechaExpedicion);
+      _IsRectificativa = Array.IndexOf(
+        new TipoFactura[]
         {
-
-            _RegistroAlta = registroAlta;
-            _Cabecera = _RegFactuSistemaFacturacion?.Cabecera;
-
-            var fechaOperacion = _RegistroAlta?.FechaOperacion;
-
-            if (!string.IsNullOrEmpty(fechaOperacion))
-                _FechaOperacion = FromXmlDate(fechaOperacion);
-
-            var fechaExpedicion = _RegistroAlta?.IDFacturaAlta?.FechaExpedicion;
-
-            if (string.IsNullOrEmpty(fechaExpedicion) && !Regex.IsMatch(fechaExpedicion, @"\d{2}-\d{2}-\d{4}"))
-                throw new ArgumentException($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                $" La propiedad IDFactura.FechaExpedicion tiene que tener un valor con formato dd-mm-yyyy.");
-
-            _FechaExpedicion = FromXmlDate(fechaExpedicion);
-
-            _IsRectificativa = Array.IndexOf(new TipoFactura[]{ TipoFactura.R1, TipoFactura.R2,
-                TipoFactura.R3, TipoFactura.R4, TipoFactura.R5 }, _RegistroAlta.TipoFactura) != -1;
-
-            _IsSimplificada = (_RegistroAlta.TipoFactura == TipoFactura.F2 || _RegistroAlta.TipoFactura == TipoFactura.R5);
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected virtual List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // 0. Campos obligatorios
-            result.AddRange(new ValidatorRegistroAltaCampoObligatorio(_Envelope, _RegistroAlta).GetErrors());
-            // 1. Agrupación IDFactura
-            result.AddRange(new ValidatorRegistroAltaIDFactura(_Envelope, _RegistroAlta).GetErrors());
-            // 2. RechazoPrevio
-            result.AddRange(new ValidatorRegistroAltaRechazoPrevio(_Envelope, _RegistroAlta).GetErrors());
-            // 3. TipoRectificativa
-            result.AddRange(new ValidatorRegistroAltaTipoRectificativa(_Envelope, _RegistroAlta).GetErrors());
-            // 4. Agrupación FacturasRectificadas
-            result.AddRange(new ValidatorRegistroAltaFacturasRectificadas(_Envelope, _RegistroAlta).GetErrors());
-            // 5. Agrupación FacturasSustituidas
-            result.AddRange(new ValidatorRegistroAltaFacturasSustituidas(_Envelope, _RegistroAlta).GetErrors());
-            // 6. Agrupación ImporteRectificacion
-            result.AddRange(new ValidatorRegistroAltaImporteRectificacion(_Envelope, _RegistroAlta).GetErrors());
-            // 7. FechaOperacion
-            result.AddRange(new ValidatorRegistroAltaFechaOperacion(_Envelope, _RegistroAlta).GetErrors());
-            // 8. FacturaSimplificadaArt7273
-            result.AddRange(new ValidatorRegistroAltaFacturaSimplificadaArt7273(_Envelope, _RegistroAlta).GetErrors());
-            // 9. FacturaSinIdentifDestinatarioArt61d
-            result.AddRange(new ValidatorRegistroAltaFacturaSinIdentifDestinatarioArt61d(_Envelope, _RegistroAlta).GetErrors());
-            // 10. Macrodato
-            result.AddRange(new ValidatorRegistroAltaMacrodato(_Envelope, _RegistroAlta).GetErrors());
-            // 11. EmitidaPorTerceroODestinatario
-            result.AddRange(new ValidatorRegistroAltaEmitidaPorTerceroODestinatario(_Envelope, _RegistroAlta).GetErrors());
-            // 12. Agrupación Tercero
-            result.AddRange(new ValidatorRegistroAltaTercero(_Envelope, _RegistroAlta).GetErrors());
-            // 13. Agrupación Destinatarios
-            result.AddRange(new ValidatorRegistroAltaDestinatarios(_Envelope, _RegistroAlta).GetErrors());
-            // 14. Cupon
-            result.AddRange(new ValidatorRegistroAltaCupon(_Envelope, _RegistroAlta).GetErrors());
-            // 15. Agruapacion Desglose
-            result.AddRange(new ValidatorRegistroAltaDetalleDesglose(_Envelope, _RegistroAlta).GetErrors());
-            // 15.8 Validaciones adicionales en el caso de facturas simplificadas.
-            result.AddRange(new ValidatorRegistroAltaDetalleDesgloseFacturaSimplificada(_Envelope, _RegistroAlta).GetErrors());
-            // 16. CuotaTotal
-            result.AddRange(new ValidatorRegistroAltaCuotaTotal(_Envelope, _RegistroAlta).GetErrors());
-            // 17. ImporteTotal
-            result.AddRange(new ValidatorRegistroAltaImporteTotal(_Envelope, _RegistroAlta).GetErrors());
-            // 18. Huella (del registro anterior)
-            result.AddRange(new ValidatorRegistroAltaHuella(_Envelope, _RegistroAlta).GetErrors());
-
-            // 19. Agrupación SistemaInformatico
-            // Ver las validaciones que le aplican en su apartado correspondiente.
-
-
-            // 20. FechaHoraHusoGenRegistro
-            // Se validará que la FechaHoraHusoGenRegistro sea menor o igual que la fecha del
-            // sistema de la AEAT, admitiéndose un margen de error.En caso de superar el umbral,
-            // se devolverá unaviso de error(no generará rechazo).
-
-            // 21. NumRegistroAcuerdoFacturacion
-            // Si se informa, debe existir el NumRegistroAcuerdoFacturacion en la AEAT.
-
-            // 22. IdAcuerdoSistemaInformatico
-            // Si se informa, debe existir el IdAcuerdoSistemaInformatico en la AEAT.
-
-            // 23. Huella
-            // Se validará que la huella o «hash» generado sea acorde a las especificaciones y formato
-            // detallados en el documento “Especificaciones técnicas para generación de la huella o «hash»
-            // de los registros de facturación” publicado en Sede Electrónica de la AEAT. En caso contrario,
-            // se devolverá un aviso de error (no generará rechazo).
-
-            // Validaciones adicionales del listado de errores AEAT
-            result.AddRange(new ValidatorRegistroAltaTipoFactura(_Envelope, _RegistroAlta).GetErrors());
-
-            return result;
-
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Ejecuta las validaciones y devuelve una lista
-        /// con los errores encontrados.
-        /// </summary>
-        /// <returns>Lista con las descripciones de los 
-        /// errores encontrado.</returns>
-        public override List<string> GetErrors()
-        {
-
-            return GetBlockErrors();
-
-        }
-
-        #endregion
-
+          TipoFactura.R1, TipoFactura.R2,
+          TipoFactura.R3, TipoFactura.R4, TipoFactura.R5
+        },
+        _RegistroAlta.TipoFactura) != -1;
+      _IsSimplificada = (_RegistroAlta.TipoFactura == TipoFactura.F2 || _RegistroAlta.TipoFactura == TipoFactura.R5);
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected virtual List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // 0. Campos obligatorios
+      result.AddRange(new ValidatorRegistroAltaCampoObligatorio(_Envelope, _RegistroAlta).GetErrors());
+      // 1. Agrupación IDFactura
+      result.AddRange(new ValidatorRegistroAltaIDFactura(_Envelope, _RegistroAlta).GetErrors());
+      // 2. RechazoPrevio
+      result.AddRange(new ValidatorRegistroAltaRechazoPrevio(_Envelope, _RegistroAlta).GetErrors());
+      // 3. TipoRectificativa
+      result.AddRange(new ValidatorRegistroAltaTipoRectificativa(_Envelope, _RegistroAlta).GetErrors());
+      // 4. Agrupación FacturasRectificadas
+      result.AddRange(new ValidatorRegistroAltaFacturasRectificadas(_Envelope, _RegistroAlta).GetErrors());
+      // 5. Agrupación FacturasSustituidas
+      result.AddRange(new ValidatorRegistroAltaFacturasSustituidas(_Envelope, _RegistroAlta).GetErrors());
+      // 6. Agrupación ImporteRectificacion
+      result.AddRange(new ValidatorRegistroAltaImporteRectificacion(_Envelope, _RegistroAlta).GetErrors());
+      // 7. FechaOperacion
+      result.AddRange(new ValidatorRegistroAltaFechaOperacion(_Envelope, _RegistroAlta).GetErrors());
+      // 8. FacturaSimplificadaArt7273
+      result.AddRange(new ValidatorRegistroAltaFacturaSimplificadaArt7273(_Envelope, _RegistroAlta).GetErrors());
+      // 9. FacturaSinIdentifDestinatarioArt61d
+      result.AddRange(new ValidatorRegistroAltaFacturaSinIdentifDestinatarioArt61d(_Envelope, _RegistroAlta).GetErrors());
+      // 10. Macrodato
+      result.AddRange(new ValidatorRegistroAltaMacrodato(_Envelope, _RegistroAlta).GetErrors());
+      // 11. EmitidaPorTerceroODestinatario
+      result.AddRange(new ValidatorRegistroAltaEmitidaPorTerceroODestinatario(_Envelope, _RegistroAlta).GetErrors());
+      // 12. Agrupación Tercero
+      result.AddRange(new ValidatorRegistroAltaTercero(_Envelope, _RegistroAlta).GetErrors());
+      // 13. Agrupación Destinatarios
+      result.AddRange(new ValidatorRegistroAltaDestinatarios(_Envelope, _RegistroAlta).GetErrors());
+      // 14. Cupon
+      result.AddRange(new ValidatorRegistroAltaCupon(_Envelope, _RegistroAlta).GetErrors());
+      // 15. Agruapacion Desglose
+      result.AddRange(new ValidatorRegistroAltaDetalleDesglose(_Envelope, _RegistroAlta).GetErrors());
+      // 15.8 Validaciones adicionales en el caso de facturas simplificadas.
+      result.AddRange(new ValidatorRegistroAltaDetalleDesgloseFacturaSimplificada(_Envelope, _RegistroAlta).GetErrors());
+      // 16. CuotaTotal
+      result.AddRange(new ValidatorRegistroAltaCuotaTotal(_Envelope, _RegistroAlta).GetErrors());
+      // 17. ImporteTotal
+      result.AddRange(new ValidatorRegistroAltaImporteTotal(_Envelope, _RegistroAlta).GetErrors());
+      // 18. Huella (del registro anterior)
+      result.AddRange(new ValidatorRegistroAltaHuella(_Envelope, _RegistroAlta).GetErrors());
+      // 19. Agrupación SistemaInformatico
+      // Ver las validaciones que le aplican en su apartado correspondiente.
+      // 20. FechaHoraHusoGenRegistro
+      // Se validará que la FechaHoraHusoGenRegistro sea menor o igual que la fecha del
+      // sistema de la AEAT, admitiéndose un margen de error.En caso de superar el umbral,
+      // se devolverá unaviso de error(no generará rechazo).
+      // 21. NumRegistroAcuerdoFacturacion
+      // Si se informa, debe existir el NumRegistroAcuerdoFacturacion en la AEAT.
+      // 22. IdAcuerdoSistemaInformatico
+      // Si se informa, debe existir el IdAcuerdoSistemaInformatico en la AEAT.
+      // 23. Huella
+      // Se validará que la huella o «hash» generado sea acorde a las especificaciones y formato
+      // detallados en el documento “Especificaciones técnicas para generación de la huella o «hash»
+      // de los registros de facturación” publicado en Sede Electrónica de la AEAT. En caso contrario,
+      // se devolverá un aviso de error (no generará rechazo).
+      // Validaciones adicionales del listado de errores AEAT
+      result.AddRange(new ValidatorRegistroAltaTipoFactura(_Envelope, _RegistroAlta).GetErrors());
+      return result;
+    }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Ejecuta las validaciones y devuelve una lista con los errores encontrados.
+    /// </summary>
+    /// <returns>
+    /// Lista con las descripciones de los  errores encontrado.
+    /// </returns>
+    public override List<string> GetErrors()
+    {
+      return GetBlockErrors();
+    }
+
+    #endregion
+  }
 }

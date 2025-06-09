@@ -41,64 +41,54 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Elemento xml con un valor incluido
-    /// en la propiedad InnerText del mismo.
-    /// </summary>
-    internal class PropXmlElementWithValue : PropXmlElement
-    {
+  /// <summary>
+  /// Elemento xml con un valor incluido en la propiedad InnerText del mismo.
+  /// </summary>
+  internal class PropXmlElementWithValue : PropXmlElement
+  {
 
         #region Variables Privadas de Instancia
 
-        /// <summary>
-        /// Valor.
-        /// </summary>
-        protected string _Value;
+    /// <summary>
+    /// Valor.
+    /// </summary>
+    protected string _Value;
 
-        #endregion
+    #endregion
 
-        #region Propiedades Privadas de Instacia
+    #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Valor.
-        /// </summary>
-        internal string Value
-        {
-            get
-            {
-
-                return _Value;
-
-            }
-            set
-            {
-
-                _Value = value;
-                XmlElement.InnerText = _Value;
-
-            }
-
-        }
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo al que pertenece el elemento a crear.</param>
-        /// <param name="name">LocalName del elemento.</param>
-        /// <param name="prefix">Prefijo.</param>
-        /// <param name="nms">Espacio de nombres.</param>
-        internal PropXmlElementWithValue(XmlNode parent, string name, string prefix = "xades",
-            string nms = VerifactuSignedXml.XadesNamespaceUrl) : base(parent, name, prefix, nms)
-        {
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Valor.
+    /// </summary>
+    internal string Value
+    {
+      get => _Value;
+      set
+      {
+        _Value = value;
+        XmlElement.InnerText = _Value;
+      }
     }
 
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo al que pertenece el elemento a crear.</param>
+    /// <param name="name">LocalName del elemento.</param>
+    /// <param name="prefix">Prefijo.</param>
+    /// <param name="nms">Espacio de nombres.</param>
+    internal PropXmlElementWithValue(
+      XmlNode parent,
+      string name,
+      string prefix = "xades",
+      string nms = VerifactuSignedXml.XadesNamespaceUrl) : base(parent, name, prefix, nms)
+        { }
+
+    #endregion
+  }
 }

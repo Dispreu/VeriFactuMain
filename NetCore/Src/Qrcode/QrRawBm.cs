@@ -41,97 +41,90 @@ using System;
 
 namespace VeriFactu.Qrcode
 {
-
-    /// <summary>
-    /// Representa un bitmap 8-bit RGB color.
-    /// </summary>
-    public class QrRawBm
-    {
+  /// <summary>
+  /// Representa un bitmap 8-bit RGB color.
+  /// </summary>
+  public class QrRawBm
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Bytes de la imágen.
-        /// </summary>
-        private readonly byte[] ImageBytes;
+    /// <summary>
+    /// Bytes de la imágen.
+    /// </summary>
+    private readonly byte[] ImageBytes;
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="width">Ancho en pixels.</param>
-        /// <param name="height">Alto en pixels.</param>
-        public QrRawBm(int width, int height)
-        {
-
-            Width = width;
-            Height = height;
-            ImageBytes = new byte[width * height * 4];
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// Alto en pixels
-        /// </summary>
-        public readonly int Width;
-        
-        /// <summary>
-        /// Ancho en pixels.
-        /// </summary>
-        public readonly int Height;
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Establece el color de un pixel.
-        /// </summary>
-        /// <param name="x">Posición del pixel horizontal.</param>
-        /// <param name="y">Posición del pixel vertical.</param>
-        /// <param name="r">Valor del rojo.</param>
-        /// <param name="g">Valor del verde.</param>
-        /// <param name="b">Valor del azul.</param>
-        public void SetPixel(int x, int y, byte r, byte g, byte b)
-        {
-            int offset = ((Height - y - 1) * Width + x) * 4;
-            ImageBytes[offset + 0] = b;
-            ImageBytes[offset + 1] = g;
-            ImageBytes[offset + 2] = r;
-        }
-
-        /// <summary>
-        /// Obtiene los bytes de la imágen.
-        /// </summary>
-        /// <returns>Bytes de la imágen.</returns>
-        public byte[] GetBitmapBytes()
-        {
-
-            const int imageHeaderSize = 54;
-            byte[] bmpBytes = new byte[ImageBytes.Length + imageHeaderSize];
-            bmpBytes[0] = (byte)'B';
-            bmpBytes[1] = (byte)'M';
-            bmpBytes[14] = 40;
-            Array.Copy(BitConverter.GetBytes(bmpBytes.Length), 0, bmpBytes, 2, 4);
-            Array.Copy(BitConverter.GetBytes(imageHeaderSize), 0, bmpBytes, 10, 4);
-            Array.Copy(BitConverter.GetBytes(Width), 0, bmpBytes, 18, 4);
-            Array.Copy(BitConverter.GetBytes(Height), 0, bmpBytes, 22, 4);
-            Array.Copy(BitConverter.GetBytes(32), 0, bmpBytes, 28, 2);
-            Array.Copy(BitConverter.GetBytes(ImageBytes.Length), 0, bmpBytes, 34, 4);
-            Array.Copy(ImageBytes, 0, bmpBytes, imageHeaderSize, ImageBytes.Length);
-            return bmpBytes;
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="width">Ancho en pixels.</param>
+    /// <param name="height">Alto en pixels.</param>
+    public QrRawBm(int width, int height)
+    {
+      Width = width;
+      Height = height;
+      ImageBytes = new byte[width * height * 4];
     }
 
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// Alto en pixels
+    /// </summary>
+    public readonly int Width;
+
+    /// <summary>
+    /// Ancho en pixels.
+    /// </summary>
+    public readonly int Height;
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Establece el color de un pixel.
+    /// </summary>
+    /// <param name="x">Posición del pixel horizontal.</param>
+    /// <param name="y">Posición del pixel vertical.</param>
+    /// <param name="r">Valor del rojo.</param>
+    /// <param name="g">Valor del verde.</param>
+    /// <param name="b">Valor del azul.</param>
+    public void SetPixel(int x, int y, byte r, byte g, byte b)
+    {
+      int offset = ((Height - y - 1) * Width + x) * 4;
+      ImageBytes[offset + 0] = b;
+      ImageBytes[offset + 1] = g;
+      ImageBytes[offset + 2] = r;
+    }
+
+    /// <summary>
+    /// Obtiene los bytes de la imágen.
+    /// </summary>
+    /// <returns>Bytes de la imágen.</returns>
+    public byte[] GetBitmapBytes()
+    {
+      const int imageHeaderSize = 54;
+      byte[] bmpBytes = new byte[ImageBytes.Length + imageHeaderSize];
+      bmpBytes[0] = (byte)'B';
+      bmpBytes[1] = (byte)'M';
+      bmpBytes[14] = 40;
+      Array.Copy(BitConverter.GetBytes(bmpBytes.Length), 0, bmpBytes, 2, 4);
+      Array.Copy(BitConverter.GetBytes(imageHeaderSize), 0, bmpBytes, 10, 4);
+      Array.Copy(BitConverter.GetBytes(Width), 0, bmpBytes, 18, 4);
+      Array.Copy(BitConverter.GetBytes(Height), 0, bmpBytes, 22, 4);
+      Array.Copy(BitConverter.GetBytes(32), 0, bmpBytes, 28, 2);
+      Array.Copy(BitConverter.GetBytes(ImageBytes.Length), 0, bmpBytes, 34, 4);
+      Array.Copy(ImageBytes, 0, bmpBytes, imageHeaderSize, ImageBytes.Length);
+      return bmpBytes;
+    }
+
+    #endregion
+  }
 }

@@ -5,15 +5,14 @@ using System.Security.Cryptography;
 
 namespace VeriFactu.NoVeriFactu.Signature.Ms
 {
-    internal sealed class RSAPKCS1SHA1SignatureDescription : RSAPKCS1SignatureDescription
-    {
-        public RSAPKCS1SHA1SignatureDescription() : base("SHA1")
-        {
-        }
+  internal sealed class RSAPKCS1SHA1SignatureDescription : RSAPKCS1SignatureDescription
+  {
+    public RSAPKCS1SHA1SignatureDescription() : base("SHA1")
+        { }
 
-        public sealed override HashAlgorithm CreateDigest()
-        {
-            return SHA1.Create();
-        }
+    public override sealed HashAlgorithm CreateDigest()
+    {
+      return SHA1.Create();
     }
+  }
 }

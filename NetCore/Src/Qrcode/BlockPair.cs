@@ -37,50 +37,47 @@
     address: info@irenesolutions.com
  */
 
-namespace VeriFactu.Qrcode 
+namespace VeriFactu.Qrcode
 {
-
-    /// <summary>
-    /// Helper class that groups a block of databytes with its corresponding block of error correction block.
-    /// </summary>
-    /// <author>bruno@lowagie.com (Bruno Lowagie, Paulo Soares, et al.) - creator</author>
-    internal sealed class BlockPair 
-    {
+  /// <summary>
+  /// Helper class that groups a block of databytes with its corresponding block of error correction block.
+  /// </summary>
+  /// <author>bruno@lowagie.com (Bruno Lowagie, Paulo Soares, et al.) - creator</author>
+  internal sealed class BlockPair
+  {
 
         #region Variables Privadas de Instancia
 
-        private readonly ByteArray dataBytes;
+    private readonly ByteArray dataBytes;
 
-        private readonly ByteArray errorCorrectionBytes;
+    private readonly ByteArray errorCorrectionBytes;
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        internal BlockPair(ByteArray data, ByteArray errorCorrection)
-        {
-            dataBytes = data;
-            errorCorrectionBytes = errorCorrection;
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <returns>data block of the pair</returns>
-        public ByteArray GetDataBytes()
-        {
-            return dataBytes;
-        }
-
-        /// <returns>error correction block of the pair</returns>
-        public ByteArray GetErrorCorrectionBytes()
-        {
-            return errorCorrectionBytes;
-        }
-
-        #endregion
-
+    internal BlockPair(ByteArray data, ByteArray errorCorrection)
+    {
+      dataBytes = data;
+      errorCorrectionBytes = errorCorrection;
     }
 
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <returns>data block of the pair</returns>
+    public ByteArray GetDataBytes()
+    {
+      return dataBytes;
+    }
+
+    /// <returns>error correction block of the pair</returns>
+    public ByteArray GetErrorCorrectionBytes()
+    {
+      return errorCorrectionBytes;
+    }
+
+    #endregion
+  }
 }

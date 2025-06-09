@@ -41,37 +41,32 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Certificado utilizado para la firma.
-    /// </summary>
-    internal class SigningCertificate : PropXmlElement
-    {
+  /// <summary>
+  /// Certificado utilizado para la firma.
+  /// </summary>
+  internal class SigningCertificate : PropXmlElement
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Certificado.
-        /// </summary>
-        internal Cert Cert { get; private set; }
+    /// <summary>
+    /// Certificado.
+    /// </summary>
+    internal Cert Cert { get; private set; }
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal SigningCertificate(XmlNode parent) : base(parent, "SigningCertificate")
-        {
-
-            Cert = new Cert(XmlElement);
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal SigningCertificate(XmlNode parent) : base(parent, "SigningCertificate")
+    {
+      Cert = new Cert(XmlElement);
     }
 
+    #endregion
+  }
 }

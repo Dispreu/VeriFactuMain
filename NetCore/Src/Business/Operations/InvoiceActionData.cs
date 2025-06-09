@@ -46,245 +46,221 @@ using VeriFactu.Xml.Factu;
 
 namespace VeriFactu.Business.Operations
 {
-
-    /// <summary>
-    /// Representa una acción de alta o anulación de registro
-    /// en todo lo referente los datos de la factura a la que
-    /// pertenece la acción.
-    /// </summary>
-    public class InvoiceActionData
-    {
+  /// <summary>
+  /// Representa una acción de alta o anulación de registro en todo lo referente los datos de la factura a la que
+  /// pertenece la acción.
+  /// </summary>
+  public class InvoiceActionData
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="invoiceID">Identificador de la factura.</param>
-        /// <param name="invoiceDate">Fecha emisión de documento.</param>
-        /// <param name="sellerID">Identificador del vendedor.</param>        
-        /// <exception cref="ArgumentNullException">Los argumentos invoiceID y sellerID no pueden ser nulos</exception>
-        public InvoiceActionData(string invoiceID, DateTime invoiceDate, string sellerID)
-        {
-
-            if (invoiceID == null || sellerID == null)
-                throw new ArgumentNullException($"Los argumentos invoiceID y sellerID no pueden ser nulos.");
-
-            var invoice = new Invoice(invoiceID, invoiceDate, sellerID);
-            var errors = GetArgErrors(invoice);
-            Invoice = invoice;
-            InvoicePath = GetInvoicePath(Invoice.SellerID);
-
-        }
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="invoice">Instancia de factura de entrada en el sistema.</param>
-        public InvoiceActionData(Invoice invoice)
-        {
-
-            var errors = GetArgErrors(invoice);
-
-            if (errors.Count > 0)
-                throw new ArgumentException(string.Join("\n", errors));
-
-            Invoice = invoice;
-            InvoicePath = GetInvoicePath(Invoice.SellerID);
-
-            // Establecemos el registro alta/anulación
-            SetRegistro();
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Devuelve una lista con los errores de la
-        /// factura como argumento de entrada.
-        /// </summary>
-        /// <param name="invoice">Instancia de la clase Invlice a verificar.</param>
-        /// <returns>Lista con los errores encontrados.</returns>
-        internal virtual List<string> GetArgErrors(Invoice invoice)
-        {
-
-            var errors = new List<string>();
-
-            if (string.IsNullOrEmpty(invoice.InvoiceID))
-                errors.Add($"El objeto Invoice no puede tener como valor de" +
-                    $" su propiedad InvoiceID un valor nulo o una cadena vacía.");
-
-            if (string.IsNullOrEmpty(invoice.SellerID))
-                errors.Add($"El objeto Invoice no puede tener como valor de" +
-                    $" su propiedad SellerID un valor nulo o una cadena vacía.");
-
-            if (invoice.InvoiceDate.Year < 2024)
-                errors.Add($"El objeto Invoice no puede tener como valor de" +
-                    $" su propiedad InvoiceDate una fecha de años anteriores al 2024.");
-
-            return errors;
-
-        }
-
-        /// <summary>
-        /// Devuelve el path de un directorio.
-        /// Si no existe lo crea.
-        /// </summary>
-        /// <param name="dir">Ruta al directorio.</param>
-        /// <returns>Ruta al directorio con el separador
-        /// de directorio de sistema añadido al final.</returns>
-        internal string GetDirPath(string dir)
-        {
-
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-
-            return $"{dir}{Path.DirectorySeparatorChar}";
-
-        }
-
-        /// <summary>
-        /// Devuelve la ruta de almacenamiento de facturas
-        /// emitidas y contabilizadas para un
-        /// vendedor en concreto.
-        /// </summary>
-        /// <param name="sellerID">Emisor al que pertenece el
-        /// envío de registro a gestionar.</param>
-        /// <returns>Ruta facturas de los registros contabilizados
-        /// para un vendedor en concreto.</returns>
-        internal string GetInvoicePath(string sellerID)
-        {
-
-            return GetDirPath($"{Settings.Current.InvoicePath}{sellerID}");
-
-        }
-
-        /// <summary>
-        /// Devuelve la ruta de almacenamiento de los
-        /// registros contabilizados y envíados para un
-        /// año en concreto.
-        /// </summary>
-        /// <param name="year">Año al que pertenece el
-        /// envío de registro a gestionar.</param>
-        /// <returns>Ruta de los registros contabilizados y
-        /// envíados para un vendedor en concreto.</returns>
-        internal string GetInvoicePostedPath(string year)
-        {
-
-            return GetDirPath($"{InvoicePath}{year}");
-
-        }
-
-        /// <summary>
-        /// Establece el registro relativo a la entrada
-        /// a contabilizar y enviar.
-        /// </summary>
-        internal virtual void SetRegistro()
-        {
-
-            Registro = Invoice.GetRegistroAlta();
-
-        }
-
-        /// <summary>
-        /// Path de la factura en el directorio de archivado de facturas
-        /// si el documento a resultado erróneo.
-        /// </summary>
-        /// <returns>Path de la factura en el directorio de archivado de los datos de la
-        /// cadena si el documento a resultado erróneo.</returns>
-        internal string GeErrorInvoiceFilePath()
-        {
-
-            return $"{InvoicePostedPath}{EncodedInvoiceID}.ERR.{DateTime.Now:yyyy.MM.dd.HH.mm.ss.ffff}.xml";
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// Identificador de la factura en formato
-        /// hexadecimal.
-        /// </summary>
-        public virtual string EncodedInvoiceID => Utils.GetEncodedToHex(Invoice.InvoiceID);
-
-        /// <summary>
-        /// Path del directorio de archivado de los datos de las
-        /// facturas emitidas.
-        /// </summary>
-        public string InvoicePath { get; private set; }
-
-        /// <summary>
-        /// Path del directorio de archivado de los datos de la
-        /// factura.
-        /// </summary>
-        public string InvoicePostedPath => GetInvoicePostedPath($"{Invoice.InvoiceDate.Year}");
-
-        /// <summary>
-        /// Path de la factura en el directorio de facturas.
-        /// </summary>
-        public virtual string InvoiceFilePath => $"{InvoicePostedPath}{EncodedInvoiceID}.xml";
-
-        /// <summary>
-        /// Objeto Invoice de la entrada.
-        /// </summary>
-        public Invoice Invoice { get; private set; }
-
-        /// <summary>
-        /// Registro Verifactu.
-        /// </summary>
-        public Registro Registro { get; protected set; }
-
-        /// <summary>
-        /// Identificador del vendedro.
-        /// </summary>
-        public string SellerID => Invoice.SellerID;
-
-        /// <summary>
-        /// Indica si el registro ha sido contabilizado en la 
-        /// cadena de bloques.
-        /// </summary>
-        public bool Posted { get; protected set; }
-
-        /// <summary>
-        /// Indica si se trata de un intento de reenvío.
-        /// </summary>
-        public bool IsRetrySend { get; protected set; }
-
-        /// <summary>
-        /// Indica si la entrada ya ha sido guardada.
-        /// </summary>
-        internal bool IsSaved { get; set; }
-
-        /// <summary>
-        /// Indica si el resgistro ha sido envíado a la AEAT
-        /// en un envío sincrono con el método Save. Si el
-        /// envío se ha realizado de manera asíncrona mediante
-        /// el mecanismo de control de flujo de InvoiceQueue
-        /// su valor no será true aunque se haya envíado.
-        /// </summary>
-        public bool IsSent { get; protected set; }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-
-            return $"{Invoice.SellerID}-{Invoice.InvoiceID}-{Invoice.InvoiceDate:dd/MM/yyyy}";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="invoiceID">Identificador de la factura.</param>
+    /// <param name="invoiceDate">Fecha emisión de documento.</param>
+    /// <param name="sellerID">Identificador del vendedor.</param>        
+    /// <exception cref="ArgumentNullException">Los argumentos invoiceID y sellerID no pueden ser nulos</exception>
+    public InvoiceActionData(string invoiceID, DateTime invoiceDate, string sellerID)
+    {
+      if(invoiceID == null || sellerID == null)
+      {
+        throw new ArgumentNullException($"Los argumentos invoiceID y sellerID no pueden ser nulos.");
+      }
+      Invoice invoice = new Invoice(invoiceID, invoiceDate, sellerID);
+      List<string> errors = GetArgErrors(invoice);
+      Invoice = invoice;
+      InvoicePath = GetInvoicePath(Invoice.SellerID);
     }
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="invoice">Instancia de factura de entrada en el sistema.</param>
+    public InvoiceActionData(Invoice invoice)
+    {
+      List<string> errors = GetArgErrors(invoice);
+      if(errors.Count > 0)
+      {
+        throw new ArgumentException(string.Join("\n", errors));
+      }
+      Invoice = invoice;
+      InvoicePath = GetInvoicePath(Invoice.SellerID);
+      // Establecemos el registro alta/anulación
+      SetRegistro();
+    }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Devuelve una lista con los errores de la factura como argumento de entrada.
+    /// </summary>
+    /// <param name="invoice">Instancia de la clase Invlice a verificar.</param>
+    /// <returns>Lista con los errores encontrados.</returns>
+    internal virtual List<string> GetArgErrors(Invoice invoice)
+    {
+      List<string> errors = new List<string>();
+      if(string.IsNullOrEmpty(invoice.InvoiceID))
+      {
+        errors.Add(
+          $"El objeto Invoice no puede tener como valor de" +
+                          $" su propiedad InvoiceID un valor nulo o una cadena vacía.");
+      }
+      if(string.IsNullOrEmpty(invoice.SellerID))
+      {
+        errors.Add(
+          $"El objeto Invoice no puede tener como valor de" +
+                          $" su propiedad SellerID un valor nulo o una cadena vacía.");
+      }
+      if(invoice.InvoiceDate.Year < 2024)
+      {
+        errors.Add(
+          $"El objeto Invoice no puede tener como valor de" +
+                          $" su propiedad InvoiceDate una fecha de años anteriores al 2024.");
+      }
+      return errors;
+    }
+
+    /// <summary>
+    /// Devuelve el path de un directorio. Si no existe lo crea.
+    /// </summary>
+    /// <param name="dir">Ruta al directorio.</param>
+    /// <returns>
+    /// Ruta al directorio con el separador de directorio de sistema añadido al final.
+    /// </returns>
+    internal string GetDirPath(string dir)
+    {
+      if(!Directory.Exists(dir))
+      {
+        Directory.CreateDirectory(dir);
+      }
+      return $"{dir}{Path.DirectorySeparatorChar}";
+    }
+
+    /// <summary>
+    /// Devuelve la ruta de almacenamiento de facturas emitidas y contabilizadas para un vendedor en concreto.
+    /// </summary>
+    /// <param name="sellerID">
+    /// Emisor al que pertenece el envío de registro a gestionar.
+    /// </param>
+    /// <returns>
+    /// Ruta facturas de los registros contabilizados para un vendedor en concreto.
+    /// </returns>
+    internal string GetInvoicePath(string sellerID)
+    {
+      return GetDirPath($"{Settings.Current.InvoicePath}{sellerID}");
+    }
+
+    /// <summary>
+    /// Devuelve la ruta de almacenamiento de los registros contabilizados y envíados para un año en concreto.
+    /// </summary>
+    /// <param name="year">
+    /// Año al que pertenece el envío de registro a gestionar.
+    /// </param>
+    /// <returns>
+    /// Ruta de los registros contabilizados y envíados para un vendedor en concreto.
+    /// </returns>
+    internal string GetInvoicePostedPath(string year)
+    {
+      return GetDirPath($"{InvoicePath}{year}");
+    }
+
+    /// <summary>
+    /// Establece el registro relativo a la entrada a contabilizar y enviar.
+    /// </summary>
+    internal virtual void SetRegistro()
+    {
+      Registro = Invoice.GetRegistroAlta();
+    }
+
+    /// <summary>
+    /// Path de la factura en el directorio de archivado de facturas si el documento a resultado erróneo.
+    /// </summary>
+    /// <returns>
+    /// Path de la factura en el directorio de archivado de los datos de la cadena si el documento a resultado erróneo.
+    /// </returns>
+    internal string GeErrorInvoiceFilePath()
+    {
+      return $"{InvoicePostedPath}{EncodedInvoiceID}.ERR.{DateTime.Now:yyyy.MM.dd.HH.mm.ss.ffff}.xml";
+    }
+
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// Identificador de la factura en formato hexadecimal.
+    /// </summary>
+    public virtual string EncodedInvoiceID => Utils.GetEncodedToHex(Invoice.InvoiceID);
+
+    /// <summary>
+    /// Path del directorio de archivado de los datos de las facturas emitidas.
+    /// </summary>
+    public string InvoicePath { get; private set; }
+
+    /// <summary>
+    /// Path del directorio de archivado de los datos de la factura.
+    /// </summary>
+    public string InvoicePostedPath => GetInvoicePostedPath($"{Invoice.InvoiceDate.Year}");
+
+    /// <summary>
+    /// Path de la factura en el directorio de facturas.
+    /// </summary>
+    public virtual string InvoiceFilePath => $"{InvoicePostedPath}{EncodedInvoiceID}.xml";
+
+    /// <summary>
+    /// Objeto Invoice de la entrada.
+    /// </summary>
+    public Invoice Invoice { get; private set; }
+
+    /// <summary>
+    /// Registro Verifactu.
+    /// </summary>
+    public Registro Registro { get; protected set; }
+
+    /// <summary>
+    /// Identificador del vendedro.
+    /// </summary>
+    public string SellerID => Invoice.SellerID;
+
+    /// <summary>
+    /// Indica si el registro ha sido contabilizado en la  cadena de bloques.
+    /// </summary>
+    public bool Posted { get; protected set; }
+
+    /// <summary>
+    /// Indica si se trata de un intento de reenvío.
+    /// </summary>
+    public bool IsRetrySend { get; protected set; }
+
+    /// <summary>
+    /// Indica si la entrada ya ha sido guardada.
+    /// </summary>
+    internal bool IsSaved { get; set; }
+
+    /// <summary>
+    /// Indica si el resgistro ha sido envíado a la AEAT en un envío sincrono con el método Save. Si el envío se ha
+    /// realizado de manera asíncrona mediante el mecanismo de control de flujo de InvoiceQueue su valor no será true
+    /// aunque se haya envíado.
+    /// </summary>
+    public bool IsSent { get; protected set; }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{Invoice.SellerID}-{Invoice.InvoiceID}-{Invoice.InvoiceDate:dd/MM/yyyy}";
+    }
+
+    #endregion
+  }
 }

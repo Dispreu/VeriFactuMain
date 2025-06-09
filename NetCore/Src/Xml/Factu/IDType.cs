@@ -41,51 +41,45 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu
 {
-
+  /// <summary>
+  /// Clave para establecer el tipo de identificación en el pais de residencia. L7.
+  /// </summary>
+  public enum IDType
+  {
     /// <summary>
-    /// Clave para establecer el tipo de identificación
-    /// en el pais de residencia. L7.
+    /// NIF-IVA (02).
     /// </summary>
-    public enum IDType
-    {
-
-        /// <summary>
-        /// NIF-IVA (02).
-        /// </summary>
-        [XmlEnum("02")]
+    [XmlEnum("02")]
         NIF_IVA = 2,
 
-        /// <summary>
-        /// PASAPORTE (03).
-        /// </summary>
-        [XmlEnum("03")]
+    /// <summary>
+    /// PASAPORTE (03).
+    /// </summary>
+    [XmlEnum("03")]
         PASAPORTE = 3,
 
-        /// <summary>
-        /// DOCUMENTO OFICIAL DE IDENTIFICACIÓN
-        /// EXPEDIDO POR EL PAÍS O TERRITORIO DE RESIDENCIA (04).
-        /// </summary>
-        [XmlEnum("04")]
+    /// <summary>
+    /// DOCUMENTO OFICIAL DE IDENTIFICACIÓN EXPEDIDO POR EL PAÍS O TERRITORIO DE RESIDENCIA (04).
+    /// </summary>
+    [XmlEnum("04")]
         DOCUMENTO_OFICIAL = 4,
 
-        /// <summary>
-        /// CERTIFICADO DE RESIDENCIA (05).
-        /// </summary>
-        [XmlEnum("05")]
+    /// <summary>
+    /// CERTIFICADO DE RESIDENCIA (05).
+    /// </summary>
+    [XmlEnum("05")]
         CERTIFICADO_RESIDENCIA = 5,
 
-        /// <summary>
-        /// OTRO DOCUMENTO PROBATORIO (06).
-        /// </summary>
-        [XmlEnum("06")]
+    /// <summary>
+    /// OTRO DOCUMENTO PROBATORIO (06).
+    /// </summary>
+    [XmlEnum("06")]
         OTRO_DOC_PROBATORIO = 6,
 
-        /// <summary>
-        /// NO CENSADO (07).
-        /// </summary>
-        [XmlEnum("07")]
+    /// <summary>
+    /// NO CENSADO (07).
+    /// </summary>
+    [XmlEnum("07")]
         NO_CENSADO = 7
-
-    }
-
+  }
 }

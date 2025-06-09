@@ -39,22 +39,21 @@
 
 namespace VeriFactu.Xml.Factu.Fault
 {
+  /// <summary>
+  /// Detalle del error.
+  /// </summary>
+#pragma warning disable CS8981
+  public class detail
+  #pragma warning restore CS8981
+  {
+
+    #region Propiedades Públicas de Instancia
 
     /// <summary>
-    /// Detalle del error.
+    /// Detalle pila llamadas.
     /// </summary>
-    public class detail
-    {
+    public string callstack { get; set; }
 
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// Detalle pila llamadas.
-        /// </summary>
-        public string callstack { get; set; }
-
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

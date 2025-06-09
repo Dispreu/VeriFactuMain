@@ -45,110 +45,103 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta.Detalle
 {
+  /// <summary>
+  /// Valida los datos de RegistroAlta DetalleDesglose OperacionExenta.
+  /// </summary>
+  public class ValidatorRegistroAltaDetalleDesgloseOperacionExenta : ValidatorRegistroAlta
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Valida los datos de RegistroAlta DetalleDesglose OperacionExenta.
+    /// Interlocutor a validar.
     /// </summary>
-    public class ValidatorRegistroAltaDetalleDesgloseOperacionExenta : ValidatorRegistroAlta
+    private readonly DetalleDesglose _DetalleDesglose;
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">Sobre SOAP envío.</param>
+    /// <param name="registroAlta">Registro alta factura.</param>
+    /// <param name="detalleDesglose">DetalleDesglose a validar.</param>
+    public ValidatorRegistroAltaDetalleDesgloseOperacionExenta(
+      Envelope envelope,
+      RegistroAlta registroAlta,
+      DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
     {
+      _DetalleDesglose = detalleDesglose;
+    }
 
-        #region Variables Privadas de Instancia
+    #endregion
 
-        /// <summary>
-        /// Interlocutor a validar.
-        /// </summary>
-        readonly DetalleDesglose _DetalleDesglose;
+    #region Métodos Privados de Instancia
 
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Sobre SOAP envío.</param>
-        /// <param name="registroAlta"> Registro alta factura.</param>
-        /// <param name="detalleDesglose"> DetalleDesglose a validar. </param>
-        public ValidatorRegistroAltaDetalleDesgloseOperacionExenta(Envelope envelope, RegistroAlta registroAlta,
-            DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
-        {
-
-            _DetalleDesglose = detalleDesglose;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // Si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta (considerándose “01” - IVA),
-            // y ClaveRegimen es igual a “01”, no pueden marcarse los valores de OperacionExenta “E2” y “E3”.
-
-            if ((_DetalleDesglose.Impuesto == Impuesto.IVA || _DetalleDesglose.Impuesto == Impuesto.IGIC) &&
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // Si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta (considerándose “01” - IVA),
+      // y ClaveRegimen es igual a “01”, no pueden marcarse los valores de OperacionExenta “E2” y “E3”.
+      if((_DetalleDesglose.Impuesto == Impuesto.IVA || _DetalleDesglose.Impuesto == Impuesto.IGIC) &&
                 _DetalleDesglose.ClaveRegimen == ClaveRegimen.RegimenGeneral &&
                 (_DetalleDesglose.OperacionExentaSpecified &&
                 (_DetalleDesglose.OperacionExenta == CausaExencion.E2 ||
-                _DetalleDesglose.OperacionExenta == CausaExencion.E3))) 
-            {
-
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                _DetalleDesglose.OperacionExenta == CausaExencion.E3)))
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
                      $" Si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta (considerándose “01” - IVA)," +
                      $" y ClaveRegimen es igual a “01”, no pueden marcarse los valores de OperacionExenta “E2” y “E3”.");
-
-
-            }
-
-            var tipoImpositivo = XmlParser.ToDecimal(_DetalleDesglose.TipoImpositivo);
-            var cuotaRepercutida = XmlParser.ToDecimal(_DetalleDesglose.CuotaRepercutida);
-            var tipoImpositivoRE = XmlParser.ToDecimal(_DetalleDesglose.TipoRecargoEquivalencia);
-            var cuotaRepercutidaRE = XmlParser.ToDecimal(_DetalleDesglose.CuotaRecargoEquivalencia);
-
-            // Si el campo OperacionExenta está cumplimentado con cualquier valor de la lista L10 no se pueden
-            // informar ninguno de estos campos:
-            // TipoImpositivo, CuotaRepercutida,
-            // TipoRecargoEquivalencia y CuotaRecargoEquivalencia.
-            if (_DetalleDesglose.OperacionExentaSpecified) 
-            { 
-            
-                if(tipoImpositivo != 0)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                         $" Si el campo OperacionExenta está cumplimentado con cualquier valor de la lista L10 no se puede" +
-                         $" informar el campo TipoImpositivo.");
-
-                if (cuotaRepercutida != 0)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                         $" Si el campo OperacionExenta está cumplimentado con cualquier valor de la lista L10 no se puede" +
-                         $" informar el campo CuotaRepercutida.");
-
-
-                if (tipoImpositivoRE != 0)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                         $" Si el campo OperacionExenta está cumplimentado con cualquier valor de la lista L10 no se puede" +
-                         $" informar el campo TipoRecargoEquivalencia.");
-
-
-                if (cuotaRepercutidaRE != 0)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                         $" Si el campo OperacionExenta está cumplimentado con cualquier valor de la lista L10 no se puede" +
-                         $" informar el campo CuotaRecargoEquivalencia.");
-
-            }
-
-            return result;
-
+      }
+      decimal tipoImpositivo = XmlParser.ToDecimal(_DetalleDesglose.TipoImpositivo);
+      decimal cuotaRepercutida = XmlParser.ToDecimal(_DetalleDesglose.CuotaRepercutida);
+      decimal tipoImpositivoRE = XmlParser.ToDecimal(_DetalleDesglose.TipoRecargoEquivalencia);
+      decimal cuotaRepercutidaRE = XmlParser.ToDecimal(_DetalleDesglose.CuotaRecargoEquivalencia);
+      // Si el campo OperacionExenta está cumplimentado con cualquier valor de la lista L10 no se pueden
+      // informar ninguno de estos campos:
+      // TipoImpositivo, CuotaRepercutida,
+      // TipoRecargoEquivalencia y CuotaRecargoEquivalencia.
+      if(_DetalleDesglose.OperacionExentaSpecified)
+      {
+        if(tipoImpositivo != 0)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                 $" Si el campo OperacionExenta está cumplimentado con cualquier valor de la lista L10 no se puede" +
+                                 $" informar el campo TipoImpositivo.");
         }
-
-        #endregion
-
+        if(cuotaRepercutida != 0)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                 $" Si el campo OperacionExenta está cumplimentado con cualquier valor de la lista L10 no se puede" +
+                                 $" informar el campo CuotaRepercutida.");
+        }
+        if(tipoImpositivoRE != 0)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                 $" Si el campo OperacionExenta está cumplimentado con cualquier valor de la lista L10 no se puede" +
+                                 $" informar el campo TipoRecargoEquivalencia.");
+        }
+        if(cuotaRepercutidaRE != 0)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                 $" Si el campo OperacionExenta está cumplimentado con cualquier valor de la lista L10 no se puede" +
+                                 $" informar el campo CuotaRecargoEquivalencia.");
+        }
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

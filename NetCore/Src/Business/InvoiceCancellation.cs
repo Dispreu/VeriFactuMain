@@ -41,67 +41,57 @@ using VeriFactu.Common;
 
 namespace VeriFactu.Business
 {
-
-    /// <summary>
-    /// Representa una entrada de factura en el sistema.
-    /// </summary>
-    public class InvoiceCancellation : InvoiceEntry
-    {      
+  /// <summary>
+  /// Representa una entrada de factura en el sistema.
+  /// </summary>
+  public class InvoiceCancellation : InvoiceEntry
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="invoice">Instancia de factura de entrada en el sistema.</param>
-        public InvoiceCancellation(Invoice invoice) : base(invoice)
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="invoice">Instancia de factura de entrada en el sistema.</param>
+    public InvoiceCancellation(Invoice invoice) : base(invoice)
+        { }
 
-        #endregion
+    #endregion
 
-        #region Métodos Privados de Instancia 
+    #region Métodos Privados de Instancia 
 
-        /// <summary>
-        /// Establece el registro relativo a la entrada
-        /// a contabilizar y enviar.
-        /// </summary>
-        internal override void SetRegistro()
-        {
-
-            Registro = Invoice.GetRegistroAnulacion();
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// Identificador de la factura en formato
-        /// hexadecimal.
-        /// </summary>
-        public override string EncodedInvoiceID => Utils.GetEncodedToHex($"{Invoice.InvoiceID}.DEL");
-
-        /// <summary>
-        /// Identificador de la anulación de factura.
-        /// </summary>
-        public override string InvoiceEntryID => $"{base.InvoiceEntryID}.DEL";
-
-        /// <summary>
-        /// Path del directorio de archivado de los datos de la
-        /// cadena.
-        /// </summary>
-        public override string InvoiceEntryFilePath => $"{InvoiceEntryPath}{InvoiceEntryID}.xml";
-
-        /// <summary>
-        /// Path del directorio de archivado de los datos de la
-        /// cadena.
-        /// </summary>
-        public override string ResponseFilePath => $"{ResponsesPath}{InvoiceEntryID}.xml";   
-
-        #endregion
-
+    /// <summary>
+    /// Establece el registro relativo a la entrada a contabilizar y enviar.
+    /// </summary>
+    internal override void SetRegistro()
+    {
+      Registro = Invoice.GetRegistroAnulacion();
     }
 
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// Identificador de la factura en formato hexadecimal.
+    /// </summary>
+    public override string EncodedInvoiceID => Utils.GetEncodedToHex($"{Invoice.InvoiceID}.DEL");
+
+    /// <summary>
+    /// Identificador de la anulación de factura.
+    /// </summary>
+    public override string InvoiceEntryID => $"{base.InvoiceEntryID}.DEL";
+
+    /// <summary>
+    /// Path del directorio de archivado de los datos de la cadena.
+    /// </summary>
+    public override string InvoiceEntryFilePath => $"{InvoiceEntryPath}{InvoiceEntryID}.xml";
+
+    /// <summary>
+    /// Path del directorio de archivado de los datos de la cadena.
+    /// </summary>
+    public override string ResponseFilePath => $"{ResponsesPath}{InvoiceEntryID}.xml";
+
+    #endregion
+  }
 }

@@ -41,52 +41,46 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Identificación de política de firma.
-    /// </summary>
-    internal class SignaturePolicyId : PropXmlElement
-    {
+  /// <summary>
+  /// Identificación de política de firma.
+  /// </summary>
+  internal class SignaturePolicyId : PropXmlElement
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Id de política de firma.
-        /// </summary>
-        internal SigPolicyId SigPolicyId { get; private set; }
+    /// <summary>
+    /// Id de política de firma.
+    /// </summary>
+    internal SigPolicyId SigPolicyId { get; private set; }
 
-        /// <summary>
-        /// Hash de política de firma.
-        /// </summary>
-        internal SigPolicyHash SigPolicyHash { get; private set; }
+    /// <summary>
+    /// Hash de política de firma.
+    /// </summary>
+    internal SigPolicyHash SigPolicyHash { get; private set; }
 
-        /// <summary>
-        /// Calificadores de política de firma.
-        /// </summary>
-        internal SigPolicyQualifiers SigPolicyQualifiers { get; private set; }
+    /// <summary>
+    /// Calificadores de política de firma.
+    /// </summary>
+    internal SigPolicyQualifiers SigPolicyQualifiers { get; private set; }
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal SignaturePolicyId(XmlNode parent) : base(parent, "SignaturePolicyId")
-        {
-
-            SigPolicyId = new SigPolicyId(XmlElement);
-            SigPolicyHash = new SigPolicyHash(XmlElement);
-            SigPolicyQualifiers = new SigPolicyQualifiers(XmlElement);
-
-            SigPolicyId.Identifier.Value = "urn:oid:2.16.724.1.3.1.1.2.1.9";
-            SigPolicyQualifiers.SigPolicyQualifier.SPURI.Value = "https://sede.administracion.gob.es/politica_de_firma_anexo_1.pdf";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal SignaturePolicyId(XmlNode parent) : base(parent, "SignaturePolicyId")
+    {
+      SigPolicyId = new SigPolicyId(XmlElement);
+      SigPolicyHash = new SigPolicyHash(XmlElement);
+      SigPolicyQualifiers = new SigPolicyQualifiers(XmlElement);
+      SigPolicyId.Identifier.Value = "urn:oid:2.16.724.1.3.1.1.2.1.9";
+      SigPolicyQualifiers.SigPolicyQualifier.SPURI.Value = "https://sede.administracion.gob.es/politica_de_firma_anexo_1.pdf";
     }
 
+    #endregion
+  }
 }

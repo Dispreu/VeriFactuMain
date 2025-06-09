@@ -53,467 +53,403 @@ using VeriFactu.Xml.Factu;
 
 namespace VeriFactu.Config
 {
+  /// <summary>
+  /// Configuración.
+  /// </summary>
+  [Serializable]
+  [XmlRoot("Settings")]
+  public class Settings
+  {
 
-	/// <summary>
-	/// Configuración.
-	/// </summary>
-	[Serializable]
-	[XmlRoot("Settings")]
-	public class Settings
-	{
+    #region Variables Privadas Estáticas
 
-		#region Variables Privadas Estáticas
+    /// <summary>
+    /// Path separator win="\" and linux ="/".
+    /// </summary>
+    private static readonly char _PathSep = System.IO.Path.DirectorySeparatorChar;
 
-		/// <summary>
-		/// Path separator win="\" and linux ="/".
-		/// </summary>
-		static readonly char _PathSep = System.IO.Path.DirectorySeparatorChar;
+    /// <summary>
+    /// Ruta al directorio de la cadena de bloques.
+    /// </summary>
+    private string _BlockchainPath;
 
-		/// <summary>
-		/// Configuración actual.
-		/// </summary>
-		static Settings _Current;
+    #endregion
 
-		/// <summary>
-		/// Ruta al directorio de configuración.
-		/// </summary>
-		static readonly string _Path =
-#if !LE_461
-            RuntimeInformation.IsOSPlatform(OSPlatform.Create("IOS")) || RuntimeInformation.IsOSPlatform(OSPlatform.Create("ANDROID")) ?
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + $"{_PathSep}VeriFactu{_PathSep}" :
-#endif
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + $"{_PathSep}VeriFactu{_PathSep}";
+    #region Propiedades Privadas Estáticas
 
-        /// <summary>
-        /// Ruta al directorio de la cadena de bloques.
-        /// </summary>
-        string _BlockchainPath;
+    /// <summary>
+    /// Formato de importes para los xml del sii.
+    /// </summary>
+    internal static NumberFormatInfo DefaultNumberFormatInfo = new NumberFormatInfo();
 
-        #endregion
+    /// <summary>
+    /// Seprador decimal.
+    /// </summary>
+    internal static string DefaultNumberDecimalSeparator = ".";
 
-        #region Propiedades Privadas Estáticas
+    /// <summary>
+    /// Nombre del fichero de configuración.
+    /// </summary>
+    internal static string FileName = "Settings.xml";
 
-        /// <summary>
-        /// Formato de importes para los xml del sii.
-        /// </summary>
-        internal static NumberFormatInfo DefaultNumberFormatInfo = new NumberFormatInfo();
+    /// <summary>
+    /// Indicador de si el sistema de cadena de bloques está inicializado.
+    /// </summary>
+    internal static bool BlockchainInitialized;
 
-        /// <summary>
-        /// Seprador decimal.
-        /// </summary>
-        internal static string DefaultNumberDecimalSeparator = ".";
+    #endregion
 
-        /// <summary>
-        /// Nombre del fichero de configuración.
-        /// </summary>
-        internal static string FileName = "Settings.xml";
+    #region Construtores Estáticos
 
-        /// <summary>
-        /// Indicador de si el sistema de cadena de bloques está
-        /// inicializado.
-        /// </summary>
-        internal static bool BlockchainInitialized;
-
-        #endregion
-
-        #region Construtores Estáticos
-
-        /// <summary>
-        /// Constructor estático de la clase Settings.
-        /// </summary>
-        static Settings()
-        {
-
-            DefaultNumberFormatInfo.NumberDecimalSeparator =
+    /// <summary>
+    /// Constructor estático de la clase Settings.
+    /// </summary>
+    static Settings()
+    {
+      DefaultNumberFormatInfo.NumberDecimalSeparator =
                 DefaultNumberDecimalSeparator;
-
-            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
-
-            Get();
-
-            BlockchainInitialized = Blockchain.Blockchain.Initialized; // Inicia cadena de bloques
-            Current.SistemaInformatico.IndicadorMultiplesOT = Seller.GetSellers().Count > 1 ? "S" : "N"; // Valor multiples OT
-
-            ApiClient.Ct(); 
-
-        }
-
-        #endregion
-
-        #region Métodos Privados Estáticos
-
-        /// <summary>
-        /// Inicia estaticos.
-        /// </summary>
-        /// <returns>La configuración cargada.</returns>
-        internal static Settings Get()
-        {
-
-            _Current = new Settings();
-
-            string FullPath = $"{Path}{_PathSep}" + FileName;
-
-            XmlSerializer serializer = new XmlSerializer(_Current.GetType());
-            
-            if (File.Exists(FullPath))
-            {
-
-                using (StreamReader r = new StreamReader(FullPath))
-                    _Current = serializer.Deserialize(r) as Settings;
-
-            }
-            else
-            {
-
-                _Current= GetDefault();
-
-            }
-
-            CheckDirectories();
-
-            return _Current;
-
-        }
-
-        /// <summary>
-        /// Devuelve MAC address.
-        /// </summary>
-        /// <returns> MAC local</returns>
-        internal static string GetLocalMacAddress()
-        {
-
-            var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
-
-            foreach (NetworkInterface nic in networkInterfaces)
-                if (nic.OperationalStatus == OperationalStatus.Up)
-                    return $"{nic.GetPhysicalAddress()}";
-
-            return null;
-
-        }
-
-        /// <summary>
-        /// Devuelve un objeto Settings con las opciones
-        /// por defecto de configuración.
-        /// </summary>
-        /// <returns></returns>
-        internal static Settings GetDefault() 
-        {
-
-            var numeroInstalacion = "01";
-
-            try 
-            {
-
-                var mac = GetLocalMacAddress();
-
-                if (!string.IsNullOrEmpty(mac))
-                    numeroInstalacion = mac;
-
-            }
-            catch (Exception ex) 
-            {
-
-                Utils.Log($"{ex}");
-
-            }
-
-            return new Settings()
-            {
-                IDVersion = "1.0",
-                InboxPath = $"{Path}Inbox{_PathSep}",
-                OutboxPath = $"{Path}Outbox{_PathSep}",
-                BlockchainPath = $"{Path}Blockchains{_PathSep}",
-                InvoicePath = $"{Path}Invoices{_PathSep}",
-                LogPath = $"{Path}Log{_PathSep}",
-                CertificateSerial = "",
-                CertificateThumbprint = "",
-                CertificatePath = "",
-                CertificatePassword = "",
-                VeriFactuEndPointPrefix = VeriFactuEndPointPrefixes.Test,
-                VeriFactuEndPointValidatePrefix = VeriFactuEndPointPrefixes.TestValidate,
-                VeriFactuHashAlgorithm = TipoHuella.Sha256,
-                VeriFactuHashInputEncoding = "UTF-8",
-                SistemaInformatico = new SistemaInformatico() 
-                { 
-                    NIF = "B12959755",
-                    NombreRazon = "IRENE SOLUTIONS SL",
-                    NombreSistemaInformatico = $"{Assembly.GetExecutingAssembly().GetName().Name}",
-                    IdSistemaInformatico = "01",
-                    Version = $"{Assembly.GetExecutingAssembly().GetName().Version}",
-                    NumeroInstalacion = numeroInstalacion,
-                    TipoUsoPosibleSoloVerifactu = "S",
-                    TipoUsoPosibleMultiOT = "S",
-                    IndicadorMultiplesOT = "S"
-                },
-                Api = new Api() 
-                {
-                    EndPointCreate = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/Create",
-                    EndPointCancel = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/Cancel",
-                    EndPointGetQrCode = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/GetQrCode",
-                    EndPointGetSellers = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/GetSellers",
-                    EndPointGetRecords = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/GetFilteredList",
-                    EndPointValidateNIF = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/ValidateNIF",
-                    EndPointGetAeatInvoices = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/GetAeatInvoices",
-                    EndPointGetFilteredList = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/GetFilteredList",
-                    EndPointCreateBatch = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/CreateBatch",
-                    ServiceKey = "1234"
-                },
-                SkipNifAeatValidation = true,
-                SkipViesVatNumberValidation = true,
-                LoggingEnabled = false
-            };
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas Estáticas
-
-        /// <summary>
-        /// Configuración en curso.
-        /// </summary>
-        public static Settings Current
-        {
-            get
-            {
-                return _Current;
-            }
-            set
-            {
-                _Current = value;
-            }
-        }
-
-        /// <summary>
-        /// Ruta al directorio de configuración.
-        /// </summary>
-        public static string Path => _Path;
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// <para>Identificación de la versión actual del esquema o
-        /// estructura de información utilizada para la generación y
-        /// conservación / remisión de los registros de facturación.
-        /// Este campo forma parte del detalle de las circunstancias
-        /// de generación de los registros de facturación.</para>
-        /// <para>Alfanumérico(3) L15:</para>
-        /// <para>1.0: Versión actual (1.0) del esquema utilizado </para>
-        /// </summary>
-        [XmlElement("IDVersion")]
-        public string IDVersion { get; set; }
-
-        /// <summary>
-        /// Ruta al directorio que actuará como bandeja de entrada.
-        /// En este directorio se almacenarán todos los mensajes
-        /// recibidos de la AEAT mediante VERI*FACTU.
-        /// </summary>
-        [XmlElement("InboxPath")]
-        public string InboxPath { get; set; }
-
-        /// <summary>
-        /// Ruta al directorio que actuará como bandeja de salida.
-        /// En este directorio se almacenará una copia de cualquier
-        /// envío realizado a la AEAT mediante el VERI*FACTU.
-        /// </summary>
-        [XmlElement("OutboxPath")]
-        public string OutboxPath { get; set; }
-
-        /// <summary>
-        /// Ruta al directorio que actuará como almacén
-        /// de las distintas cadenas de bloques por emisor.
-        /// </summary>
-        [XmlElement("BlockchainPath")]
-        public string BlockchainPath 
-        { 
-            get 
-            { 
-
-                return _BlockchainPath; 
-
-            } 
-            set 
-            { 
-
-                if(Current.BlockchainPath != null && Current.BlockchainPath != value 
-                    && Directory.GetDirectories(Current.BlockchainPath).Length > 0)
-                    throw new InvalidOperationException($"No se puede cambiar el valor" +
-                        $" de 'BlockchainPath' si la carpeta no está vacía.");
-
-                _BlockchainPath = value; 
-
-            } 
-        }
-
-        /// <summary>
-        /// Ruta al directorio que actuará almacenamiento
-        /// de las facturas emitidas por emisor.
-        /// </summary>
-        [XmlElement("InvoicePath")]
-        public string InvoicePath { get; set; }
-
-        /// <summary>
-        /// Ruta al directorio que actuará almacenamiento
-        /// del registro de mensajes del sistema.
-        /// </summary>
-        [XmlElement("LogPath")]
-        public string LogPath { get; set; }
-
-        /// <summary>
-        /// Número de serie del certificado a utilizar. Mediante este número
-        /// de serie se selecciona del almacén de certificados de windows
-        /// el certificado con el que realizar las comunicaciones.
-        /// </summary>
-        [XmlElement("CertificateSerial")]
-        public string CertificateSerial { get; set; }
-
-        /// <summary>
-        /// Hash o Huella digital del certificado a utilizar. Mediante esta
-        /// huella digital se selecciona del almacén de certificados de
-        /// windows el certificado con el que realizar las comunicaciones.
-        /// </summary>
-        [XmlElement("CertificateThumbprint")]
-        public string CertificateThumbprint { get; set; }
-
-        /// <summary>
-        /// Ruta al archivo del certificado a utilizar.
-        /// Sólo se utiliza en los certificados cargados desde el sistema de archivos. 
-        /// </summary>
-        [XmlElement("CertificatePath")]
-        public string CertificatePath { get; set; }
-
-        /// <summary>
-        /// Password del certificado. Este valor sólo es necesario si
-        /// tenemos establecido el valor para 'CertificatePath' y el certificado
-        /// tiene clave de acceso. Sólo se utiliza en los certificados
-        /// cargados desde el sistema de archivos.
-        /// </summary>
-        [XmlElement("CertificatePassword")]
-        public string CertificatePassword { get; set; }
-
-        /// <summary>
-        /// EndPoint del web service de la AEAT para envío registros alta y anulación.
-        /// </summary>
-        [XmlElement("VeriFactuEndPointPrefix")]
-        public string VeriFactuEndPointPrefix { get; set; }
-
-        /// <summary>
-        /// EndPoint del web service de la AEAT de validación de Verifactu.
-        /// </summary>
-        [XmlElement("VeriFactuEndPointValidatePrefix")]
-        public string VeriFactuEndPointValidatePrefix { get; set; }
-
-        /// <summary>
-        /// Algoritmo a utilizar para el cálculo de hash.
-        /// Clave que identifica Tipo de hash aplicado para
-        /// obtener la huella. Alfanumérico(2) L12.
-        /// </summary>
-        [XmlElement("VeriFactuHashAlgorithm")]
-        public TipoHuella VeriFactuHashAlgorithm { get; set; }
-
-        /// <summary>
-        /// Codificación del texto de entrada para el hash.
-        /// </summary>
-        [XmlElement("VeriFactuHashInputEncoding")]
-        public string VeriFactuHashInputEncoding { get; set; }
-
-        /// <summary>
-        /// Datos del sistema informático.
-        /// </summary>
-        [XmlElement("SistemaInformatico")]
-        public SistemaInformatico SistemaInformatico { get; set; }
-
-        /// <summary>
-        /// Datos del API REST para Verifactu de Irene Solutions.
-        /// </summary>
-        [XmlElement("Api")] 
-        public Api Api { get; set; }
-
-        /// <summary>
-        /// Indica si salta la validación en línea de NIF con la AEAT.
-        /// </summary>
-        [XmlElement("SkipNifAeatValidation")]
-        public bool SkipNifAeatValidation { get; set; }
-
-        /// <summary>
-        /// Indica si salta la validación en línea de en el
-        /// censo VIES de los VAT numbers intracomunitarios.
-        /// </summary>
-        [XmlElement("SkipViesVatNumberValidation")]
-        public bool SkipViesVatNumberValidation { get; set; }
-
-        /// <summary>
-        /// Indica si está activado el log de mensajes
-        /// del sistema.
-        /// </summary>
-        [XmlElement("LoggingEnabled")]
-        public bool LoggingEnabled { get; set; }
-
-        #endregion
-
-        #region Métodos Públicos Estáticos
-
-        /// <summary>
-        /// Guarda la configuración en curso actual.
-        /// </summary>
-        public static void Save()
-        {
-
-            CheckDirectories();
-
-            string FullPath = $"{Path}{_PathSep}" + FileName;
-
-            XmlSerializer serializer = new XmlSerializer(Current.GetType());
-
-            using (StreamWriter w = new StreamWriter(FullPath))
-            {
-                serializer.Serialize(w, Current);
-            }
-
-        }
-
-        /// <summary>
-        /// Aseguro existencia de directorios de trabajo.
-        /// </summary>
-        private static void CheckDirectories()
-        {
-            if (!Directory.Exists(Path))
-                Directory.CreateDirectory(Path);
-
-            if (!Directory.Exists(_Current.InboxPath))
-                Directory.CreateDirectory(_Current.InboxPath);
-
-            if (!Directory.Exists(_Current.OutboxPath))
-                Directory.CreateDirectory(_Current.OutboxPath);
-
-            if (!Directory.Exists(_Current.BlockchainPath))
-                Directory.CreateDirectory(_Current.BlockchainPath);
-
-            if (!Directory.Exists(_Current.InvoicePath))
-                Directory.CreateDirectory(_Current.InvoicePath);
-
-            if (!Directory.Exists(_Current.LogPath))
-                Directory.CreateDirectory(_Current.LogPath);
-
-        }
-
-        /// <summary>
-        /// Esteblece el archivo de configuración con el cual trabajar.
-        /// </summary>
-        /// <param name="fileName">Nombre del archivo de configuración a utilizar.</param>
-        public static void SetConfigFileName(string fileName)
-        {
-
-            FileName = fileName;
-            Get();
-
-        }
-
-        #endregion
-
+      System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+      Get();
+      BlockchainInitialized = Blockchain.Blockchain.Initialized; // Inicia cadena de bloques
+      Current.SistemaInformatico.IndicadorMultiplesOT = Seller.GetSellers().Count > 1 ? "S" : "N"; // Valor multiples OT
+      ApiClient.Ct();
     }
 
+    #endregion
+
+    #region Métodos Privados Estáticos
+
+    /// <summary>
+    /// Inicia estaticos.
+    /// </summary>
+    /// <returns>La configuración cargada.</returns>
+    internal static Settings Get()
+    {
+      Current = new Settings();
+      string FullPath = $"{Path}{_PathSep}{FileName}";
+      XmlSerializer serializer = new XmlSerializer(Current.GetType());
+      if(File.Exists(FullPath))
+      {
+        using(StreamReader r = new StreamReader(FullPath))
+        {
+          Current = serializer.Deserialize(r) as Settings;
+        }
+      }
+      else
+      {
+        Current = GetDefault();
+      }
+      CheckDirectories();
+      return Current;
+    }
+
+    /// <summary>
+    /// Devuelve MAC address.
+    /// </summary>
+    /// <returns>MAC local</returns>
+    internal static string GetLocalMacAddress()
+    {
+      NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+      foreach(NetworkInterface nic in networkInterfaces)
+      {
+        if(nic.OperationalStatus == OperationalStatus.Up)
+        {
+          return $"{nic.GetPhysicalAddress()}";
+        }
+      }
+      return null;
+    }
+
+    /// <summary>
+    /// Devuelve un objeto Settings con las opciones por defecto de configuración.
+    /// </summary>
+    /// <returns></returns>
+    internal static Settings GetDefault()
+    {
+      string numeroInstalacion = "01";
+      try
+      {
+        string mac = GetLocalMacAddress();
+        if(!string.IsNullOrEmpty(mac))
+        {
+          numeroInstalacion = mac;
+        }
+      }
+      catch(Exception ex)
+      {
+        Utils.Log($"{ex}");
+      }
+      return new Settings
+      {
+        IDVersion = "1.0",
+        InboxPath = $"{Path}Inbox{_PathSep}",
+        OutboxPath = $"{Path}Outbox{_PathSep}",
+        BlockchainPath = $"{Path}Blockchains{_PathSep}",
+        InvoicePath = $"{Path}Invoices{_PathSep}",
+        LogPath = $"{Path}Log{_PathSep}",
+        CertificateSerial = string.Empty,
+        CertificateThumbprint = string.Empty,
+        CertificatePath = string.Empty,
+        CertificatePassword = string.Empty,
+        VeriFactuEndPointPrefix = VeriFactuEndPointPrefixes.Test,
+        VeriFactuEndPointValidatePrefix = VeriFactuEndPointPrefixes.TestValidate,
+        VeriFactuHashAlgorithm = TipoHuella.Sha256,
+        VeriFactuHashInputEncoding = "UTF-8",
+        SistemaInformatico = new SistemaInformatico
+        {
+          NIF = "B12959755",
+          NombreRazon = "IRENE SOLUTIONS SL",
+          NombreSistemaInformatico = $"{Assembly.GetExecutingAssembly().GetName().Name}",
+          IdSistemaInformatico = "01",
+          Version = $"{Assembly.GetExecutingAssembly().GetName().Version}",
+          NumeroInstalacion = numeroInstalacion,
+          TipoUsoPosibleSoloVerifactu = "S",
+          TipoUsoPosibleMultiOT = "S",
+          IndicadorMultiplesOT = "S"
+        },
+        Api = new Api
+        {
+          EndPointCreate = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/Create",
+          EndPointCancel = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/Cancel",
+          EndPointGetQrCode = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/GetQrCode",
+          EndPointGetSellers = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/GetSellers",
+          EndPointGetRecords = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/GetFilteredList",
+          EndPointValidateNIF = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/ValidateNIF",
+          EndPointGetAeatInvoices = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/GetAeatInvoices",
+          EndPointGetFilteredList = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/GetFilteredList",
+          EndPointCreateBatch = "https://facturae.irenesolutions.com:8050/Kivu/Taxes/Verifactu/Invoices/CreateBatch",
+          ServiceKey = "1234"
+        },
+        SkipNifAeatValidation = true,
+        SkipViesVatNumberValidation = true,
+        LoggingEnabled = false
+      };
+    }
+
+    #endregion
+
+    #region Propiedades Públicas Estáticas
+
+    /// <summary>
+    /// Configuración en curso.
+    /// </summary>
+    public static Settings Current { get; set; }
+
+    /// <summary>
+    /// Ruta al directorio de configuración.
+    /// </summary>
+    public static string Path
+    {
+      get;
+    } =
+#if !LE_461
+        RuntimeInformation.IsOSPlatform(OSPlatform.Create("IOS")) || RuntimeInformation.IsOSPlatform(OSPlatform.Create("ANDROID")) ?
+        $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{_PathSep}VeriFactu{_PathSep}" :
+#endif
+        $"{Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)}{_PathSep}VeriFactu{_PathSep}";
+
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// <para>Identificación de la versión actual del esquema o estructura de información utilizada para la generación y
+    /// conservación / remisión de los registros de facturación. Este campo forma parte del detalle de las
+    /// circunstancias de generación de los registros de facturación.</para> <para>Alfanumérico(3) L15:</para>
+    /// <para>1.0: Versión actual (1.0) del esquema utilizado</para>
+    /// </summary>
+    [XmlElement("IDVersion")]
+    public string IDVersion { get; set; }
+
+    /// <summary>
+    /// Ruta al directorio que actuará como bandeja de entrada. En este directorio se almacenarán todos los mensajes
+    /// recibidos de la AEAT mediante VERI*FACTU.
+    /// </summary>
+    [XmlElement("InboxPath")]
+    public string InboxPath { get; set; }
+
+    /// <summary>
+    /// Ruta al directorio que actuará como bandeja de salida. En este directorio se almacenará una copia de cualquier
+    /// envío realizado a la AEAT mediante el VERI*FACTU.
+    /// </summary>
+    [XmlElement("OutboxPath")]
+    public string OutboxPath { get; set; }
+
+    /// <summary>
+    /// Ruta al directorio que actuará como almacén de las distintas cadenas de bloques por emisor.
+    /// </summary>
+    [XmlElement("BlockchainPath")]
+    public string BlockchainPath
+    {
+      get => _BlockchainPath;
+      set
+      {
+        if(Current.BlockchainPath != null && Current.BlockchainPath != value
+                    && Directory.GetDirectories(Current.BlockchainPath).Length > 0)
+        {
+          throw new InvalidOperationException(
+            $"No se puede cambiar el valor" +
+                                $" de 'BlockchainPath' si la carpeta no está vacía.");
+        }
+        _BlockchainPath = value;
+      }
+    }
+
+    /// <summary>
+    /// Ruta al directorio que actuará almacenamiento de las facturas emitidas por emisor.
+    /// </summary>
+    [XmlElement("InvoicePath")]
+    public string InvoicePath { get; set; }
+
+    /// <summary>
+    /// Ruta al directorio que actuará almacenamiento del registro de mensajes del sistema.
+    /// </summary>
+    [XmlElement("LogPath")]
+    public string LogPath { get; set; }
+
+    /// <summary>
+    /// Número de serie del certificado a utilizar. Mediante este número de serie se selecciona del almacén de
+    /// certificados de windows el certificado con el que realizar las comunicaciones.
+    /// </summary>
+    [XmlElement("CertificateSerial")]
+    public string CertificateSerial { get; set; }
+
+    /// <summary>
+    /// Hash o Huella digital del certificado a utilizar. Mediante esta huella digital se selecciona del almacén de
+    /// certificados de windows el certificado con el que realizar las comunicaciones.
+    /// </summary>
+    [XmlElement("CertificateThumbprint")]
+    public string CertificateThumbprint { get; set; }
+
+    /// <summary>
+    /// Ruta al archivo del certificado a utilizar. Sólo se utiliza en los certificados cargados desde el sistema de
+    /// archivos.
+    /// </summary>
+    [XmlElement("CertificatePath")]
+    public string CertificatePath { get; set; }
+
+    /// <summary>
+    /// Password del certificado. Este valor sólo es necesario si tenemos establecido el valor para 'CertificatePath' y
+    /// el certificado tiene clave de acceso. Sólo se utiliza en los certificados cargados desde el sistema de archivos.
+    ///
+    /// </summary>
+    [XmlElement("CertificatePassword")]
+    public string CertificatePassword { get; set; }
+
+    /// <summary>
+    /// EndPoint del web service de la AEAT para envío registros alta y anulación.
+    /// </summary>
+    [XmlElement("VeriFactuEndPointPrefix")]
+    public string VeriFactuEndPointPrefix { get; set; }
+
+    /// <summary>
+    /// EndPoint del web service de la AEAT de validación de Verifactu.
+    /// </summary>
+    [XmlElement("VeriFactuEndPointValidatePrefix")]
+    public string VeriFactuEndPointValidatePrefix { get; set; }
+
+    /// <summary>
+    /// Algoritmo a utilizar para el cálculo de hash. Clave que identifica Tipo de hash aplicado para obtener la huella.
+    /// Alfanumérico(2) L12.
+    /// </summary>
+    [XmlElement("VeriFactuHashAlgorithm")]
+    public TipoHuella VeriFactuHashAlgorithm { get; set; }
+
+    /// <summary>
+    /// Codificación del texto de entrada para el hash.
+    /// </summary>
+    [XmlElement("VeriFactuHashInputEncoding")]
+    public string VeriFactuHashInputEncoding { get; set; }
+
+    /// <summary>
+    /// Datos del sistema informático.
+    /// </summary>
+    [XmlElement("SistemaInformatico")]
+    public SistemaInformatico SistemaInformatico { get; set; }
+
+    /// <summary>
+    /// Datos del API REST para Verifactu de Irene Solutions.
+    /// </summary>
+    [XmlElement("Api")]
+    public Api Api { get; set; }
+
+    /// <summary>
+    /// Indica si salta la validación en línea de NIF con la AEAT.
+    /// </summary>
+    [XmlElement("SkipNifAeatValidation")]
+    public bool SkipNifAeatValidation { get; set; }
+
+    /// <summary>
+    /// Indica si salta la validación en línea de en el censo VIES de los VAT numbers intracomunitarios.
+    /// </summary>
+    [XmlElement("SkipViesVatNumberValidation")]
+    public bool SkipViesVatNumberValidation { get; set; }
+
+    /// <summary>
+    /// Indica si está activado el log de mensajes del sistema.
+    /// </summary>
+    [XmlElement("LoggingEnabled")]
+    public bool LoggingEnabled { get; set; }
+
+    #endregion
+
+    #region Métodos Públicos Estáticos
+
+    /// <summary>
+    /// Guarda la configuración en curso actual.
+    /// </summary>
+    public static void Save()
+    {
+      CheckDirectories();
+      string FullPath = $"{Path}{_PathSep}{FileName}";
+      XmlSerializer serializer = new XmlSerializer(Current.GetType());
+      using(StreamWriter w = new StreamWriter(FullPath))
+      {
+        serializer.Serialize(w, Current);
+      }
+    }
+
+    /// <summary>
+    /// Aseguro existencia de directorios de trabajo.
+    /// </summary>
+    private static void CheckDirectories()
+    {
+      if(!Directory.Exists(Path))
+      {
+        Directory.CreateDirectory(Path);
+      }
+      if(!Directory.Exists(Current.InboxPath))
+      {
+        Directory.CreateDirectory(Current.InboxPath);
+      }
+      if(!Directory.Exists(Current.OutboxPath))
+      {
+        Directory.CreateDirectory(Current.OutboxPath);
+      }
+      if(!Directory.Exists(Current.BlockchainPath))
+      {
+        Directory.CreateDirectory(Current.BlockchainPath);
+      }
+      if(!Directory.Exists(Current.InvoicePath))
+      {
+        Directory.CreateDirectory(Current.InvoicePath);
+      }
+      if(!Directory.Exists(Current.LogPath))
+      {
+        Directory.CreateDirectory(Current.LogPath);
+      }
+    }
+
+    /// <summary>
+    /// Esteblece el archivo de configuración con el cual trabajar.
+    /// </summary>
+    /// <param name="fileName">Nombre del archivo de configuración a utilizar.</param>
+    public static void SetConfigFileName(string fileName)
+    {
+      FileName = fileName;
+      Get();
+    }
+
+    #endregion
+  }
 }

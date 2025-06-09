@@ -41,20 +41,15 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu
 {
-
+  /// <summary>
+  /// Clave que identifica Tipo de hash aplicado para obtener la huella. Alfanumérico(2) L12.
+  /// </summary>
+  public enum TipoHuella
+  {
     /// <summary>
-    /// Clave que identifica Tipo de hash aplicado para
-    /// obtener la huella. Alfanumérico(2) L12.
+    /// SHA-256 ('01').
     /// </summary>
-    public enum TipoHuella
-    {
-
-        /// <summary>
-        /// SHA-256 ('01').
-        /// </summary>
-        [XmlEnum("01")]
+    [XmlEnum("01")]
         Sha256
-
-    }
-
+  }
 }

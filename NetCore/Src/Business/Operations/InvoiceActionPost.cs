@@ -44,225 +44,202 @@ using VeriFactu.Xml.Factu;
 
 namespace VeriFactu.Business.Operations
 {
-
-    /// <summary>
-    /// Representa una acción de alta o anulación de registro
-    /// en todo lo referente a su gestión contable en la 
-    /// cadena de bloques.
-    /// </summary>
-    public class InvoiceActionPost : InvoiceActionMessage
-    {
+  /// <summary>
+  /// Representa una acción de alta o anulación de registro en todo lo referente a su gestión contable en la  cadena de
+  /// bloques.
+  /// </summary>
+  public class InvoiceActionPost : InvoiceActionMessage
+  {
 
         #region Variables Privadas de Instancia
 
-        /// <summary>
-        /// Bloqueo para thread safe.
-        /// </summary>
-        private readonly object _Locker = new object();
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="invoice">Instancia de factura de entrada en el sistema.</param>
-        public InvoiceActionPost(Invoice invoice) : base(invoice)
-        {
-
-            BlockchainManager = Blockchain.Blockchain.Get(Invoice.SellerID);
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Contabiliza una entrada.
-        /// <para> 1. Incluye el registro en la cadena de bloques.</para>
-        /// <para> 2. Recalcula Xml con la info Blockchain actualizada.</para>
-        /// <para> 3. Guarda el registro en disco en el el directorio de registros emitidos.</para>
-        /// <para> 4. Establece Posted = true.</para>
-        /// </summary>
-        internal virtual void Post()
-        {
-
-            // Añadimos el registro de alta (1)
-            BlockchainManager.Add(Registro);
-
-            // Actualizamos datos (2,3,4)
-            SaveBlockchainChanges();
-
-        }
-
-        /// <summary>
-        /// Actualiza los datos tras la incorporación del registro
-        /// a la cadena de bloques.
-        /// <para> 1. Recalcula Xml con la info Blockchain actualizada.</para>
-        /// <para> 2. Guarda el registro en disco en el el directorio de registros emitidos.</para>
-        /// <para> 3. Establece Posted = true.</para>
-        /// </summary>
-        internal virtual void SaveBlockchainChanges() 
-        {
-
-            if (Registro.BlockchainLinkID == 0)
-                throw new InvalidOperationException($"El registro {Registro}" +
-                    $" no está incluido en la cadena de bloques.");
-
-            if (Posted)
-                throw new InvalidOperationException($"La operación {this}" +
-                    $" ya está contabilizada.");
-
-
-            // Regeneramos el Xml
-            Xml = GetXml();
-
-            // Guardamos el xml
-            File.WriteAllBytes(InvoiceFilePath, Xml);
-
-            // Marcamos como contabilizado
-            Posted = true;
-
-        }
-
-        /// <summary>
-        /// Deshace cambios de guardado de documente eliminando
-        /// el elemento de la cadena de bloques y marcando los
-        /// archivos relacionados como erróneos.
-        /// </summary>
-        protected void ClearPost()
-        {
-
-            Exception undoException = null;
-
-            lock (_Locker)
-            {
-
-                try
-                {
-
-                    //Reevierto cambios
-                    BlockchainManager.Delete(Registro);
-
-                    if (File.Exists(InvoiceEntryFilePath))
-                        File.Move(InvoiceEntryFilePath, GetErrorInvoiceEntryFilePath());
-
-                    if (File.Exists(InvoiceFilePath))
-                        File.Move(InvoiceFilePath, GeErrorInvoiceFilePath());
-
-                    Posted = false;
-
-                }
-                catch (Exception ex)
-                {
-
-                    undoException = ex;
-
-                }
-
-            }
-
-            if (undoException != null)
-                throw new Exception($"Se ha producido un error al intentar descontabilizar" +
-                    $" el envío en la cadena de bloques.", undoException);
-
-        }
-
-        /// <summary>
-        /// Ejecuta la contabilización del registro.
-        /// </summary>
-        /// <returns>Si todo funciona correctamente devuelve null.
-        /// En caso contrario devuelve una excepción con el error.</returns>
-        internal void ExecutePost()
-        {
-
-            // Compruebo el certificado
-            var cert = Wsd.GetCheckedCertificate();
-
-            if (cert == null)
-                throw new Exception("Existe algún problema con el certificado.");
-
-            Exception postException = null;
-
-            lock (_Locker)
-            {
-
-                try
-                {
-
-                    Post();                   
-
-                }
-                catch (Exception ex)
-                {
-
-                    postException = ex;
-
-                }
-
-            }
-
-            if (postException != null)
-                throw new Exception($"Se ha producido un error al intentar contabilizar" +
-                    $" el envío en la cadena de bloques.", postException);
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// Gestor de cadena de bloques para el registro.
-        /// </summary>
-        public Blockchain.Blockchain BlockchainManager { get; private set; }   
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Contabiliza y envía a la AEAT el registro.
-        /// </summary>
-        public void Save()
-        {
-
-            if (IsSaved)
-                throw new InvalidOperationException("El objeto InvoiceEntry sólo" +
-                    " puede llamar al método Save() una vez.");
-
-            Exception sentException = null;
-
-            ExecutePost();
-
-            try
-            {
-                ExecuteSend();
-                ProcessResponse();
-            }
-            catch (Exception ex)
-            {
-
-                sentException = ex;
-                ClearPost();
-
-            }
-
-            if (string.IsNullOrEmpty(CSV) || sentException != null)
-                if(sentException == null)
-                    ClearPost();
-
-            if (sentException != null)
-                throw new Exception($"Se ha producido un error al intentar realizar el envío" +
-                    $" o procesar la respuesta.", sentException);
-
-            IsSaved = true;
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Bloqueo para thread safe.
+    /// </summary>
+    private readonly object _Locker = new object();
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="invoice">Instancia de factura de entrada en el sistema.</param>
+    public InvoiceActionPost(Invoice invoice) : base(invoice)
+    {
+      BlockchainManager = Blockchain.Blockchain.Get(Invoice.SellerID);
     }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Contabiliza una entrada. <para>1. Incluye el registro en la cadena de bloques.</para> <para>2. Recalcula Xml con
+    /// la info Blockchain actualizada.</para> <para>3. Guarda el registro en disco en el el directorio de registros
+    /// emitidos.</para> <para>4. Establece Posted = true.</para>
+    /// </summary>
+    internal virtual void Post()
+    {
+      // Añadimos el registro de alta (1)
+      BlockchainManager.Add(Registro);
+      // Actualizamos datos (2,3,4)
+      SaveBlockchainChanges();
+    }
+
+    /// <summary>
+    /// Actualiza los datos tras la incorporación del registro a la cadena de bloques. <para>1. Recalcula Xml con la
+    /// info Blockchain actualizada.</para> <para>2. Guarda el registro en disco en el el directorio de registros
+    /// emitidos.</para> <para>3. Establece Posted = true.</para>
+    /// </summary>
+    internal virtual void SaveBlockchainChanges()
+    {
+      if(Registro.BlockchainLinkID == 0)
+      {
+        throw new InvalidOperationException(
+          $"El registro {Registro}" +
+                          $" no está incluido en la cadena de bloques.");
+      }
+      if(Posted)
+      {
+        throw new InvalidOperationException(
+          $"La operación {this}" +
+                          $" ya está contabilizada.");
+      }
+      // Regeneramos el Xml
+      Xml = GetXml();
+      // Guardamos el xml
+      File.WriteAllBytes(InvoiceFilePath, Xml);
+      // Marcamos como contabilizado
+      Posted = true;
+    }
+
+    /// <summary>
+    /// Deshace cambios de guardado de documente eliminando el elemento de la cadena de bloques y marcando los archivos
+    /// relacionados como erróneos.
+    /// </summary>
+    protected void ClearPost()
+    {
+      Exception undoException = null;
+      lock(_Locker)
+      {
+        try
+        {
+          //Reevierto cambios
+          BlockchainManager.Delete(Registro);
+          if(File.Exists(InvoiceEntryFilePath))
+          {
+            File.Move(InvoiceEntryFilePath, GetErrorInvoiceEntryFilePath());
+          }
+          if(File.Exists(InvoiceFilePath))
+          {
+            File.Move(InvoiceFilePath, GeErrorInvoiceFilePath());
+          }
+          Posted = false;
+        }
+        catch(Exception ex)
+        {
+          undoException = ex;
+        }
+      }
+      if(undoException != null)
+      {
+        throw new Exception(
+          $"Se ha producido un error al intentar descontabilizar" +
+                          $" el envío en la cadena de bloques.",
+          undoException);
+      }
+    }
+
+    /// <summary>
+    /// Ejecuta la contabilización del registro.
+    /// </summary>
+    /// <returns>
+    /// Si todo funciona correctamente devuelve null. En caso contrario devuelve una excepción con el error.
+    /// </returns>
+    internal void ExecutePost()
+    {
+      // Compruebo el certificado
+      System.Security.Cryptography.X509Certificates.X509Certificate2 cert = Wsd.GetCheckedCertificate();
+      if(cert == null)
+      {
+        throw new Exception("Existe algún problema con el certificado.");
+      }
+      Exception postException = null;
+      lock(_Locker)
+      {
+        try
+        {
+          Post();
+        }
+        catch(Exception ex)
+        {
+          postException = ex;
+        }
+      }
+      if(postException != null)
+      {
+        throw new Exception(
+          $"Se ha producido un error al intentar contabilizar" +
+                          $" el envío en la cadena de bloques.",
+          postException);
+      }
+    }
+
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// Gestor de cadena de bloques para el registro.
+    /// </summary>
+    public Blockchain.Blockchain BlockchainManager { get; private set; }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Contabiliza y envía a la AEAT el registro.
+    /// </summary>
+    public void Save()
+    {
+      if(IsSaved)
+      {
+        throw new InvalidOperationException(
+          "El objeto InvoiceEntry sólo" +
+                          " puede llamar al método Save() una vez.");
+      }
+      Exception sentException = null;
+      ExecutePost();
+      try
+      {
+        ExecuteSend();
+        ProcessResponse();
+      }
+      catch(Exception ex)
+      {
+        sentException = ex;
+        ClearPost();
+      }
+      if(string.IsNullOrEmpty(CSV) || sentException != null)
+      {
+        if(sentException == null)
+        {
+          ClearPost();
+        }
+      }
+      if(sentException != null)
+      {
+        throw new Exception(
+          $"Se ha producido un error al intentar realizar el envío" +
+                          $" o procesar la respuesta.",
+          sentException);
+      }
+      IsSaved = true;
+    }
+
+    #endregion
+  }
 }

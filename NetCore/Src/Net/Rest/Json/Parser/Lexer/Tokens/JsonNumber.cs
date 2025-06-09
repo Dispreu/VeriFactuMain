@@ -43,86 +43,72 @@ using System.Text.RegularExpressions;
 
 namespace VeriFactu.Net.Rest.Json.Parser.Lexer.Tokens
 {
-
-    /// <summary>
-    /// Fragmento obtenido del análisis léxico de una cadena
-    /// JSON que representa un valor de propiedad numérica.
-    /// </summary>
-    internal class JsonNumber : JsonToken
-    {
+  /// <summary>
+  /// Fragmento obtenido del análisis léxico de una cadena JSON que representa un valor de propiedad numérica.
+  /// </summary>
+  internal class JsonNumber : JsonToken
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Longitud de la cadena de texto.
-        /// </summary>
-        internal override int Length
+    /// <summary>
+    /// Longitud de la cadena de texto.
+    /// </summary>
+    internal override int Length
+    {
+      get
+      {
+        int curCharIndex = Start;
+        char curChar = JsonLexer.JsonText[++curCharIndex];
+        while(curCharIndex < JsonLexer.JsonText.Length && Regex.IsMatch($"{curChar}", @"[0-9.]"))
         {
-
-            get
-            {
-
-                var curCharIndex = Start;
-                var curChar = JsonLexer.JsonText[++curCharIndex];
-
-                while (curCharIndex < JsonLexer.JsonText.Length && Regex.IsMatch($"{curChar}", @"[0-9.]"))
-                    curChar = JsonLexer.JsonText[++curCharIndex];
-
-                return curCharIndex - Start;
-
-            }
-
+          curChar = JsonLexer.JsonText[++curCharIndex];
         }
-
-        /// <summary>
-        /// Valor de la cadena de texto.
-        /// </summary>
-        internal override string Value
-        {
-
-            get
-            {
-
-                return JsonLexer.JsonText.Substring(Start, Length);
-
-            }
-
-        }
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="jsonLexer">Analizador léxico al que
-        /// pertenece el fragmento de texto.</param>
-        /// <param name="start">Posición del inicio del
-        /// fragmento de texto dentro de la cadena completa JSON.</param>
-        internal JsonNumber(JsonLexer jsonLexer, int start) : base(jsonLexer, start) 
-        { 
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Convierte el valor del fragmento de texto
-        /// en el tipo al que se interpreta que pertenece.
-        /// </summary>
-        /// <returns>Valor del fragmento de texto
-        /// en el tipo al que se interpreta que pertenece.</returns>
-        internal override object Covert()
-        {
-
-            return Convert.ToDecimal(Value, new NumberFormatInfo() { NumberDecimalSeparator = "." });
-
-        }
-
-        #endregion
-
+        return curCharIndex - Start;
+      }
     }
 
+    /// <summary>
+    /// Valor de la cadena de texto.
+    /// </summary>
+    internal override string Value => JsonLexer.JsonText.Substring(Start, Length);
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="jsonLexer">
+    /// Analizador léxico al que pertenece el fragmento de texto.
+    /// </param>
+    /// <param name="start">
+    /// Posición del inicio del fragmento de texto dentro de la cadena completa JSON.
+    /// </param>
+    internal JsonNumber(JsonLexer jsonLexer, int start) : base(jsonLexer, start)
+        { }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Convierte el valor del fragmento de texto en el tipo al que se interpreta que pertenece.
+    /// </summary>
+    /// <returns>
+    /// Valor del fragmento de texto en el tipo al que se interpreta que pertenece.
+    /// </returns>
+    internal override object Covert()
+    {
+      return Convert.ToDecimal(
+        Value,
+        new NumberFormatInfo
+        {
+          NumberDecimalSeparator = "."
+        });
+    }
+
+    #endregion
+  }
 }

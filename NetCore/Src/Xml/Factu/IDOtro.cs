@@ -42,69 +42,58 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu
 {
-
-    /// <summary>
-    /// Indentificadores fiscales de países distintos
-    /// a España-
-    /// </summary>
-    [Serializable]
-    public class IDOtro
-    {
+  /// <summary>
+  /// Indentificadores fiscales de países distintos a España-
+  /// </summary>
+  [Serializable]
+  public class IDOtro
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// <para>Código del país del tercero que expida la factura.</para>
-        /// <para>Alfanumérico(2) (ISO 3166-1 alpha-2 codes)</para>
-        /// </summary>
-        public CodigoPais CodigoPais { get; set; }
+    /// <summary>
+    /// <para>Código del país del tercero que expida la factura.</para> <para>Alfanumérico(2) (ISO 3166-1 alpha-2
+    /// codes)</para>
+    /// </summary>
+    public CodigoPais CodigoPais { get; set; }
 
-        /// <summary>
-        /// Con true se serializa el dato, con false no.
-        /// </summary>
-        [XmlIgnore]
-        public bool CodigoPaisSpecified { get; set; }
+    /// <summary>
+    /// Con true se serializa el dato, con false no.
+    /// </summary>
+    [XmlIgnore]
+    public bool CodigoPaisSpecified { get; set; }
 
-        /// <summary>
-        /// <para>Clave para establecer el tipo de
-        /// identificación en el pais de residencia.</para>
-        /// <para>Alfanumérico(2). L7:</para>
-        /// <para>02: NIF-IVA</para>
-        /// <para>03: Pasaporte</para>
-        /// <para>04: Documento oficial de identificación expedido por el país o territorio de residencia</para>
-        /// <para>05: Certificado de residencia</para>
-        /// <para>06: Otro documento probatorio</para>
-        /// <para>07: No censado</para>
-        /// </summary>
-        public IDType IDType { get; set; }
+    /// <summary>
+    /// <para>Clave para establecer el tipo de identificación en el pais de residencia.</para> <para>Alfanumérico(2).
+    /// L7:</para> <para>02: NIF-IVA</para> <para>03: Pasaporte</para> <para>04: Documento oficial de identificación
+    /// expedido por el país o territorio de residencia</para> <para>05: Certificado de residencia</para> <para>06: Otro
+    /// documento probatorio</para> <para>07: No censado</para>
+    /// </summary>
+    public IDType IDType { get; set; }
 
-        /// <summary>
-        /// <para>Número de identificación en el país de residencia</para>
-        /// <para>Alfanumérico(20).</para>
-        /// </summary>
-        public string ID { get; set; }
+    /// <summary>
+    /// <para>Número de identificación en el país de residencia</para> <para>Alfanumérico(20).</para>
+    /// </summary>
+    public string ID { get; set; }
 
-        /// <summary>
-        /// <para>NIF del representante del tercero que expida la factura.</para>
-        /// <para>FormatoNIF(9).</para>
-        /// </summary>
-        public string NIFRepresentante { get; set; }
+    /// <summary>
+    /// <para>NIF del representante del tercero que expida la factura.</para> <para>FormatoNIF(9).</para>
+    /// </summary>
+    public string NIFRepresentante { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"[{CodigoPais}] {ID}";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"[{CodigoPais}] {ID}";
     }
 
+    #endregion
+  }
 }

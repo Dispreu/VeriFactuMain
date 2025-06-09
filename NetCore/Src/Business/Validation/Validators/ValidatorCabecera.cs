@@ -46,100 +46,95 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators
 {
-
-    /// <summary>
-    /// Valida los datos de Cabecera.
-    /// </summary>
-    public class ValidatorCabecera : InvoiceValidation
-    {
+  /// <summary>
+  /// Valida los datos de Cabecera.
+  /// </summary>
+  public class ValidatorCabecera : InvoiceValidation
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope">Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        public ValidatorCabecera(Envelope envelope) : base(envelope)
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    public ValidatorCabecera(Envelope envelope) : base(envelope)
+        { }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Ejecuta las validaciones y devuelve una lista con los errores encontrados.
+    /// </summary>
+    /// <returns>
+    /// Lista con las descripciones de los  errores encontrado.
+    /// </returns>
+    public override List<string> GetErrors()
+    {
+      List<string> result = new List<string>();
+      Xml.Factu.Cabecera cabecera = _RegFactuSistemaFacturacion?.Cabecera;
+      // 1. ObligadoEmision: El NIF del obligado a expedir (emitir) facturas asociado a la remisión debe estar identificado en la AEAT.
+      //  4104 = Error en la cabecera: el valor del campo NIF del bloque ObligadoEmision no está identificado.
+      if(cabecera?.ObligadoEmision?.NIF == null)
+      {
+        result.Add("Error en el bloque Cabecera: El NIF del bloque ObligadoEmision debe contener un valor");
+      }
+      if(!Settings.Current.SkipNifAeatValidation) // 4107 = El NIF no está identificado en el censo de la AEAT.
+      {
+        result.AddRange(new NifValidation(cabecera.ObligadoEmision.NIF, cabecera.ObligadoEmision.NombreRazon).GetErrors());
+      }
+      // 2. Representante: El NIF del representante/asesor del obligado a expedir (emitir) facturas asociado
+      // a la remisión debe estar identificado en la AEAT.
+      //  4105 = Error en la cabecera: el valor del campo NIF del bloque Representante no está identificado.
+      if(cabecera.Representante != null)
+      {
+        if(cabecera?.Representante?.NIF == null)
         {
+          result.Add("Error en el bloque Cabecera: El valor del campo NIF del bloque Representante no está identificado");
         }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Ejecuta las validaciones y devuelve una lista
-        /// con los errores encontrados.
-        /// </summary>
-        /// <returns>Lista con las descripciones de los 
-        /// errores encontrado.</returns>
-        public override List<string> GetErrors()
+        // 4107 = El NIF no está identificado en el censo de la AEAT.
+        // 4123 = Error en la cabecera: el valor del campo NIF del bloque Representante no está identificado en el censo de la AEAT.
+        // 4124 = Error en la cabecera: el valor del campo Nombre del bloque Representante no está identificado en el censo de la AEAT.
+        if(!Settings.Current.SkipNifAeatValidation)
         {
-
-            var result = new List<string>();
-
-            var cabecera = _RegFactuSistemaFacturacion?.Cabecera;
-
-            // 1. ObligadoEmision: El NIF del obligado a expedir (emitir) facturas asociado a la remisión debe estar identificado en la AEAT.
-            //  4104 = Error en la cabecera: el valor del campo NIF del bloque ObligadoEmision no está identificado.
-
-            if (cabecera?.ObligadoEmision?.NIF == null)
-                result.Add("Error en el bloque Cabecera: El NIF del bloque ObligadoEmision debe contener un valor");
-
-            if(!Settings.Current.SkipNifAeatValidation) // 4107 = El NIF no está identificado en el censo de la AEAT.
-                result.AddRange(new NifValidation(cabecera.ObligadoEmision.NIF, cabecera.ObligadoEmision.NombreRazon).GetErrors());
-
-            // 2. Representante: El NIF del representante/asesor del obligado a expedir (emitir) facturas asociado
-            // a la remisión debe estar identificado en la AEAT.
-            //  4105 = Error en la cabecera: el valor del campo NIF del bloque Representante no está identificado.
-            if (cabecera.Representante != null)
-            {
-
-                if (cabecera?.Representante?.NIF == null)
-                    result.Add("Error en el bloque Cabecera: El valor del campo NIF del bloque Representante no está identificado");
-
-                // 4107 = El NIF no está identificado en el censo de la AEAT.
-                // 4123 = Error en la cabecera: el valor del campo NIF del bloque Representante no está identificado en el censo de la AEAT.
-                // 4124 = Error en la cabecera: el valor del campo Nombre del bloque Representante no está identificado en el censo de la AEAT.
-                if (!Settings.Current.SkipNifAeatValidation) 
-                    result.AddRange(new NifValidation(cabecera.Representante.NIF, cabecera.Representante.NombreRazon).GetErrors());
-
-            }
-
-            // 3. FechaFinVeriFactu
-            //  4120 = Error en la cabecera: el valor del campo FechaFinVeriFactu es incorrecto, debe ser 31-12-20XX, donde XX corresponde con el año actual o el anterior.
-            if (cabecera.RemisionVoluntaria?.FechaFinVeriFactu != null)
-            {
-
-                // Sólo se permite contenido en sistemas que emite facturas verificables (Es el caso siempre)
-                // La fecha debe tener el formato 31-12-20XX.
-                if (!Regex.IsMatch(cabecera.RemisionVoluntaria.FechaFinVeriFactu, @"31-12-20\d{2}"))
-                    result.Add("Error en el bloque Cabecera: La fecha FechaFinVeriFactu debe tener el formato 31-12-20XX.");
-
-                // El año de la fecha deberá ser igual al año de la fecha del sistema de la AEAT, o al año anterior(para admitir
-                // casos excepcionales y puntuales que pudieran darse a finales de año y comienzo del siguiente).
-                var fechaFinVeriFactuYear = Convert.ToInt32(cabecera.RemisionVoluntaria.FechaFinVeriFactu.Substring(6, 4));
-
-                if (fechaFinVeriFactuYear > DateTime.Now.Year || fechaFinVeriFactuYear < DateTime.Now.Year - 1)
-                    result.Add("Error en el bloque Cabecera: El año de la fecha FechaFinVeriFactu deberá ser igual" +
-                        " al año de la fecha del sistema de la AEAT, o al año anterior.");
-
-            }
-
-            // 4. Incidencia: Sólo se permite contenido en sistemas que emite facturas verificables. (Es el caso siempre)
-
-            // 5. RefRequerimiento: Sólo se permite contenido en sistemas que emiten facturas no verificables. 
-            if(cabecera.RemisionRequerimiento != null)
-                result.Add("Error en el bloque Cabecera: RefRequerimiento: Sólo se permite contenido en sistemas que emiten facturas no verificables," +
-                        " la biblioteca Verifactu ha sido diseñada para funcionar únicamente como sistema verificable.");
-
-            return result;
-
+          result.AddRange(new NifValidation(cabecera.Representante.NIF, cabecera.Representante.NombreRazon).GetErrors());
         }
-
-        #endregion
-
+      }
+      // 3. FechaFinVeriFactu
+      //  4120 = Error en la cabecera: el valor del campo FechaFinVeriFactu es incorrecto, debe ser 31-12-20XX, donde XX corresponde con el año actual o el anterior.
+      if(cabecera.RemisionVoluntaria?.FechaFinVeriFactu != null)
+      {
+        // Sólo se permite contenido en sistemas que emite facturas verificables (Es el caso siempre)
+        // La fecha debe tener el formato 31-12-20XX.
+        if(!Regex.IsMatch(cabecera.RemisionVoluntaria.FechaFinVeriFactu, @"31-12-20\d{2}"))
+        {
+          result.Add("Error en el bloque Cabecera: La fecha FechaFinVeriFactu debe tener el formato 31-12-20XX.");
+        }
+        // El año de la fecha deberá ser igual al año de la fecha del sistema de la AEAT, o al año anterior(para admitir
+        // casos excepcionales y puntuales que pudieran darse a finales de año y comienzo del siguiente).
+        int fechaFinVeriFactuYear = Convert.ToInt32(cabecera.RemisionVoluntaria.FechaFinVeriFactu.Substring(6, 4));
+        if(fechaFinVeriFactuYear > DateTime.Now.Year || fechaFinVeriFactuYear < DateTime.Now.Year - 1)
+        {
+          result.Add(
+            "Error en el bloque Cabecera: El año de la fecha FechaFinVeriFactu deberá ser igual" +
+                                " al año de la fecha del sistema de la AEAT, o al año anterior.");
+        }
+      }
+      // 4. Incidencia: Sólo se permite contenido en sistemas que emite facturas verificables. (Es el caso siempre)
+      // 5. RefRequerimiento: Sólo se permite contenido en sistemas que emiten facturas no verificables. 
+      if(cabecera.RemisionRequerimiento != null)
+      {
+        result.Add(
+          "Error en el bloque Cabecera: RefRequerimiento: Sólo se permite contenido en sistemas que emiten facturas no verificables," +
+                              " la biblioteca Verifactu ha sido diseñada para funcionar únicamente como sistema verificable.");
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

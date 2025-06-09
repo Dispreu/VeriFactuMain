@@ -45,97 +45,93 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta.Detalle.Regimen
 {
+  /// <summary>
+  /// Valida los datos de RegistroAlta DetalleDesglose ClaveRegimen 14. IVA pendiente AAPP.
+  /// </summary>
+  public class ValidatorRegistroAltaDetalleDesgloseClaveRegimenObraPteDevengoAdmonPublica : ValidatorRegistroAlta
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Valida los datos de RegistroAlta DetalleDesglose ClaveRegimen 14. IVA pendiente AAPP.
+    /// Interlocutor a validar.
     /// </summary>
-    public class ValidatorRegistroAltaDetalleDesgloseClaveRegimenObraPteDevengoAdmonPublica : ValidatorRegistroAlta
+    private readonly DetalleDesglose _DetalleDesglose;
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">Sobre SOAP envío.</param>
+    /// <param name="registroAlta">Registro alta factura.</param>
+    /// <param name="detalleDesglose">DetalleDesglose a validar.</param>
+    public ValidatorRegistroAltaDetalleDesgloseClaveRegimenObraPteDevengoAdmonPublica(
+      Envelope envelope,
+      RegistroAlta registroAlta,
+      DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
     {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Interlocutor a validar.
-        /// </summary>
-        readonly DetalleDesglose _DetalleDesglose;
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Sobre SOAP envío.</param>
-        /// <param name="registroAlta"> Registro alta factura.</param>
-        /// <param name="detalleDesglose"> DetalleDesglose a validar. </param>
-        public ValidatorRegistroAltaDetalleDesgloseClaveRegimenObraPteDevengoAdmonPublica(Envelope envelope, RegistroAlta registroAlta,
-            DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
-        {
-
-            _DetalleDesglose = detalleDesglose;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // Si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta (considerándose “01” - IVA):
-            // Si ClaveRegimen = “14”:
-            // FechaOperacion, campo de cumplimentación obligatoria y posterior a fecha de expedición.
-            // Todos los destinatarios tienen que estar identificados mediante NIF y comenzar por “P”,”Q”,”S” o “V”.
-            // TipoFactura: se validará que tipo de factura sea “F1”, “R1”, “R2”, “R3” o “R4”.
-            if (_DetalleDesglose.Impuesto == Impuesto.IVA ||
-                _DetalleDesglose.Impuesto == Impuesto.IGIC)
-            {
-
-                if (_FechaOperacion == null || (_FechaOperacion??_FechaExpedicion).CompareTo(_FechaExpedicion) < 0)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                        $" Cuando ClaveRegimen sea igual a “14”" +
-                        $" FechaOperacion, campo de cumplimentación obligatoria y posterior a fecha de expedición.");
-
-                if(_IsSimplificada)
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                        $" Cuando ClaveRegimen sea igual a “14”" +
-                        $" TipoFactura: se validará que tipo de factura sea “F1”, “R1”, “R2”, “R3” o “R4”.");
-
-                // Todos los destinatarios tienen que estar identificados mediante NIF y comenzar por “P”,”Q”,”S” o “V”.
-                foreach (var destinatario in _RegistroAlta.Destinatarios)
-                {
-
-                    if (string.IsNullOrEmpty(destinatario.NIF))
-                        result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                            $" Cuando ClaveRegimen sea igual a “14”" +
-                            $" El destinatario {destinatario} tiene que estar identificado mediante NIF.");
-                    else if (Array.IndexOf("PQSV".ToCharArray(), destinatario.NIF[0]) == -1)
-                        result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                            $" Cuando ClaveRegimen sea igual a “14”" +
-                            $" El destinatario {destinatario} tiene que estar identificado" +
-                            $" mediante NIF y este debe comenzar por “P”,”Q”,”S” o “V”.");                    
-
-                }
-
-
-
-            }
-
-
-            return result;
-
-        }
-
-        #endregion
-
+      _DetalleDesglose = detalleDesglose;
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // Si Impuesto = “01” (IVA), “03” (IGIC) o no se cumplimenta (considerándose “01” - IVA):
+      // Si ClaveRegimen = “14”:
+      // FechaOperacion, campo de cumplimentación obligatoria y posterior a fecha de expedición.
+      // Todos los destinatarios tienen que estar identificados mediante NIF y comenzar por “P”,”Q”,”S” o “V”.
+      // TipoFactura: se validará que tipo de factura sea “F1”, “R1”, “R2”, “R3” o “R4”.
+      if(_DetalleDesglose.Impuesto == Impuesto.IVA ||
+                _DetalleDesglose.Impuesto == Impuesto.IGIC)
+      {
+        if(_FechaOperacion == null || (_FechaOperacion ?? _FechaExpedicion).CompareTo(_FechaExpedicion) < 0)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                $" Cuando ClaveRegimen sea igual a “14”" +
+                                $" FechaOperacion, campo de cumplimentación obligatoria y posterior a fecha de expedición.");
+        }
+        if(_IsSimplificada)
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                $" Cuando ClaveRegimen sea igual a “14”" +
+                                $" TipoFactura: se validará que tipo de factura sea “F1”, “R1”, “R2”, “R3” o “R4”.");
+        }
+        // Todos los destinatarios tienen que estar identificados mediante NIF y comenzar por “P”,”Q”,”S” o “V”.
+        foreach(Interlocutor destinatario in _RegistroAlta.Destinatarios)
+        {
+          if(string.IsNullOrEmpty(destinatario.NIF))
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                      $" Cuando ClaveRegimen sea igual a “14”" +
+                                      $" El destinatario {destinatario} tiene que estar identificado mediante NIF.");
+          }
+          else if(Array.IndexOf("PQSV".ToCharArray(), destinatario.NIF[0]) == -1)
+          {
+            result.Add(
+              $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                      $" Cuando ClaveRegimen sea igual a “14”" +
+                                      $" El destinatario {destinatario} tiene que estar identificado" +
+                                      $" mediante NIF y este debe comenzar por “P”,”Q”,”S” o “V”.");
+          }
+        }
+      }
+      return result;
+    }
+
+    #endregion
+  }
 }

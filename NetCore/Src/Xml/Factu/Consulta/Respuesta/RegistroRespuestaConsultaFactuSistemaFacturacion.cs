@@ -41,63 +41,54 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Consulta.Respuesta
 {
-
-    /// <summary>
-    /// Bloque que contiene todos los campos de una factura.
-    /// </summary>
-    public class RegistroRespuestaConsultaFactuSistemaFacturacion
-    {
+  /// <summary>
+  /// Bloque que contiene todos los campos de una factura.
+  /// </summary>
+  public class RegistroRespuestaConsultaFactuSistemaFacturacion
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Bloque que contiene los campos que identifican al registros de facturación.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceTikLRRC)]
-        public Factu.Respuesta.IDFactura IDFactura { get; set; }
+    /// <summary>
+    /// Bloque que contiene los campos que identifican al registros de facturación.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceTikLRRC)]
+    public Factu.Respuesta.IDFactura IDFactura { get; set; }
 
-        /// <summary>
-        /// Bloque que contiene los campos del registros de facturación registrado.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceTikLRRC)]
-        public DatosRegistroFacturacion DatosRegistroFacturacion { get; set; }
+    /// <summary>
+    /// Bloque que contiene los campos del registros de facturación registrado.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceTikLRRC)]
+    public DatosRegistroFacturacion DatosRegistroFacturacion { get; set; }
 
-        /// <summary>
-        /// Bloque que contiene los campos con información de la presentación realizada:
-        /// <para> NIFPresentador</para>
-        /// <para> TimestampPresentacion</para>
-        /// <para> IdPeticion</para>
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceTikLRRC)]
-        public DatosPresentacion DatosPresentacion { get; set; }
+    /// <summary>
+    /// Bloque que contiene los campos con información de la presentación realizada: <para>NIFPresentador</para>
+    /// <para>TimestampPresentacion</para> <para>IdPeticion</para>
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceTikLRRC)]
+    public DatosPresentacion DatosPresentacion { get; set; }
 
-        /// <summary>
-        /// Bloque que contiene los campos del estado del registro de facturación registrado:
-        /// <para> TimestampUltimaModificacion</para>
-        /// <para> EstadoRegistro</para>
-        /// <para> CodigoErrorRegistro</para>
-        /// <para> DescripcionErrorRegistro</para>
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceTikLRRC)]
-        public EstadoRegistro EstadoRegistro { get; set; }
+    /// <summary>
+    /// Bloque que contiene los campos del estado del registro de facturación registrado:
+    /// <para>TimestampUltimaModificacion</para> <para>EstadoRegistro</para> <para>CodigoErrorRegistro</para>
+    /// <para>DescripcionErrorRegistro</para>
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceTikLRRC)]
+    public EstadoRegistro EstadoRegistro { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representacioón textual de la instancia.
-        /// </summary>
-        /// <returns>Representacioón textual de la instancia.</returns>
-        public override string ToString()
-        {
-
-            return $"{IDFactura}, {EstadoRegistro}";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representacioón textual de la instancia.
+    /// </summary>
+    /// <returns>Representacioón textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{IDFactura}, {EstadoRegistro}";
     }
 
+    #endregion
+  }
 }

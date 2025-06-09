@@ -5,11 +5,11 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Ms
 {
-    internal sealed class MyXmlDocument : XmlDocument
+  internal sealed class MyXmlDocument : XmlDocument
+  {
+    protected override XmlAttribute CreateDefaultAttribute(string prefix, string localName, string namespaceURI)
     {
-        protected override XmlAttribute CreateDefaultAttribute(string prefix, string localName, string namespaceURI)
-        {
-            return CreateAttribute(prefix, localName, namespaceURI);
-        }
+      return CreateAttribute(prefix, localName, namespaceURI);
     }
+  }
 }

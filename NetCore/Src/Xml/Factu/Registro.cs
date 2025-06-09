@@ -47,241 +47,200 @@ using VeriFactu.Qrcode.Exceptions;
 
 namespace VeriFactu.Xml.Factu
 {
+  /// <summary>
+  /// Representa un registro de Verifactu: Alta, baja, evento...
+  /// </summary>
+  public class Registro
+  {
+
+    #region Métodos Privados de Instancia
 
     /// <summary>
-    /// Representa un registro de Verifactu: Alta, baja, evento...
+    /// Devuelve la cadena de entrada para el cálculo del hash previa conversión mediante UTF-8. <para>El Artículo 137
+    /// de la Orden HAC/1177/2024 de 17 de octubre establece el contenido:</para> <para>a) Para el registro de
+    /// facturación de alta.</para> <para>b) Para el registro de facturación de anulación.</para>
     /// </summary>
-    public class Registro
+    /// <returns>
+    /// La cadena de entrada para el cálculo del hash previa conversión mediante UTF-8.
+    /// </returns>
+    protected internal virtual string GetHashTextInput()
     {
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Devuelve la cadena de entrada para el cálculo
-        /// del hash previa conversión mediante UTF-8.
-        /// <para> El Artículo 137 de la Orden HAC/1177/2024 de 17 de octubre establece el contenido:</para>
-        /// <para> a) Para el registro de facturación de alta.</para>
-        /// <para> b) Para el registro de facturación de anulación.</para>
-        /// </summary>
-        /// <returns>La cadena de entrada para el cálculo
-        /// del hash previa conversión mediante UTF-8.</returns>
-        internal protected virtual string GetHashTextInput()
-        {
-
-            throw new NotImplementedException("La clase base record no implementa el método GetHashInput.\n" +
+      throw new NotImplementedException(
+        "La clase base record no implementa el método GetHashInput.\n" +
                 "Este método debe implementarse en las clases derivadas.");
-
-        }
-
-        /// <summary>
-        /// Devuelve la cadena de parámetros para la url
-        /// del servicio de validación con los valores
-        /// de los parámetro urlencoded.
-        /// </summary>
-        /// <returns>Cadena de parámetros para la url
-        /// del servicio de validación con los valores
-        /// de los parámetro urlencoded.</returns>
-        protected virtual string GetValidateUrlParams()
-        {
-
-            throw new NotImplementedException("La clase base record no implementa el método GetValidateUrlParams.\n" +
-                "Este método debe implementarse en las clases derivadas.");
-
-        }
-
-        /// <summary>
-        /// Devuelve el array de bytes sobre el que calcularemos el hash.
-        /// </summary>
-        /// <returns></returns>
-        private byte[] GetHashInput()
-        {
-
-            var textInput = GetHashTextInput();
-            var binInput = Utils.Encoding.GetBytes(textInput);
-
-            return binInput;
-
-        }
-
-        /// <summary>
-        /// Devuelve el hash para el registro.
-        /// </summary>
-        /// <returns>Hash para el registro.</returns>
-        private byte[] GetHash()
-        {
-
-            var binInput = GetHashInput();
-            var hash = Utils.HashAlgorithm.ComputeHash(binInput);
-
-            return hash;
-
-        }
-
-        /// <summary>
-        /// Obtiene un bitmap con el contenido
-        /// codificado en un código QR.
-        /// </summary>
-        /// <param name="content">Contenido a incluir en el Bitmap.</param>
-        /// <returns>Bitmap con el contenido
-        /// codificado en un código QR.</returns>
-        private byte[] GetQr(string content) 
-        {
-
-            byte[] result = null;
-
-            Dictionary<EncodeHintType, object> hints = new Dictionary<EncodeHintType, object>();
-            hints.Add(EncodeHintType.CHARACTER_SET, "ISO-8859-1");
-            hints.Add(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
-
-            try
-            {
-
-                QRCodeWriter qc = new QRCodeWriter();
-                ByteMatrix bm = qc.Encode(content, 1, 1, hints);
-
-                QrBitmap qrBm = new QrBitmap(bm);
-
-                result = qrBm.GetBytes();              
-
-            }
-            catch (WriterException ex)
-            {
-                
-                throw new ArgumentException(ex.Message, ex.InnerException);
-
-            }
-
-            return result;
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// <para>Identificación de la versión actual del esquema o
-        /// estructura de información utilizada para la generación y
-        /// conservación / remisión de los registros de facturación.
-        /// Este campo forma parte del detalle de las circunstancias
-        /// de generación de los registros de facturación.</para>
-        /// <para>Alfanumérico(3) L15:</para>
-        /// <para>1.0: Versión actual (1.0) del esquema utilizado </para>
-        /// </summary>
-        [XmlElement("IDVersion", Namespace = Namespaces.NamespaceSF, Order = 1)]
-        public virtual string IDVersion { get; set; }
-
-        /// <summary>
-        /// Datos de identificación de factura expedida para
-        /// operaciones de baja y consulta.
-        /// </summary>
-        [XmlIgnore()]
-        public virtual IDFactura IDFactura { get; set; }
-
-        /// <summary>
-        /// <para>Fecha, hora y huso horario de generación del registro de facturación.
-        /// El huso horario es el que está usando el sistema informático de facturación
-        /// en el momento de generación del registro de facturación.</para>
-        /// <para>DateTime. Formato: YYYY-MM-DDThh:mm:ssTZD (ej: 2024-01-01T19:20:30+01:00) (ISO 8601)</para>
-        /// </summary>
-        [XmlIgnore]
-        public virtual string FechaHoraHusoGenRegistro { get; set; }
-
-        /// <summary>
-        /// <para>Primeros 64 caracteres de la huella o «hash» del registro
-        /// de facturación anterior (sea de alta o de anulación) generado
-        /// en este sistema informático.</para>
-        /// <para>Alfanumérico(64).</para>
-        /// </summary>
-        [XmlIgnore]
-        public virtual string Huella { get; set; }
-
-        /// <summary>
-        /// Encadenamiento con la factura anterior..
-        /// </summary>
-        [XmlIgnore]
-        public virtual Encadenamiento Encadenamiento { get; set; }
-
-        /// <summary>
-        /// Encadenamiento con la factura anterior.
-        /// </summary>
-        [XmlIgnore]
-        public virtual ulong BlockchainLinkID { get; set; }
-
-        /// <summary>
-        /// Referencia externa.
-        /// </summary>
-        [XmlIgnore]
-        public string ExternKey => BlockchainLinkID == 0 ?
-            null : $"{BlockchainLinkID}".PadLeft(20, '0');
-
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Asigna la clave externa que vincula la factura con
-        /// la cadena de bloques.
-        /// </summary>
-        public virtual void SetExternKey() 
-        {
-
-            throw new NotImplementedException("SetExternKey no implementado para la clase base Registro.");
-
-        }
-
-        /// <summary>
-        /// Devuelve la representación del hash en formato hexadecimal.
-        /// </summary>
-        /// <returns>Hash en formato hexadecimal</returns>
-        public string GetHashOutput()
-        {
-
-            var hash = GetHash();
-            var output = BitConverter.ToString(hash);
-
-            return output.Replace("-", "");
-
-        }
-
-        /// <summary>
-        /// Devuelve la url para la validación del documento.
-        /// </summary>
-        /// <returns>Url para la validación del documento.</returns>
-        public string GetUrlValidate() 
-        {
-
-            var urlParams = GetValidateUrlParams();
-            return $"{Settings.Current.VeriFactuEndPointValidatePrefix}?{urlParams}";
-        
-        }
-
-        /// <summary>
-        /// Obtiene un bitmap con la url de validación
-        /// codificada en un código QR.
-        /// </summary>
-        /// <returns>Bitmap con la url de validación
-        /// codificada en un código QR.</returns>
-        public byte[] GetValidateQr() 
-        {
-
-            var content = GetUrlValidate();
-            return GetQr(content);
-
-        }
-
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{IDFactura}";
-        }
-
-        #endregion
-
     }
 
+    /// <summary>
+    /// Devuelve la cadena de parámetros para la url del servicio de validación con los valores de los parámetro
+    /// urlencoded.
+    /// </summary>
+    /// <returns>
+    /// Cadena de parámetros para la url del servicio de validación con los valores de los parámetro urlencoded.
+    /// </returns>
+    protected virtual string GetValidateUrlParams()
+    {
+      throw new NotImplementedException(
+        "La clase base record no implementa el método GetValidateUrlParams.\n" +
+                "Este método debe implementarse en las clases derivadas.");
+    }
+
+    /// <summary>
+    /// Devuelve el array de bytes sobre el que calcularemos el hash.
+    /// </summary>
+    /// <returns></returns>
+    private byte[] GetHashInput()
+    {
+      string textInput = GetHashTextInput();
+      byte[] binInput = Utils.Encoding.GetBytes(textInput);
+      return binInput;
+    }
+
+    /// <summary>
+    /// Devuelve el hash para el registro.
+    /// </summary>
+    /// <returns>Hash para el registro.</returns>
+    private byte[] GetHash()
+    {
+      byte[] binInput = GetHashInput();
+      byte[] hash = Utils.HashAlgorithm.ComputeHash(binInput);
+      return hash;
+    }
+
+    /// <summary>
+    /// Obtiene un bitmap con el contenido codificado en un código QR.
+    /// </summary>
+    /// <param name="content">Contenido a incluir en el Bitmap.</param>
+    /// <returns>
+    /// Bitmap con el contenido codificado en un código QR.
+    /// </returns>
+    private byte[] GetQr(string content)
+    {
+      byte[] result = null;
+      Dictionary<EncodeHintType, object> hints = new Dictionary<EncodeHintType, object>();
+      hints.Add(EncodeHintType.CHARACTER_SET, "ISO-8859-1");
+      hints.Add(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
+      try
+      {
+        QRCodeWriter qc = new QRCodeWriter();
+        ByteMatrix bm = qc.Encode(content, 1, 1, hints);
+        QrBitmap qrBm = new QrBitmap(bm);
+        result = qrBm.GetBytes();
+      }
+      catch(WriterException ex)
+      {
+        throw new ArgumentException(ex.Message, ex.InnerException);
+      }
+      return result;
+    }
+
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// <para>Identificación de la versión actual del esquema o estructura de información utilizada para la generación y
+    /// conservación / remisión de los registros de facturación. Este campo forma parte del detalle de las
+    /// circunstancias de generación de los registros de facturación.</para> <para>Alfanumérico(3) L15:</para>
+    /// <para>1.0: Versión actual (1.0) del esquema utilizado</para>
+    /// </summary>
+    [XmlElement("IDVersion", Namespace = Namespaces.NamespaceSF, Order = 1)]
+    public virtual string IDVersion { get; set; }
+
+    /// <summary>
+    /// Datos de identificación de factura expedida para operaciones de baja y consulta.
+    /// </summary>
+    [XmlIgnore]
+    public virtual IDFactura IDFactura { get; set; }
+
+    /// <summary>
+    /// <para>Fecha, hora y huso horario de generación del registro de facturación. El huso horario es el que está
+    /// usando el sistema informático de facturación en el momento de generación del registro de facturación.</para>
+    /// <para>DateTime. Formato: YYYY-MM-DDThh:mm:ssTZD (ej: 2024-01-01T19:20:30+01:00) (ISO 8601)</para>
+    /// </summary>
+    [XmlIgnore]
+    public virtual string FechaHoraHusoGenRegistro { get; set; }
+
+    /// <summary>
+    /// <para>Primeros 64 caracteres de la huella o «hash» del registro de facturación anterior (sea de alta o de
+    /// anulación) generado en este sistema informático.</para> <para>Alfanumérico(64).</para>
+    /// </summary>
+    [XmlIgnore]
+    public virtual string Huella { get; set; }
+
+    /// <summary>
+    /// Encadenamiento con la factura anterior..
+    /// </summary>
+    [XmlIgnore]
+    public virtual Encadenamiento Encadenamiento { get; set; }
+
+    /// <summary>
+    /// Encadenamiento con la factura anterior.
+    /// </summary>
+    [XmlIgnore]
+    public virtual ulong BlockchainLinkID { get; set; }
+
+    /// <summary>
+    /// Referencia externa.
+    /// </summary>
+    [XmlIgnore]
+    public string ExternKey => BlockchainLinkID == 0 ?
+        null :
+        $"{BlockchainLinkID}".PadLeft(20, '0');
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Asigna la clave externa que vincula la factura con la cadena de bloques.
+    /// </summary>
+    public virtual void SetExternKey()
+    {
+      throw new NotImplementedException("SetExternKey no implementado para la clase base Registro.");
+    }
+
+    /// <summary>
+    /// Devuelve la representación del hash en formato hexadecimal.
+    /// </summary>
+    /// <returns>Hash en formato hexadecimal</returns>
+    public string GetHashOutput()
+    {
+      byte[] hash = GetHash();
+      string output = BitConverter.ToString(hash);
+      return output.Replace("-", string.Empty);
+    }
+
+    /// <summary>
+    /// Devuelve la url para la validación del documento.
+    /// </summary>
+    /// <returns>Url para la validación del documento.</returns>
+    public string GetUrlValidate()
+    {
+      string urlParams = GetValidateUrlParams();
+      return $"{Settings.Current.VeriFactuEndPointValidatePrefix}?{urlParams}";
+    }
+
+    /// <summary>
+    /// Obtiene un bitmap con la url de validación codificada en un código QR.
+    /// </summary>
+    /// <returns>
+    /// Bitmap con la url de validación codificada en un código QR.
+    /// </returns>
+    public byte[] GetValidateQr()
+    {
+      string content = GetUrlValidate();
+      return GetQr(content);
+    }
+
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{IDFactura}";
+    }
+
+    #endregion
+  }
 }

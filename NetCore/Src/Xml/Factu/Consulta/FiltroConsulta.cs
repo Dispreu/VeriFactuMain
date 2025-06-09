@@ -41,75 +41,69 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Consulta
 {
-
-    /// <summary>
-    /// Filtro consulta.
-    /// </summary>
-    public  class FiltroConsulta
-    {
+  /// <summary>
+  /// Filtro consulta.
+  /// </summary>
+  public  class FiltroConsulta
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Periodo a filtrar.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceCon)]
-        public PeriodoImputacion PeriodoImputacion { get; set; }
+    /// <summary>
+    /// Periodo a filtrar.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceCon)]
+    public PeriodoImputacion PeriodoImputacion { get; set; }
 
-        /// <summary>
-        /// Datos contraparte factura.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public Interlocutor Contraparte { get; set; }
+    /// <summary>
+    /// Datos contraparte factura.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public Interlocutor Contraparte { get; set; }
 
-        /// <summary>
-        /// <para> Fecha de emisión del registro de facturacion.</para>
-        /// <para> Fecha (dd-mm-yyyy)</para>
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string FechaExpedicionFactura { get; set; }
+    /// <summary>
+    /// <para>Fecha de emisión del registro de facturacion.</para> <para>Fecha (dd-mm-yyyy)</para>
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string FechaExpedicionFactura { get; set; }
 
-        /// <summary>
-        /// Rango fechas de expedición.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public RangoFechaExpedicion RangoFechaExpedicion { get; set; }
+    /// <summary>
+    /// Rango fechas de expedición.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public RangoFechaExpedicion RangoFechaExpedicion { get; set; }
 
-        /// <summary>
-        /// Sistema informático.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public SistemaInformatico SistemaInformatico { get; set; }
+    /// <summary>
+    /// Sistema informático.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public SistemaInformatico SistemaInformatico { get; set; }
 
-        /// <summary>
-        /// Id. de la factura de corte para la paginación.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public IDFactura ClavePaginacion { get; set; }
+    /// <summary>
+    /// Id. de la factura de corte para la paginación.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public IDFactura ClavePaginacion { get; set; }
 
-        /// <summary>
-        /// Datos adicionales respuesta.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public DatosAdicionalesRespuesta DatosAdicionalesRespuesta { get; set; }
+    /// <summary>
+    /// Datos adicionales respuesta.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public DatosAdicionalesRespuesta DatosAdicionalesRespuesta { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representacioón textual de la instancia.
-        /// </summary>
-        /// <returns>Representacioón textual de la instancia.</returns>
-        public override string ToString()
-        {
-
-            return $"{PeriodoImputacion}, {Contraparte}, {RangoFechaExpedicion}";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representacioón textual de la instancia.
+    /// </summary>
+    /// <returns>Representacioón textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{PeriodoImputacion}, {Contraparte}, {RangoFechaExpedicion}";
     }
 
+    #endregion
+  }
 }

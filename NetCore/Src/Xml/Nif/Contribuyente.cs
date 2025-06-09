@@ -42,47 +42,44 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Nif
 {
-    /// <summary>
-    /// Perido impositivo
-    /// </summary>
-    [Serializable]
-	[XmlRoot("Contribuyente", Namespace = Namespaces.NamespaceVNifV2Ent)]
-	public class Contribuyente
-	{
+  /// <summary>
+  /// Perido impositivo
+  /// </summary>
+  [Serializable]
+  [XmlRoot("Contribuyente", Namespace = Namespaces.NamespaceVNifV2Ent)]
+  public class Contribuyente
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// NIF del contribuyente.
-        /// Numérico(4).
-        /// </summary>
-        public string Nif { get; set; }
+    /// <summary>
+    /// NIF del contribuyente. Numérico(4).
+    /// </summary>
+    public string Nif { get; set; }
 
-        /// <summary>
-        /// Nombre del contribuyente.	
-        /// </summary>
-        public string Nombre { get; set; }
+    /// <summary>
+    /// Nombre del contribuyente.
+    /// </summary>
+    public string Nombre { get; set; }
 
-        /// <summary>
-        /// Resultado.	
-        /// </summary>
-        public string Resultado { get; set; }
+    /// <summary>
+    /// Resultado.
+    /// </summary>
+    public string Resultado { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{Nif} ({Nombre})";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{Nif} ({Nombre})";
     }
 
+    #endregion
+  }
 }

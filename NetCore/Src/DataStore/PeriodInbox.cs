@@ -47,101 +47,91 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.DataStore
 {
-
-    /// <summary>
-    /// Representa un periodo de facturación de un vendedor o emisor
-    /// de facturas en lo que se refiere a documentos de entrada o
-    /// respuesta por parte de la AEAT a los envíos.
-    /// </summary>
-    public class PeriodInbox : PeriodBox
-    {
+  /// <summary>
+  /// Representa un periodo de facturación de un vendedor o emisor de facturas en lo que se refiere a documentos de
+  /// entrada o respuesta por parte de la AEAT a los envíos.
+  /// </summary>
+  public class PeriodInbox : PeriodBox
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="seller">Vendedor o emisor de facturas al
-        /// que corresponde el periodo.</param>
-        /// <param name="periodID">Identificador del periodo.</param>
-        /// <param name="invoiceCount">Número de facturas del periodo.</param>
-        public PeriodInbox(Seller seller, string periodID, int invoiceCount) : base(seller, periodID, invoiceCount)
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="seller">
+    /// Vendedor o emisor de facturas al que corresponde el periodo.
+    /// </param>
+    /// <param name="periodID">Identificador del periodo.</param>
+    /// <param name="invoiceCount">Número de facturas del periodo.</param>
+    public PeriodInbox(Seller seller, string periodID, int invoiceCount) : base(seller, periodID, invoiceCount)
+        { }
 
-        #endregion
+    #endregion
 
-        #region Métodos Privados de Instancia
+    #region Métodos Privados de Instancia
 
-        /// <summary>
-        /// Devuelve una lista de objetos relacionados cada uno con
-        /// una factura.
-        /// </summary>
-        /// <param name="envelope">Sobre SOAP.</param>
-        /// <returns>lista de objetos relacionados cada uno con
-        /// una factura.</returns>
-        internal override IList<object> GetInvoiceRecords(Envelope envelope)
-        {
-
-            var result = new List<object>();
-
-            var respuestaRegFactuSistemaFacturacion = envelope.Body.Registro as RespuestaRegFactuSistemaFacturacion;
-            var fault = envelope.Body.Registro as Fault;
-
-            if (respuestaRegFactuSistemaFacturacion == null && fault == null)
-                throw new InvalidOperationException($"Error: Encontrado un envío de mensaje SOAP con propiedad Registro desconocida {envelope.Body.Registro}");
-
-            if (fault != null) // Se trata de un error no controlado por la AEAT (no se recibión el envío)
-                return result;
-
-            var registros = respuestaRegFactuSistemaFacturacion?.RespuestaLinea as IList<RespuestaLinea>;
-
-            if (registros == null)
-                throw new InvalidOperationException($"Error: Encontrado un RespuestaLinea que no es una lista {respuestaRegFactuSistemaFacturacion?.RespuestaLinea}");
-
-            if (registros.Count == 0)
-                throw new InvalidOperationException($"Error: Encontrado un RespuestaLinea sin elementos {registros}");
-
-            foreach (var registro in registros)
-                result.Add(registro);
-
-            return result;
-
-        }
-
-
-        /// <summary>
-        /// Actualiza el campo de IDFactura en el registro que
-        /// se pasa como parámetro, y devuelve un identificador
-        /// basado en el mismo.
-        /// </summary>
-        /// <param name="record">Registro a actualizar.</param>
-        /// <returns>Identificador basado en el IDFactura.</returns>
-        internal override string SetRegistro(object record)
-        {
-
-            var registro = record as RespuestaLinea;
-
-            if (registro == null)
-                throw new InvalidOperationException($"Error: Encontrado un envío de mensaje SOAP con propiedad RespuestaLinea desconocida {record}"); 
-
-            return $"{registro.IDFactura}";
-
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// Ruta a la bandeja. Por defecto la bandeja de salida
-        /// de registros.
-        /// </summary>
-        public override string EnvelopeDir => $"{Settings.Current.InboxPath}{SellerID}{Path.DirectorySeparatorChar}{PeriodID}{Path.DirectorySeparatorChar}"; 
-
-        #endregion
-
+    /// <summary>
+    /// Devuelve una lista de objetos relacionados cada uno con una factura.
+    /// </summary>
+    /// <param name="envelope">Sobre SOAP.</param>
+    /// <returns>
+    /// lista de objetos relacionados cada uno con una factura.
+    /// </returns>
+    internal override IList<object> GetInvoiceRecords(Envelope envelope)
+    {
+      List<object> result = new List<object>();
+      RespuestaRegFactuSistemaFacturacion respuestaRegFactuSistemaFacturacion = envelope.Body.Registro as RespuestaRegFactuSistemaFacturacion;
+      Fault fault = envelope.Body.Registro as Fault;
+      if(respuestaRegFactuSistemaFacturacion == null && fault == null)
+      {
+        throw new InvalidOperationException($"Error: Encontrado un envío de mensaje SOAP con propiedad Registro desconocida {envelope.Body.Registro}");
+      }
+      if(fault != null) // Se trata de un error no controlado por la AEAT (no se recibión el envío)
+      {
+        return result;
+      }
+      IList<RespuestaLinea> registros = respuestaRegFactuSistemaFacturacion?.RespuestaLinea;
+      if(registros == null)
+      {
+        throw new InvalidOperationException($"Error: Encontrado un RespuestaLinea que no es una lista {respuestaRegFactuSistemaFacturacion?.RespuestaLinea}");
+      }
+      if(registros.Count == 0)
+      {
+        throw new InvalidOperationException($"Error: Encontrado un RespuestaLinea sin elementos {registros}");
+      }
+      foreach(RespuestaLinea registro in registros)
+      {
+        result.Add(registro);
+      }
+      return result;
     }
 
+    /// <summary>
+    /// Actualiza el campo de IDFactura en el registro que se pasa como parámetro, y devuelve un identificador basado en
+    /// el mismo.
+    /// </summary>
+    /// <param name="record">Registro a actualizar.</param>
+    /// <returns>Identificador basado en el IDFactura.</returns>
+    internal override string SetRegistro(object record)
+    {
+      RespuestaLinea registro = record as RespuestaLinea;
+      if(registro == null)
+      {
+        throw new InvalidOperationException($"Error: Encontrado un envío de mensaje SOAP con propiedad RespuestaLinea desconocida {record}");
+      }
+      return $"{registro.IDFactura}";
+    }
+
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// Ruta a la bandeja. Por defecto la bandeja de salida de registros.
+    /// </summary>
+    public override string EnvelopeDir => $"{Settings.Current.InboxPath}{SellerID}{Path.DirectorySeparatorChar}{PeriodID}{Path.DirectorySeparatorChar}";
+
+    #endregion
+  }
 }

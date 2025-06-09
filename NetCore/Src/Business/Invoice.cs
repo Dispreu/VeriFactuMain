@@ -49,558 +49,492 @@ using VeriFactu.Xml.Factu.Anulacion;
 
 namespace VeriFactu.Business
 {
+  /// <summary>
+  /// Representa un factura en el sistema VeriFactu.
+  /// </summary>
+  public class Invoice : JsonSerializable
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Representa un factura en el sistema VeriFactu.
+    /// Suma de las bases imponibles.
+    /// </summary>   
+    private decimal _NetAmount;
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
     /// </summary>
-    public class Invoice : JsonSerializable
+    /// <param name="invoiceID">Identificador de la factura.</param>
+    /// <param name="invoiceDate">Fecha emisión de documento.</param>
+    /// <param name="sellerID">Identificador del vendedor.</param>        
+    /// <exception cref="ArgumentNullException">Los argumentos invoiceID y sellerID no pueden ser nulos</exception>
+    public Invoice(string invoiceID, DateTime invoiceDate, string sellerID)
     {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Suma de las bases imponibles.
-        /// </summary>   
-        decimal _NetAmount;
-
-        /// <summary>
-        /// Registro de alta a partir del cual se ha
-        /// generado la factura
-        /// </summary>
-        RegistroAlta _RegistroAltaSource;
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="invoiceID">Identificador de la factura.</param>
-        /// <param name="invoiceDate">Fecha emisión de documento.</param>
-        /// <param name="sellerID">Identificador del vendedor.</param>        
-        /// <exception cref="ArgumentNullException">Los argumentos invoiceID y sellerID no pueden ser nulos</exception>
-        public Invoice(string invoiceID, DateTime invoiceDate, string sellerID) 
-        {
-
-            if (invoiceID == null || sellerID == null)
-                throw new ArgumentNullException($"Los argumentos invoiceID y sellerID no pueden ser nulos.");
-
-            InvoiceID = invoiceID.Trim(); // La AEAT calcula el Hash sin espacios
-            InvoiceDate = invoiceDate;
-
-            var tSellerID = sellerID.Trim(); // La AEAT calcula el Hash sin espacios
-            SellerID = tSellerID.ToUpper(); // https://github.com/mdiago/VeriFactu/issues/65
-
-        }
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="registroAlta">Registro de alta a partir del que se crea la factura.</param>
-        public Invoice(RegistroAlta registroAlta) : this(registroAlta.IDFacturaAlta.NumSerieFactura,
-                XmlParser.ToDate(registroAlta.IDFacturaAlta.FechaExpedicionFactura), $"{registroAlta.IDFacturaAlta.IDEmisorFactura}")
-        {
-
-            _RegistroAltaSource = registroAlta;
-
-            InvoiceType = registroAlta.TipoFactura;
-            SellerName = registroAlta.NombreRazonEmisor;
-
-            if (registroAlta.TipoRectificativaSpecified)
-                RectificationType = registroAlta.TipoRectificativa;
-
-            if (registroAlta.Destinatarios.Count > 1)
-                throw new NotImplementedException("El método estático Invoice.FromRegistroAlta" +
-                    " no implementa la conversión de RegistrosAlta con más de un destinatario.");
-
-            if (registroAlta.Destinatarios.Count == 1)
-            {
-
-                var destinatario = registroAlta.Destinatarios[0];
-                BuyerID = $"{destinatario.NIF}{destinatario?.IDOtro?.ID}";
-                BuyerName = $"{destinatario.NombreRazon}";
-
-                if (!string.IsNullOrEmpty($"{destinatario?.IDOtro?.CodigoPais}"))
-                    BuyerCountryID = $"{destinatario?.IDOtro?.CodigoPais}";
-
-                if (!string.IsNullOrEmpty($"{destinatario?.IDOtro?.IDType}"))
-                    BuyerIDType = destinatario?.IDOtro?.IDType ?? IDType.NIF_IVA;
-
-            }
-
-            TaxItems = FromDesglose(registroAlta.Desglose);           
-
-        }
-
-        #endregion
-
-        #region Métodos Privados Estáticos
-
-        /// <summary>
-        /// Devuelve una lista de TaxItem a partir
-        /// de una lista de objetos DetalleDesglose.
-        /// </summary>
-        /// <param name="Desglose"> Lista de objetos DetalleDesglose.</param>
-        /// <returns> Lista de TaxItems</returns>
-        internal static List<TaxItem> FromDesglose(List<DetalleDesglose> Desglose)
-        {
-
-            var taxitems = new List<TaxItem>();
-
-            foreach (var desglose in Desglose)
-            {
-                var taxItem = new TaxItem()
-                {
-                    TaxBase = XmlParser.ToDecimal(desglose.BaseImponibleOimporteNoSujeto),
-                    TaxRate = XmlParser.ToDecimal(desglose.TipoImpositivo),
-                    TaxAmount = XmlParser.ToDecimal(desglose.CuotaRepercutida),
-                    TaxRateSurcharge = XmlParser.ToDecimal(desglose.TipoRecargoEquivalencia),
-                    TaxAmountSurcharge = XmlParser.ToDecimal(desglose.CuotaRecargoEquivalencia)
-                };
-
-                taxItem.Tax = desglose.Impuesto;
-
-                if(desglose.ClaveRegimenSpecified)
-                    taxItem.TaxScheme = desglose.ClaveRegimen;
-
-                if (desglose.CalificacionOperacionSpecified)
-                    taxItem.TaxType = desglose.CalificacionOperacion;
-
-                taxitems.Add(taxItem);
-
-            }
-
-            return taxitems;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Calcula los totales de la factura.
-        /// </summary>
-        private void CalculateTotals() 
-        {
-
-            TotalAmount = TotalTaxOutput = TotalTaxWithheld = TotalTaxOutputSurcharge = _NetAmount = 0;
-
-            if (TaxItems == null || TaxItems.Count == 0)
-                return;
-
-            foreach (var taxitem in TaxItems) 
-            {
-
-                if (taxitem.TaxClass == TaxClass.TaxOutput)
-                {
-                    _NetAmount += taxitem.TaxBase;
-                    TotalTaxOutput += taxitem.TaxAmount;
-                    TotalTaxOutputSurcharge += taxitem.TaxAmountSurcharge;
-                }
-                else 
-                {
-                    TotalTaxWithheld += taxitem.TaxAmount;
-                }
-
-            }
-
-            TotalAmount = _NetAmount + TotalTaxOutput + TotalTaxOutputSurcharge - TotalTaxWithheld;
-
-        }
-
-        /// <summary>
-        /// Obtiene el desglose de la factura.
-        /// </summary>
-        /// <returns>Desglose de la factura.</returns>
-        private List<DetalleDesglose> GetDesglose() 
-        {
-
-            if (TaxItems == null || TaxItems?.Count == 0) 
-                throw new InvalidOperationException("No se puede obtener el bloque obligatorio" +
-                    " 'DetalleDesglose' ya que la lista de TaxItems no contiene elementos.");
-
-            var desglose = new List<DetalleDesglose>(); 
-
-            foreach (var taxitem in TaxItems)
-            {
-
-                // Valores por defecto
-                var tax = Enum.IsDefined(typeof(Impuesto), taxitem.Tax) ? taxitem.Tax : Impuesto.IVA;
-                var taxScheme = Enum.IsDefined(typeof(ClaveRegimen), taxitem.TaxScheme) ? taxitem.TaxScheme : ClaveRegimen.RegimenGeneral;
-
-                // Máximo dos decimales
-                var taxRate = Math.Round(taxitem.TaxRate, 2, MidpointRounding.AwayFromZero);
-                var taxBase = Math.Round(taxitem.TaxBase, 2, MidpointRounding.AwayFromZero);
-                var taxAmount = Math.Round(taxitem.TaxAmount, 2, MidpointRounding.AwayFromZero);
-                var taxRateSurcharge = Math.Round(taxitem.TaxRateSurcharge, 2, MidpointRounding.AwayFromZero);
-                var taxAmountSurcharge = Math.Round(taxitem.TaxAmountSurcharge, 2, MidpointRounding.AwayFromZero);
-
-                var detalleDesglose = new DetalleDesglose()
-                {
-                    Impuesto = tax,
-                    ClaveRegimen = taxScheme,
-                    CalificacionOperacion = taxitem.TaxType,
-                    CalificacionOperacionSpecified = taxitem.TaxException == CausaExencion.NA,
-                    TipoImpositivo = XmlParser.GetXmlDecimal(taxRate),
-                    BaseImponibleOimporteNoSujeto = XmlParser.GetXmlDecimal(taxBase),
-                    CuotaRepercutida = XmlParser.GetXmlDecimal(taxAmount),
-                };
-
-                if (taxitem.TaxException != CausaExencion.NA) 
-                {
-                    detalleDesglose.OperacionExentaSpecified = true;
-                    detalleDesglose.OperacionExenta = taxitem.TaxException;
-                    detalleDesglose.CuotaRepercutida = detalleDesglose.TipoImpositivo = null;
-                }
-
-                if (taxitem.TaxAmountSurcharge != 0) 
-                {
-
-                    detalleDesglose.TipoRecargoEquivalencia = XmlParser.GetXmlDecimal(taxRateSurcharge);
-                    detalleDesglose.CuotaRecargoEquivalencia = XmlParser.GetXmlDecimal(taxAmountSurcharge);
-
-                }
-
-                detalleDesglose.ClaveRegimenSpecified = (detalleDesglose.Impuesto == Impuesto.IVA || detalleDesglose.Impuesto == Impuesto.IGIC);
-
-                desglose.Add(detalleDesglose);
-
-            }
-
-            return desglose;
-
-        }
-
-        /// <summary>
-        /// Obtiene la lista de destinatarios.
-        /// </summary>
-        /// <returns>Lista de destinatarios.</returns>
-        private List<Interlocutor> GetDestinatarios() 
-        {
-
-            // Factura simplificada sin contraparte
-            if (string.IsNullOrEmpty(BuyerID) && (InvoiceType == TipoFactura.F2 || InvoiceType == TipoFactura.R5))
-                return null;
-
-            TaxIdEs taxId = null;
-            var isTaxIdEs = false;
-
-            try 
-            {
-
-                taxId = new TaxIdEs(BuyerID);
-                isTaxIdEs = taxId.IsDCOK;
-
-            } 
-            catch (TaxIdEsException) // Id. fiscal no español
-            {
-
-                isTaxIdEs = false;
-
-            } 
-            catch (Exception ex) 
-            {
-
-                throw;
-
-            }
-
-            if (isTaxIdEs && BuyerIDType != IDType.NO_CENSADO && (BuyerCountryID == "ES" || string.IsNullOrEmpty(BuyerCountryID)))
-                return new List<Interlocutor>()
-                {
-                    new Interlocutor
-                    {
-                        NombreRazon = BuyerName,
-                        NIF = BuyerID
-                    }
-                };
-
-
-            if(string.IsNullOrEmpty(BuyerCountryID))
-                throw new Exception($"Error en factura ({this}): Si BuyerID no es un identificador español válido" +
-                    " (NIF, DNI, NIE...) es obligatorio que BuyerCountryID tenga un valor.");
-
-            bool countryIdValid = Enum.TryParse(BuyerCountryID, out CodigoPais buyerCountryId);
-
-            if (!countryIdValid)
-                throw new Exception($"Error en factura ({this}): El código de pais consignado en BuyerCountryID='{BuyerCountryID}' no es válido.");
-
-
-            return new List<Interlocutor>()
-                {
-                    new Interlocutor
-                    {
-                        NombreRazon = BuyerName,
-                        IDOtro = new IDOtro()
-                        { 
-                            CodigoPais = buyerCountryId,
-                            CodigoPaisSpecified = countryIdValid,
-                            ID = BuyerID,
-                            IDType = BuyerIDType
-                        }
-                    }
-                };
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// <para>Clave del tipo de factura (L2).</para>
-        /// </summary>
-        public TipoFactura InvoiceType { get; set; }
-
-        /// <summary>
-        ///  Identifica si el tipo de factura rectificativa
-        ///  es por sustitución o por diferencia (L3).
-        /// </summary>
-        public TipoRectificativa RectificationType { get; set; }
-
-        /// <summary>
-        /// Identificador de la factura.
-        /// </summary>
-        public string InvoiceID { get; private set; }
-
-        /// <summary>
-        /// Fecha emisión de documento.
-        /// </summary>        
-        public DateTime InvoiceDate { get; private set; }
-
-        /// <summary>
-        /// Fecha operación.
-        /// </summary>        
-        public DateTime? OperationDate { get; set; }
-
-        /// <summary>
-        /// Identificador del vendedor.
-        /// Debe utilizarse el identificador fiscal si existe (NIF, VAT Number...).
-        /// En caso de no existir, se puede utilizar el número DUNS 
-        /// o cualquier otro identificador acordado.
-        /// </summary>        
-        public string SellerID { get; private set; }
-
-        /// <summary>
-        /// Nombre del vendedor.
-        /// </summary>        
-        [Json(Name = "CompanyName")]
-        public string SellerName { get; set; }
-
-        /// <summary>
-        /// Identidicador del comprador.
-        /// Debe utilizarse el identificador fiscal si existe (NIF, VAT Number...).
-        /// En caso de no existir, se puede utilizar el número DUNS 
-        /// o cualquier otro identificador acordado.
-        /// </summary>        
-        [Json(Name = "RelatedPartyID")]
-        public string BuyerID { get; set; }
-
-        /// <summary>
-        /// Nombre del comprador.
-        /// </summary>        
-        [Json(Name = "RelatedPartyName")]
-        public string BuyerName { get; set; }
-
-        /// <summary>
-        /// Código del país del destinatario (a veces también denominado contraparte,
-        /// es decir, el cliente) de la operación de la factura expedida.
-        /// <para>Alfanumérico (2) (ISO 3166-1 alpha-2 codes) </para>
-        /// </summary>        
-        public string BuyerCountryID { get; set; }
-
-        /// <summary>
-        /// Clave para establecer el tipo de identificación
-        /// en el pais de residencia. L7.
-        /// </summary>        
-        [Json(ExcludeOnDefault = true)]
-        public IDType BuyerIDType { get; set; }
-
-        /// <summary>
-        /// Importe total: Total neto + impuestos soportado
-        /// - impuestos retenidos.
-        /// </summary>        
-        public decimal TotalAmount { get; private set; }
-
-        /// <summary>
-        /// Total impuestos soportados.
-        /// </summary>        
-        public decimal TotalTaxOutput { get; private set; }
-
-        /// <summary>
-        /// Total impuestos soportados.
-        /// </summary>        
-        public decimal TotalTaxOutputSurcharge { get; private set; }
-
-        /// <summary>
-        /// Importe total impuestos retenidos.
-        /// </summary>        
-        public decimal TotalTaxWithheld { get; set; }
-
-        /// <summary>
-        /// Texto del documento.
-        /// </summary>
-        public string Text { get; set; }
-
-        /// <summary>
-        /// Líneas de impuestos.
-        /// </summary>
-        public List<TaxItem> TaxItems { get; set; }
-
-        /// <summary>
-        /// Facturas rectificadas.
-        /// </summary>
-        public List<RectificationItem> RectificationItems { get; set; }
-
-        /// <summary>
-        /// RegistroAlta a partir del cual se ha creado la factura, en el
-        /// caso de que la instancia se haya creado a partir de un registro
-        /// de alta.
-        /// </summary>
-        public RegistroAlta RegistroAltaSource 
-        {
-
-            get 
-            {
-
-                return _RegistroAltaSource;
-
-            }
-
-        }
-
-        #endregion     
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Obtiene el registro de alta para verifactu.
-        /// </summary>
-        /// <returns>Registro de alta para verifactu</returns>
-        public RegistroAlta GetRegistroAlta()
-        {
-
-            if (_RegistroAltaSource != null)
-                return _RegistroAltaSource;
-
-            CalculateTotals();
-
-            // Máximo dos decimales
-            var totalTaxAmount = Math.Round(TotalTaxOutput + TotalTaxOutputSurcharge, 2);
-            var totalAmount = Math.Round(TotalAmount, 2);
-
-            var registroAlta = new RegistroAlta()
-            {
-                IDVersion = Settings.Current.IDVersion,
-                IDFacturaAlta = new IDFactura()
-                {
-                    IDEmisorFactura = SellerID.Trim(),
-                    NumSerieFactura = InvoiceID.Trim(),
-                    FechaExpedicionFactura = XmlParser.GetXmlDate(InvoiceDate)                    
-                }, 
-                NombreRazonEmisor = SellerName,
-                TipoFactura = InvoiceType,
-                DescripcionOperacion = Text,
-                Destinatarios = GetDestinatarios(),
-                Desglose = GetDesglose(),
-                CuotaTotal = XmlParser.GetXmlDecimal(totalTaxAmount),
-                ImporteTotal = XmlParser.GetXmlDecimal(totalAmount),
-                SistemaInformatico = Settings.Current.SistemaInformatico,
-                TipoHuella = TipoHuella.Sha256,
-                TipoHuellaSpecified = true
-            };
-
-            if (OperationDate != null)
-                registroAlta.FechaOperacion = XmlParser.GetXmlDate(OperationDate);
-
-            var isRectification = Array.IndexOf(new TipoFactura[]{ TipoFactura.R1, TipoFactura.R2,
-                TipoFactura.R3, TipoFactura.R4, TipoFactura.R5 }, InvoiceType) != -1;
-
-            if (isRectification) 
-            {
-
-                // Establecemos el tipo de rectificativa (Por diferencias es el valor por defecto)
-                if (RectificationType == TipoRectificativa.NA)
-                    registroAlta.TipoRectificativa = TipoRectificativa.I; // Por defecto
-
-                registroAlta.TipoRectificativaSpecified = true;
-
-            }
-
-            if (RectificationItems?.Count > 0) 
-            {
-
-                if (!isRectification)
-                    throw new InvalidOperationException("No se pueden incluir elementos en la lista 'RectificationItems'" +
-                        " si InvoiceType no es rectificativa (R1, R2, R3, R4, R5).");
-
-                // Añadimos las factura rectificadas
-                registroAlta.FacturasRectificadas = new IDFactura[RectificationItems.Count];
-
-                for(int rectificationIndex = 0; rectificationIndex< RectificationItems.Count; rectificationIndex++)
-                    registroAlta.FacturasRectificadas[rectificationIndex] =new IDFactura()
-                    {
-                        IDEmisorFactura = SellerID,
-                        NumSerieFactura = RectificationItems[rectificationIndex].InvoiceID,
-                        FechaExpedicionFactura = XmlParser.GetXmlDate(RectificationItems[rectificationIndex].InvoiceDate)
-                    };
-
-            }
-
-            if (RectificationType != TipoRectificativa.NA)
-            {
-
-                if (!isRectification)
-                    throw new InvalidOperationException("RectificationType no puede estar asignado (tiene que ser TipoRectificativa.NA)" +
-                        " si InvoiceType no es rectificativa (R1, R2, R3, R4, R5).");
-
-                registroAlta.TipoRectificativa = RectificationType;
-                registroAlta.TipoRectificativaSpecified = true;
-
-            }
-
-            return registroAlta;
-
-        }
-
-        /// <summary>
-        /// Obtiene el registro de alta para verifactu.
-        /// </summary>
-        /// <returns>Registro de alta para verifactu</returns>
-        public RegistroAnulacion GetRegistroAnulacion()
-        {           
-
-            var registroAnulacion = new RegistroAnulacion()
-            {
-                IDVersion = Settings.Current.IDVersion,
-                IDFacturaAnulada = new IDFactura()
-                {
-                    IDEmisorFacturaAnulada = SellerID,
-                    NumSerieFacturaAnulada = InvoiceID.Trim(), // La AEAT calcula el Hash sin espacios
-                    FechaExpedicionFacturaAnulada = XmlParser.GetXmlDate(InvoiceDate)
-                },
-                SistemaInformatico = Settings.Current.SistemaInformatico,
-                TipoHuella = TipoHuella.Sha256,
-                TipoHuellaSpecified = true
-            };
-
-            return registroAnulacion;
-
-        }
-
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{SellerID}-{InvoiceID}-{XmlParser.GetXmlDate(InvoiceDate)}";
-        }
-
-        #endregion
-
+      if(invoiceID == null || sellerID == null)
+      {
+        throw new ArgumentNullException($"Los argumentos invoiceID y sellerID no pueden ser nulos.");
+      }
+      InvoiceID = invoiceID.Trim(); // La AEAT calcula el Hash sin espacios
+      InvoiceDate = invoiceDate;
+      string tSellerID = sellerID.Trim(); // La AEAT calcula el Hash sin espacios
+      SellerID = tSellerID.ToUpper(); // https://github.com/mdiago/VeriFactu/issues/65
     }
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="registroAlta">Registro de alta a partir del que se crea la factura.</param>
+    public Invoice(RegistroAlta registroAlta) : this(
+      registroAlta.IDFacturaAlta.NumSerieFactura,
+      XmlParser.ToDate(registroAlta.IDFacturaAlta.FechaExpedicionFactura),
+      $"{registroAlta.IDFacturaAlta.IDEmisorFactura}")
+    {
+      RegistroAltaSource = registroAlta;
+      InvoiceType = registroAlta.TipoFactura;
+      SellerName = registroAlta.NombreRazonEmisor;
+      if(registroAlta.TipoRectificativaSpecified)
+      {
+        RectificationType = registroAlta.TipoRectificativa;
+      }
+      if(registroAlta.Destinatarios.Count > 1)
+      {
+        throw new NotImplementedException(
+          "El método estático Invoice.FromRegistroAlta" +
+                          " no implementa la conversión de RegistrosAlta con más de un destinatario.");
+      }
+      if(registroAlta.Destinatarios.Count == 1)
+      {
+        Interlocutor destinatario = registroAlta.Destinatarios[0];
+        BuyerID = $"{destinatario.NIF}{destinatario?.IDOtro?.ID}";
+        BuyerName = $"{destinatario.NombreRazon}";
+        if(!string.IsNullOrEmpty($"{destinatario?.IDOtro?.CodigoPais}"))
+        {
+          BuyerCountryID = $"{destinatario?.IDOtro?.CodigoPais}";
+        }
+        if(!string.IsNullOrEmpty($"{destinatario?.IDOtro?.IDType}"))
+        {
+          BuyerIDType = destinatario?.IDOtro?.IDType ?? IDType.NIF_IVA;
+        }
+      }
+      TaxItems = FromDesglose(registroAlta.Desglose);
+    }
+
+    #endregion
+
+    #region Métodos Privados Estáticos
+
+    /// <summary>
+    /// Devuelve una lista de TaxItem a partir de una lista de objetos DetalleDesglose.
+    /// </summary>
+    /// <param name="Desglose">Lista de objetos DetalleDesglose.</param>
+    /// <returns>Lista de TaxItems</returns>
+    internal static List<TaxItem> FromDesglose(List<DetalleDesglose> Desglose)
+    {
+      List<TaxItem> taxitems = new List<TaxItem>();
+      foreach(DetalleDesglose desglose in Desglose)
+      {
+        TaxItem taxItem = new TaxItem
+        {
+          TaxBase = XmlParser.ToDecimal(desglose.BaseImponibleOimporteNoSujeto),
+          TaxRate = XmlParser.ToDecimal(desglose.TipoImpositivo),
+          TaxAmount = XmlParser.ToDecimal(desglose.CuotaRepercutida),
+          TaxRateSurcharge = XmlParser.ToDecimal(desglose.TipoRecargoEquivalencia),
+          TaxAmountSurcharge = XmlParser.ToDecimal(desglose.CuotaRecargoEquivalencia)
+        };
+        taxItem.Tax = desglose.Impuesto;
+        if(desglose.ClaveRegimenSpecified)
+        {
+          taxItem.TaxScheme = desglose.ClaveRegimen;
+        }
+        if(desglose.CalificacionOperacionSpecified)
+        {
+          taxItem.TaxType = desglose.CalificacionOperacion;
+        }
+        taxitems.Add(taxItem);
+      }
+      return taxitems;
+    }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Calcula los totales de la factura.
+    /// </summary>
+    private void CalculateTotals()
+    {
+      TotalAmount = TotalTaxOutput = TotalTaxWithheld = TotalTaxOutputSurcharge = _NetAmount = 0;
+      if(TaxItems == null || TaxItems.Count == 0)
+      {
+        return;
+      }
+      foreach(TaxItem taxitem in TaxItems)
+      {
+        if(taxitem.TaxClass == TaxClass.TaxOutput)
+        {
+          _NetAmount += taxitem.TaxBase;
+          TotalTaxOutput += taxitem.TaxAmount;
+          TotalTaxOutputSurcharge += taxitem.TaxAmountSurcharge;
+        }
+        else
+        {
+          TotalTaxWithheld += taxitem.TaxAmount;
+        }
+      }
+      TotalAmount = _NetAmount + TotalTaxOutput + TotalTaxOutputSurcharge - TotalTaxWithheld;
+    }
+
+    /// <summary>
+    /// Obtiene el desglose de la factura.
+    /// </summary>
+    /// <returns>Desglose de la factura.</returns>
+    private List<DetalleDesglose> GetDesglose()
+    {
+      if(TaxItems == null || TaxItems?.Count == 0)
+      {
+        throw new InvalidOperationException(
+          "No se puede obtener el bloque obligatorio" +
+                          " 'DetalleDesglose' ya que la lista de TaxItems no contiene elementos.");
+      }
+      List<DetalleDesglose> desglose = new List<DetalleDesglose>();
+      foreach(TaxItem taxitem in TaxItems)
+      {
+        // Valores por defecto
+        Impuesto tax = Enum.IsDefined(typeof(Impuesto), taxitem.Tax) ? taxitem.Tax : Impuesto.IVA;
+        ClaveRegimen taxScheme = Enum.IsDefined(typeof(ClaveRegimen), taxitem.TaxScheme) ? taxitem.TaxScheme : ClaveRegimen.RegimenGeneral;
+        // Máximo dos decimales
+        decimal taxRate = Math.Round(taxitem.TaxRate, 2, MidpointRounding.AwayFromZero);
+        decimal taxBase = Math.Round(taxitem.TaxBase, 2, MidpointRounding.AwayFromZero);
+        decimal taxAmount = Math.Round(taxitem.TaxAmount, 2, MidpointRounding.AwayFromZero);
+        decimal taxRateSurcharge = Math.Round(taxitem.TaxRateSurcharge, 2, MidpointRounding.AwayFromZero);
+        decimal taxAmountSurcharge = Math.Round(taxitem.TaxAmountSurcharge, 2, MidpointRounding.AwayFromZero);
+        DetalleDesglose detalleDesglose = new DetalleDesglose
+        {
+          Impuesto = tax,
+          ClaveRegimen = taxScheme,
+          CalificacionOperacion = taxitem.TaxType,
+          CalificacionOperacionSpecified = taxitem.TaxException == CausaExencion.NA,
+          TipoImpositivo = XmlParser.GetXmlDecimal(taxRate),
+          BaseImponibleOimporteNoSujeto = XmlParser.GetXmlDecimal(taxBase),
+          CuotaRepercutida = XmlParser.GetXmlDecimal(taxAmount),
+        };
+        if(taxitem.TaxException != CausaExencion.NA)
+        {
+          detalleDesglose.OperacionExentaSpecified = true;
+          detalleDesglose.OperacionExenta = taxitem.TaxException;
+          detalleDesglose.CuotaRepercutida = detalleDesglose.TipoImpositivo = null;
+        }
+        if(taxitem.TaxAmountSurcharge != 0)
+        {
+          detalleDesglose.TipoRecargoEquivalencia = XmlParser.GetXmlDecimal(taxRateSurcharge);
+          detalleDesglose.CuotaRecargoEquivalencia = XmlParser.GetXmlDecimal(taxAmountSurcharge);
+        }
+        detalleDesglose.ClaveRegimenSpecified = (detalleDesglose.Impuesto == Impuesto.IVA || detalleDesglose.Impuesto == Impuesto.IGIC);
+        desglose.Add(detalleDesglose);
+      }
+      return desglose;
+    }
+
+    /// <summary>
+    /// Obtiene la lista de destinatarios.
+    /// </summary>
+    /// <returns>Lista de destinatarios.</returns>
+    private List<Interlocutor> GetDestinatarios()
+    {
+      // Factura simplificada sin contraparte
+      if(string.IsNullOrEmpty(BuyerID) && (InvoiceType == TipoFactura.F2 || InvoiceType == TipoFactura.R5))
+      {
+        return null;
+      }
+      TaxIdEs taxId = null;
+      bool isTaxIdEs = false;
+      try
+      {
+        taxId = new TaxIdEs(BuyerID);
+        isTaxIdEs = taxId.IsDCOK;
+      }
+      catch(TaxIdEsException) // Id. fiscal no español
+      {
+        isTaxIdEs = false;
+      }
+      catch(Exception)
+      {
+        throw;
+      }
+      if(isTaxIdEs && BuyerIDType != IDType.NO_CENSADO && (BuyerCountryID == "ES" || string.IsNullOrEmpty(BuyerCountryID)))
+      {
+        return new List<Interlocutor>
+        {
+          new Interlocutor
+          {
+            NombreRazon = BuyerName,
+            NIF = BuyerID
+          }
+        };
+      }
+      if(string.IsNullOrEmpty(BuyerCountryID))
+      {
+        throw new Exception(
+          $"Error en factura ({this}): Si BuyerID no es un identificador español válido" +
+                          " (NIF, DNI, NIE...) es obligatorio que BuyerCountryID tenga un valor.");
+      }
+      bool countryIdValid = Enum.TryParse(BuyerCountryID, out CodigoPais buyerCountryId);
+      if(!countryIdValid)
+      {
+        throw new Exception($"Error en factura ({this}): El código de pais consignado en BuyerCountryID='{BuyerCountryID}' no es válido.");
+      }
+      return new List<Interlocutor>
+      {
+        new Interlocutor
+        {
+          NombreRazon = BuyerName,
+          IDOtro = new IDOtro
+          {
+            CodigoPais = buyerCountryId,
+            CodigoPaisSpecified = countryIdValid,
+            ID = BuyerID,
+            IDType = BuyerIDType
+          }
+        }
+      };
+    }
+
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// <para>Clave del tipo de factura (L2).</para>
+    /// </summary>
+    public TipoFactura InvoiceType { get; set; }
+
+    /// <summary>
+    /// Identifica si el tipo de factura rectificativa es por sustitución o por diferencia (L3).
+    /// </summary>
+    public TipoRectificativa RectificationType { get; set; }
+
+    /// <summary>
+    /// Identificador de la factura.
+    /// </summary>
+    public string InvoiceID { get; private set; }
+
+    /// <summary>
+    /// Fecha emisión de documento.
+    /// </summary>        
+    public DateTime InvoiceDate { get; private set; }
+
+    /// <summary>
+    /// Fecha operación.
+    /// </summary>        
+    public DateTime? OperationDate { get; set; }
+
+    /// <summary>
+    /// Identificador del vendedor. Debe utilizarse el identificador fiscal si existe (NIF, VAT Number...). En caso de
+    /// no existir, se puede utilizar el número DUNS  o cualquier otro identificador acordado.
+    /// </summary>        
+    public string SellerID { get; private set; }
+
+    /// <summary>
+    /// Nombre del vendedor.
+    /// </summary>        
+    [Json(Name = "CompanyName")]
+    public string SellerName { get; set; }
+
+    /// <summary>
+    /// Identidicador del comprador. Debe utilizarse el identificador fiscal si existe (NIF, VAT Number...). En caso de
+    /// no existir, se puede utilizar el número DUNS  o cualquier otro identificador acordado.
+    /// </summary>        
+    [Json(Name = "RelatedPartyID")]
+    public string BuyerID { get; set; }
+
+    /// <summary>
+    /// Nombre del comprador.
+    /// </summary>        
+    [Json(Name = "RelatedPartyName")]
+    public string BuyerName { get; set; }
+
+    /// <summary>
+    /// Código del país del destinatario (a veces también denominado contraparte, es decir, el cliente) de la operación
+    /// de la factura expedida. <para>Alfanumérico (2) (ISO 3166-1 alpha-2 codes)</para>
+    /// </summary>        
+    public string BuyerCountryID { get; set; }
+
+    /// <summary>
+    /// Clave para establecer el tipo de identificación en el pais de residencia. L7.
+    /// </summary>        
+    [Json(ExcludeOnDefault = true)]
+    public IDType BuyerIDType { get; set; }
+
+    /// <summary>
+    /// Importe total: Total neto + impuestos soportado - impuestos retenidos.
+    /// </summary>        
+    public decimal TotalAmount { get; private set; }
+
+    /// <summary>
+    /// Total impuestos soportados.
+    /// </summary>        
+    public decimal TotalTaxOutput { get; private set; }
+
+    /// <summary>
+    /// Total impuestos soportados.
+    /// </summary>        
+    public decimal TotalTaxOutputSurcharge { get; private set; }
+
+    /// <summary>
+    /// Importe total impuestos retenidos.
+    /// </summary>        
+    public decimal TotalTaxWithheld { get; set; }
+
+    /// <summary>
+    /// Texto del documento.
+    /// </summary>
+    public string Text { get; set; }
+
+    /// <summary>
+    /// Líneas de impuestos.
+    /// </summary>
+    public List<TaxItem> TaxItems { get; set; }
+
+    /// <summary>
+    /// Facturas rectificadas.
+    /// </summary>
+    public List<RectificationItem> RectificationItems { get; set; }
+
+    /// <summary>
+    /// RegistroAlta a partir del cual se ha creado la factura, en el caso de que la instancia se haya creado a partir
+    /// de un registro de alta.
+    /// </summary>
+    public RegistroAlta RegistroAltaSource { get; }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Obtiene el registro de alta para verifactu.
+    /// </summary>
+    /// <returns>Registro de alta para verifactu</returns>
+    public RegistroAlta GetRegistroAlta()
+    {
+      if(RegistroAltaSource != null)
+      {
+        return RegistroAltaSource;
+      }
+      CalculateTotals();
+      // Máximo dos decimales
+      decimal totalTaxAmount = Math.Round(TotalTaxOutput + TotalTaxOutputSurcharge, 2);
+      decimal totalAmount = Math.Round(TotalAmount, 2);
+      RegistroAlta registroAlta = new RegistroAlta
+      {
+        IDVersion = Settings.Current.IDVersion,
+        IDFacturaAlta = new IDFactura
+        {
+          IDEmisorFactura = SellerID.Trim(),
+          NumSerieFactura = InvoiceID.Trim(),
+          FechaExpedicionFactura = XmlParser.GetXmlDate(InvoiceDate)
+        },
+        NombreRazonEmisor = SellerName,
+        TipoFactura = InvoiceType,
+        DescripcionOperacion = Text,
+        Destinatarios = GetDestinatarios(),
+        Desglose = GetDesglose(),
+        CuotaTotal = XmlParser.GetXmlDecimal(totalTaxAmount),
+        ImporteTotal = XmlParser.GetXmlDecimal(totalAmount),
+        SistemaInformatico = Settings.Current.SistemaInformatico,
+        TipoHuella = TipoHuella.Sha256,
+        TipoHuellaSpecified = true
+      };
+      if(OperationDate != null)
+      {
+        registroAlta.FechaOperacion = XmlParser.GetXmlDate(OperationDate);
+      }
+      bool isRectification = Array.IndexOf(
+        new TipoFactura[]
+        {
+          TipoFactura.R1, TipoFactura.R2,
+          TipoFactura.R3, TipoFactura.R4, TipoFactura.R5
+        },
+        InvoiceType) != -1;
+      if(isRectification)
+      {
+        // Establecemos el tipo de rectificativa (Por diferencias es el valor por defecto)
+        if(RectificationType == TipoRectificativa.NA)
+        {
+          registroAlta.TipoRectificativa = TipoRectificativa.I; // Por defecto
+        }
+        registroAlta.TipoRectificativaSpecified = true;
+      }
+      if(RectificationItems?.Count > 0)
+      {
+        if(!isRectification)
+        {
+          throw new InvalidOperationException(
+            "No se pueden incluir elementos en la lista 'RectificationItems'" +
+                                " si InvoiceType no es rectificativa (R1, R2, R3, R4, R5).");
+        }
+        // Añadimos las factura rectificadas
+        registroAlta.FacturasRectificadas = new IDFactura[RectificationItems.Count];
+        for(int rectificationIndex = 0; rectificationIndex < RectificationItems.Count; rectificationIndex++)
+        {
+          registroAlta.FacturasRectificadas[rectificationIndex] = new IDFactura
+          {
+            IDEmisorFactura = SellerID,
+            NumSerieFactura = RectificationItems[rectificationIndex].InvoiceID,
+            FechaExpedicionFactura = XmlParser.GetXmlDate(RectificationItems[rectificationIndex].InvoiceDate)
+          };
+        }
+      }
+      if(RectificationType != TipoRectificativa.NA)
+      {
+        if(!isRectification)
+        {
+          throw new InvalidOperationException(
+            "RectificationType no puede estar asignado (tiene que ser TipoRectificativa.NA)" +
+                                " si InvoiceType no es rectificativa (R1, R2, R3, R4, R5).");
+        }
+        registroAlta.TipoRectificativa = RectificationType;
+        registroAlta.TipoRectificativaSpecified = true;
+      }
+      return registroAlta;
+    }
+
+    /// <summary>
+    /// Obtiene el registro de alta para verifactu.
+    /// </summary>
+    /// <returns>Registro de alta para verifactu</returns>
+    public RegistroAnulacion GetRegistroAnulacion()
+    {
+      RegistroAnulacion registroAnulacion = new RegistroAnulacion
+      {
+        IDVersion = Settings.Current.IDVersion,
+        IDFacturaAnulada = new IDFactura
+        {
+          IDEmisorFacturaAnulada = SellerID,
+          NumSerieFacturaAnulada = InvoiceID.Trim(), // La AEAT calcula el Hash sin espacios
+          FechaExpedicionFacturaAnulada = XmlParser.GetXmlDate(InvoiceDate)
+        },
+        SistemaInformatico = Settings.Current.SistemaInformatico,
+        TipoHuella = TipoHuella.Sha256,
+        TipoHuellaSpecified = true
+      };
+      return registroAnulacion;
+    }
+
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{SellerID}-{InvoiceID}-{XmlParser.GetXmlDate(InvoiceDate)}";
+    }
+
+    #endregion
+  }
 }

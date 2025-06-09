@@ -37,7 +37,6 @@
     address: info@irenesolutions.com
  */
 
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -45,54 +44,58 @@ using System.Text;
 
 namespace VeriFactu.Qrcode
 {
-
-    /// <summary>
-    /// Extensiones para la portabilidad de iText desde javascript a C#.
-    /// </summary>
-    /// <author>bruno@lowagie.com (Bruno Lowagie, Paulo Soares, et al.) - creator</author>
-    internal static class QrcodeExtensions
+  /// <summary>
+  /// Extensiones para la portabilidad de iText desde javascript a C#.
+  /// </summary>
+  /// <author>bruno@lowagie.com (Bruno Lowagie, Paulo Soares, et al.) - creator</author>
+  internal static class QrcodeExtensions
+  {
+    public static byte[] GetBytes(this string str, string encoding)
     {
+      return Encoding.GetEncoding(encoding).GetBytes(str);
+    }
 
-        public static byte[] GetBytes(this String str, String encoding) {
-            return Encoding.GetEncoding(encoding).GetBytes(str);
-        }
+    public static string JSubstring(this string str, int beginIndex, int endIndex)
+    {
+      return str.Substring(beginIndex, endIndex - beginIndex);
+    }
 
-        public static String JSubstring(this String str, int beginIndex, int endIndex) {
-            return str.Substring(beginIndex, endIndex - beginIndex);
-        }
+    public static T JRemoveAt<T>(this IList<T> list, int index)
+    {
+      T value = list[index];
+      list.RemoveAt(index);
+      return value;
+    }
 
-        public static T JRemoveAt<T>(this IList<T> list, int index) {
-            T value = list[index];
-            list.RemoveAt(index);
+    public static TValue Get<TKey, TValue>(this IDictionary<TKey, TValue> col, TKey key)
+    {
+      TValue value = default(TValue);
+      if(key != null)
+      {
+        col.TryGetValue(key, out value);
+      }
+      return value;
+    }
 
-            return value;
-        }
+    public static TValue Put<TKey, TValue>(this IDictionary<TKey, TValue> col, TKey key, TValue value)
+    {
+      TValue oldVal = col.Get(key);
+      col[key] = value;
+      return oldVal;
+    }
 
-        public static TValue Get<TKey, TValue>(this IDictionary<TKey, TValue> col, TKey key) {
-            TValue value = default(TValue);
-            if (key != null) {
-                col.TryGetValue(key, out value);
-            }
+    public static byte[] GetBytes(this string str)
+    {
+      return System.Text.Encoding.UTF8.GetBytes(str);
+    }
 
-            return value;
-        }
-
-        public static TValue Put<TKey, TValue>(this IDictionary<TKey, TValue> col, TKey key, TValue value) {
-            TValue oldVal = col.Get(key);
-            col[key] = value;
-            return oldVal;
-        }
-        
-        public static byte[] GetBytes(this String str) {
-            return System.Text.Encoding.UTF8.GetBytes(str);
-        }
-
-        public static Assembly GetAssembly(this Type type) {
+    public static Assembly GetAssembly(this Type type)
+    {
 #if !NETSTANDARD2_0
-            return type.Assembly;
+      return type.Assembly;
 #else
             return type.GetTypeInfo().Assembly;
 #endif
-        }
     }
+  }
 }

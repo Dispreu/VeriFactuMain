@@ -43,37 +43,33 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Nif
 {
-    /// <summary>
-    /// Datos de contribuyentes de entrada al web service
-    /// de validación de NIF de la AEAT.
-    /// </summary>
-    [Serializable]
-	[XmlRoot("VNifV2Ent", Namespace = Namespaces.NamespaceVNifV2Ent)]
-	public class VNifVEnt
-	{
+  /// <summary>
+  /// Datos de contribuyentes de entrada al web service de validación de NIF de la AEAT.
+  /// </summary>
+  [Serializable]
+  [XmlRoot("VNifV2Ent", Namespace = Namespaces.NamespaceVNifV2Ent)]
+  public class VNifVEnt
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public VNifVEnt()
-        {
-            Contribuyente = new List<Contribuyente>();
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// NIF del contribuyente.
-        /// Numérico(4).
-        /// </summary>
-        public List<Contribuyente> Contribuyente { get; set; }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    public VNifVEnt()
+    {
+      Contribuyente = new List<Contribuyente>();
     }
 
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// NIF del contribuyente. Numérico(4).
+    /// </summary>
+    public List<Contribuyente> Contribuyente { get; set; }
+
+    #endregion
+  }
 }

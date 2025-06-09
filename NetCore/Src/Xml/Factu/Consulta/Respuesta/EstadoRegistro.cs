@@ -41,57 +41,50 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Consulta.Respuesta
 {
-
-    /// <summary>
-    /// Bloque que contiene los campos del estado del registro de facturación registrado:
-    /// <para> TimestampUltimaModificacion</para>
-    /// <para> EstadoRegistro</para>
-    /// <para> CodigoErrorRegistro</para>
-    /// <para> DescripcionErrorRegistro</para>
-    /// </summary>
-    public class EstadoRegistro
-    {
+  /// <summary>
+  /// Bloque que contiene los campos del estado del registro de facturación registrado:
+  /// <para>TimestampUltimaModificacion</para> <para>EstadoRegistro</para> <para>CodigoErrorRegistro</para>
+  /// <para>DescripcionErrorRegistro</para>
+  /// </summary>
+  public class EstadoRegistro
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// NIF presentador.
-        /// </summary>
-        public string TimestampUltimaModificacion { get; set; }
+    /// <summary>
+    /// NIF presentador.
+    /// </summary>
+    public string TimestampUltimaModificacion { get; set; }
 
-        /// <summary>
-        /// Marca tiempo presentación.
-        /// </summary>
-        [XmlElement("EstadoRegistro")]
-        public string EstadoReg { get; set; }
+    /// <summary>
+    /// Marca tiempo presentación.
+    /// </summary>
+    [XmlElement("EstadoRegistro")]
+    public string EstadoReg { get; set; }
 
-        /// <summary>
-        /// identificador de la petición de presentación.
-        /// </summary>
-        public string CodigoErrorRegistro { get; set; }
+    /// <summary>
+    /// identificador de la petición de presentación.
+    /// </summary>
+    public string CodigoErrorRegistro { get; set; }
 
-        /// <summary>
-        /// identificador de la petición de presentación.
-        /// </summary>
-        public string DescripcionErrorRegistro { get; set; }
+    /// <summary>
+    /// identificador de la petición de presentación.
+    /// </summary>
+    public string DescripcionErrorRegistro { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representacioón textual de la instancia.
-        /// </summary>
-        /// <returns>Representacioón textual de la instancia.</returns>
-        public override string ToString()
-        {
-
-            return $"{EstadoReg}, {CodigoErrorRegistro}";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representacioón textual de la instancia.
+    /// </summary>
+    /// <returns>Representacioón textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{EstadoReg}, {CodigoErrorRegistro}";
     }
 
+    #endregion
+  }
 }

@@ -45,59 +45,55 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta Macrodato.
-    /// </summary>
-    public class ValidatorRegistroAltaMacrodato : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta Macrodato.
+  /// </summary>
+  public class ValidatorRegistroAltaMacrodato : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        /// <param name="registroAlta"> Registro de alta del bloque Body.</param>
-        public ValidatorRegistroAltaMacrodato(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    /// <param name="registroAlta">Registro de alta del bloque Body.</param>
+    public ValidatorRegistroAltaMacrodato(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
 
-        #endregion
+    #endregion
 
-        #region Métodos Privados de Instancia
+    #region Métodos Privados de Instancia
 
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // 10. Macrodato
-
-            // Campo obligatorio si ImporteTotal >= |100.000.000,00| (valor absoluto).
-
-            if (Math.Abs(XmlParser.ToDecimal(_RegistroAlta.ImporteTotal)) > 100000000m && 
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // 10. Macrodato
+      // Campo obligatorio si ImporteTotal >= |100.000.000,00| (valor absoluto).
+      if(Math.Abs(XmlParser.ToDecimal(_RegistroAlta.ImporteTotal)) > 100000000m &&
                 (_RegistroAlta.Macrodato == null || _RegistroAlta.Macrodato == "N"))
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" El campo Macrodato debe contener el valor 'S' obligatoriamente" +
-                        $" si ImporteTotal >= |100.000.000,00| (valor absoluto).");
-
-            // 1138 = El campo Macrodato solo debe ser informado con valor S si el valor de ImporteTotal es igual o superior a +-100.000.000
-            if (Math.Abs(XmlParser.ToDecimal(_RegistroAlta.ImporteTotal)) < 100000000m && _RegistroAlta?.Macrodato == "S")
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                        $" El campo Macrodato solo debe ser informado con valor S si el valor de ImporteTotal es igual o superior a +-100.000.000.");
-
-            return result;
-
-        }
-
-        #endregion
-
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                              $" El campo Macrodato debe contener el valor 'S' obligatoriamente" +
+                              $" si ImporteTotal >= |100.000.000,00| (valor absoluto).");
+      }
+      // 1138 = El campo Macrodato solo debe ser informado con valor S si el valor de ImporteTotal es igual o superior a +-100.000.000
+      if(Math.Abs(XmlParser.ToDecimal(_RegistroAlta.ImporteTotal)) < 100000000m && _RegistroAlta?.Macrodato == "S")
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                              $" El campo Macrodato solo debe ser informado con valor S si el valor de ImporteTotal es igual o superior a +-100.000.000.");
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

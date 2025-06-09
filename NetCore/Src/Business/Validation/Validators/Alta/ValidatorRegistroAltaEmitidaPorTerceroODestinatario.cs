@@ -43,63 +43,58 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta EmitidaPorTerceroODestinatario.
-    /// </summary>
-    public class ValidatorRegistroAltaEmitidaPorTerceroODestinatario : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta EmitidaPorTerceroODestinatario.
+  /// </summary>
+  public class ValidatorRegistroAltaEmitidaPorTerceroODestinatario : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        /// <param name="registroAlta"> Registro de alta del bloque Body.</param>
-        public ValidatorRegistroAltaEmitidaPorTerceroODestinatario(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    /// <param name="registroAlta">Registro de alta del bloque Body.</param>
+    public ValidatorRegistroAltaEmitidaPorTerceroODestinatario(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
 
-        #endregion
+    #endregion
 
-        #region Métodos Privados de Instancia
+    #region Métodos Privados de Instancia
 
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // 11. EmitidaPorTerceroODestinatario
-
-            // Si es igual a “T”, el bloque Tercero será de cumplimentación obligatoria.
-
-            if (_RegistroAlta.Tercero == null && _RegistroAlta.EmitidaPorTercerosODestinatarioSpecified &&
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // 11. EmitidaPorTerceroODestinatario
+      // Si es igual a “T”, el bloque Tercero será de cumplimentación obligatoria.
+      if(_RegistroAlta.Tercero == null && _RegistroAlta.EmitidaPorTercerosODestinatarioSpecified &&
                 _RegistroAlta.EmitidaPorTercerosODestinatario == EmitidaPorTercerosODestinatario.T)
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                    $" Si EmitidaPorTerceroODestinatario es igual a “T”," +
-                    $" el bloque Tercero será de cumplimentación obligatoria.");
-
-            // Si es igual a “D”, el bloque Destinatarios será de cumplimentación obligatoria.
-
-            if ((_RegistroAlta.Destinatarios == null || _RegistroAlta.Destinatarios.Count == 0) &&
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                          $" Si EmitidaPorTerceroODestinatario es igual a “T”," +
+                          $" el bloque Tercero será de cumplimentación obligatoria.");
+      }
+      // Si es igual a “D”, el bloque Destinatarios será de cumplimentación obligatoria.
+      if((_RegistroAlta.Destinatarios == null || _RegistroAlta.Destinatarios.Count == 0) &&
                 _RegistroAlta.EmitidaPorTercerosODestinatarioSpecified &&
                 _RegistroAlta.EmitidaPorTercerosODestinatario == EmitidaPorTercerosODestinatario.D)
-                result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
-                    $" Si EmitidaPorTerceroODestinatario es igual a “D”, el bloque" +
-                    $" Destinatarios será de cumplimentación obligatoria,");
-
-            return result;
-
-        }
-
-        #endregion
-
+      {
+        result.Add(
+          $"Error en el bloque RegistroAlta ({_RegistroAlta}):" +
+                          $" Si EmitidaPorTerceroODestinatario es igual a “D”, el bloque" +
+                          $" Destinatarios será de cumplimentación obligatoria,");
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

@@ -42,40 +42,37 @@ using VeriFactu.Net.Rest.Json;
 
 namespace VeriFactu.Business
 {
-
-    /// <summary>
-    /// Representa una factura rectificada.
-    /// </summary>
-    public class RectificationItem : JsonSerializable
-    {
+  /// <summary>
+  /// Representa una factura rectificada.
+  /// </summary>
+  public class RectificationItem : JsonSerializable
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Identificador de la factura.
-        /// </summary>
-        public string InvoiceID { get; set; }
+    /// <summary>
+    /// Identificador de la factura.
+    /// </summary>
+    public string InvoiceID { get; set; }
 
-        /// <summary>
-        /// Fecha emisión de documento.
-        /// </summary>        
-        public DateTime InvoiceDate { get; set; }
+    /// <summary>
+    /// Fecha emisión de documento.
+    /// </summary>        
+    public DateTime InvoiceDate { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns>Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{InvoiceID}, {InvoiceDate}";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{InvoiceID}, {InvoiceDate}";
     }
 
+    #endregion
+  }
 }

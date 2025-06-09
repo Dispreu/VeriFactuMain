@@ -40,97 +40,92 @@ using System;
 
 namespace VeriFactu.Qrcode.Exceptions
 {
-
-    /// <summary>
-    /// Clase para mensajes predeterminados de error
-    /// mediante constantes.
-    /// </summary>
-    /// <author>bruno@lowagie.com (Bruno Lowagie, Paulo Soares, et al.) - creator</author>
-    public sealed class BarcodeExceptionMessageConstant 
-    {
+  /// <summary>
+  /// Clase para mensajes predeterminados de error mediante constantes.
+  /// </summary>
+  /// <author>bruno@lowagie.com (Bruno Lowagie, Paulo Soares, et al.) - creator</author>
+  public sealed class BarcodeExceptionMessageConstant
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        private BarcodeExceptionMessageConstant()
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    private BarcodeExceptionMessageConstant()
+        { }
 
-        #endregion
+    #endregion
 
-        #region Propiedades Públicas de Instancia
+    #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Codabar must have at least start and stop character.
-        /// </summary>
-        public const String CODABAR_MUST_HAVE_AT_LEAST_START_AND_STOP_CHARACTER = "Codabar must have at least start "
+    /// <summary>
+    /// Codabar must have at least start and stop character.
+    /// </summary>
+    public const string CODABAR_MUST_HAVE_AT_LEAST_START_AND_STOP_CHARACTER = "Codabar must have at least start "
              + "and stop character.";
 
-        /// <summary>
-        /// Codabar must have one of 'ABCD'.
-        /// </summary>
-        public const String CODABAR_MUST_HAVE_ONE_ABCD_AS_START_STOP_CHARACTER = "Codabar must have one of 'ABCD' "
+    /// <summary>
+    /// Codabar must have one of 'ABCD'.
+    /// </summary>
+    public const string CODABAR_MUST_HAVE_ONE_ABCD_AS_START_STOP_CHARACTER = "Codabar must have one of 'ABCD' "
              + "as start/stop character.";
 
-        /// <summary>
-        /// Illegal character in Codabar Barcode.
-        /// </summary>
-        public const String ILLEGAL_CHARACTER_IN_CODABAR_BARCODE = "Illegal character in Codabar Barcode.";
+    /// <summary>
+    /// Illegal character in Codabar Barcode.
+    /// </summary>
+    public const string ILLEGAL_CHARACTER_IN_CODABAR_BARCODE = "Illegal character in Codabar Barcode.";
 
-        /// <summary>
-        /// In Codabar, start/stop characters are only allowed at the extremes.
-        /// </summary>
-        public const String IN_CODABAR_START_STOP_CHARACTERS_ARE_ONLY_ALLOWED_AT_THE_EXTREMES = "In Codabar, " + "start/stop characters are only allowed at the extremes.";
+    /// <summary>
+    /// In Codabar, start/stop characters are only allowed at the extremes.
+    /// </summary>
+    public const string IN_CODABAR_START_STOP_CHARACTERS_ARE_ONLY_ALLOWED_AT_THE_EXTREMES = "In Codabar, " + "start/stop characters are only allowed at the extremes.";
 
-        /// <summary>
-        /// Invalid codeword size.
-        /// </summary>
-        public const String INVALID_CODEWORD_SIZE = "Invalid codeword size.";
+    /// <summary>
+    /// Invalid codeword size.
+    /// </summary>
+    public const string INVALID_CODEWORD_SIZE = "Invalid codeword size.";
 
-        /// <summary>
-        /// macroSegmentId must be greater than or equa 0
-        /// </summary>
-        public const String MACRO_SEGMENT_ID_MUST_BE_GT_OR_EQ_ZERO = "macroSegmentId must be >= 0";
+    /// <summary>
+    /// macroSegmentId must be greater than or equa 0
+    /// </summary>
+    public const string MACRO_SEGMENT_ID_MUST_BE_GT_OR_EQ_ZERO = "macroSegmentId must be >= 0";
 
-        /// <summary>
-        /// macroSegmentId must be greater than 0
-        /// </summary>
-        public const String MACRO_SEGMENT_ID_MUST_BE_GT_ZERO = "macroSegmentId must be > 0";
+    /// <summary>
+    /// macroSegmentId must be greater than 0
+    /// </summary>
+    public const string MACRO_SEGMENT_ID_MUST_BE_GT_ZERO = "macroSegmentId must be > 0";
 
-        /// <summary>
-        /// macroSegmentId must be minor macroSemgentCount. 
-        /// </summary>
-        public const String MACRO_SEGMENT_ID_MUST_BE_LT_MACRO_SEGMENT_COUNT = "macroSegmentId " + "must be < macroSemgentCount";
+    /// <summary>
+    /// macroSegmentId must be minor macroSemgentCount.
+    /// </summary>
+    public const string MACRO_SEGMENT_ID_MUST_BE_LT_MACRO_SEGMENT_COUNT = "macroSegmentId " + "must be < macroSemgentCount";
 
-        /// <summary>
-        /// Text cannot be null.
-        /// </summary>
-        public const String TEXT_CANNOT_BE_NULL = "Text cannot be null.";
+    /// <summary>
+    /// Text cannot be null.
+    /// </summary>
+    public const string TEXT_CANNOT_BE_NULL = "Text cannot be null.";
 
-        /// <summary>
-        /// Text is too big.
-        /// </summary>
-        public const String TEXT_IS_TOO_BIG = "Text is too big.";
+    /// <summary>
+    /// Text is too big.
+    /// </summary>
+    public const string TEXT_IS_TOO_BIG = "Text is too big.";
 
-        /// <summary>
-        /// The text length must be even.
-        /// </summary>
-        public const String TEXT_MUST_BE_EVEN = "The text length must be even.";
+    /// <summary>
+    /// The text length must be even.
+    /// </summary>
+    public const string TEXT_MUST_BE_EVEN = "The text length must be even.";
 
-        /// <summary>
-        /// The two barcodes must be composed externally.
-        /// </summary>
-        public const String TWO_BARCODE_MUST_BE_EXTERNALLY = "The two barcodes must be composed externally.";
+    /// <summary>
+    /// The two barcodes must be composed externally.
+    /// </summary>
+    public const string TWO_BARCODE_MUST_BE_EXTERNALLY = "The two barcodes must be composed externally.";
 
-        /// <summary>
-        /// There are illegal characters for " + "barcode 128.
-        /// </summary>
-        public const String THERE_ARE_ILLEGAL_CHARACTERS_FOR_BARCODE_128 = "There are illegal characters for " + "barcode 128 in {0}.";
+    /// <summary>
+    /// There are illegal characters for " + "barcode 128.
+    /// </summary>
+    public const string THERE_ARE_ILLEGAL_CHARACTERS_FOR_BARCODE_128 = "There are illegal characters for " + "barcode 128 in {0}.";
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

@@ -46,101 +46,89 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Anulacion
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAnulacion.
-    /// </summary>
-    public class ValidatorRegistroAnulacion : InvoiceValidation
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAnulacion.
+  /// </summary>
+  public class ValidatorRegistroAnulacion : InvoiceValidation
+  {
 
         #region Variables Privadas de Instancia
 
-        /// <summary>
-        /// Registro de alta a validar.
-        /// </summary>
-        protected RegistroAnulacion _RegistroAnulacion;
+    /// <summary>
+    /// Registro de alta a validar.
+    /// </summary>
+    protected RegistroAnulacion _RegistroAnulacion;
 
-        /// <summary>
-        /// Cabecera 
-        /// </summary>
-        protected Cabecera _Cabecera;
+    /// <summary>
+    /// Cabecera
+    /// </summary>
+    protected Cabecera _Cabecera;
 
-        /// <summary>
-        /// Fecha operación.
-        /// </summary>
-        protected DateTime _FechaExpedicion;
+    /// <summary>
+    /// Fecha operación.
+    /// </summary>
+    protected DateTime _FechaExpedicion;
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        /// <param name="registroAnulacion"> Registro de anulación del bloque Body.</param>
-        public ValidatorRegistroAnulacion(Envelope envelope, RegistroAnulacion registroAnulacion) : base(envelope)
-        {
-
-            _RegistroAnulacion = registroAnulacion;
-            _Cabecera = _RegFactuSistemaFacturacion?.Cabecera;
-
-            var fechaExpedicion = _RegistroAnulacion?.IDFacturaAnulada?.FechaExpedicion;
-
-            if (string.IsNullOrEmpty(fechaExpedicion) && !Regex.IsMatch(fechaExpedicion, @"\d{2}-\d{2}-\d{4}"))
-                throw new ArgumentException($"Error en el bloque RegistroAlta ({_RegistroAnulacion}):" +
-                $" La propiedad IDFactura.FechaExpedicion tiene que tener un valor con formato dd-mm-yyyy.");
-
-            _FechaExpedicion = FromXmlDate(fechaExpedicion);
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected virtual List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // 1. GeneradoPor
-            result.AddRange(new ValidatorRegistroAnulacionGeneradoPor(_Envelope, _RegistroAnulacion).GetErrors());
-            // 2. Agrupación Generador
-            result.AddRange(new ValidatorRegistroAnulacionGenerador(_Envelope, _RegistroAnulacion).GetErrors());
-            // 3. Huella (del registro anterior)
-            result.AddRange(new ValidatorRegistroAnulacionHuella(_Envelope, _RegistroAnulacion).GetErrors());
-
-
-
-            return result;
-
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Ejecuta las validaciones y devuelve una lista
-        /// con los errores encontrados.
-        /// </summary>
-        /// <returns>Lista con las descripciones de los 
-        /// errores encontrado.</returns>
-        public override List<string> GetErrors()
-        {
-
-            return GetBlockErrors();
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    /// <param name="registroAnulacion">Registro de anulación del bloque Body.</param>
+    public ValidatorRegistroAnulacion(Envelope envelope, RegistroAnulacion registroAnulacion) : base(envelope)
+    {
+      _RegistroAnulacion = registroAnulacion;
+      _Cabecera = _RegFactuSistemaFacturacion?.Cabecera;
+      string fechaExpedicion = _RegistroAnulacion?.IDFacturaAnulada?.FechaExpedicion;
+      if(string.IsNullOrEmpty(fechaExpedicion) && !Regex.IsMatch(fechaExpedicion, @"\d{2}-\d{2}-\d{4}"))
+      {
+        throw new ArgumentException(
+          $"Error en el bloque RegistroAlta ({_RegistroAnulacion}):" +
+                      $" La propiedad IDFactura.FechaExpedicion tiene que tener un valor con formato dd-mm-yyyy.");
+      }
+      _FechaExpedicion = FromXmlDate(fechaExpedicion);
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected virtual List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // 1. GeneradoPor
+      result.AddRange(new ValidatorRegistroAnulacionGeneradoPor(_Envelope, _RegistroAnulacion).GetErrors());
+      // 2. Agrupación Generador
+      result.AddRange(new ValidatorRegistroAnulacionGenerador(_Envelope, _RegistroAnulacion).GetErrors());
+      // 3. Huella (del registro anterior)
+      result.AddRange(new ValidatorRegistroAnulacionHuella(_Envelope, _RegistroAnulacion).GetErrors());
+      return result;
+    }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Ejecuta las validaciones y devuelve una lista con los errores encontrados.
+    /// </summary>
+    /// <returns>
+    /// Lista con las descripciones de los  errores encontrado.
+    /// </returns>
+    public override List<string> GetErrors()
+    {
+      return GetBlockErrors();
+    }
+
+    #endregion
+  }
 }

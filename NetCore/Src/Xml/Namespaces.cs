@@ -41,85 +41,80 @@ using System.Collections.Generic;
 
 namespace VeriFactu.Xml
 {
-
-    /// <summary>
-    /// Espacios de nombre de VERI*FACTU.
-    /// </summary>
-    public class Namespaces
-    {
+  /// <summary>
+  /// Espacios de nombre de VERI*FACTU.
+  /// </summary>
+  public class Namespaces
+  {
 
         #region Propiedades Públicas Estáticas
 
-        /// <summary>
-        /// Prefijo de espacios de nombres AEAT TIKE CONT.  
-        /// </summary>
-        public const string NamespacePrefix = "https://www2.agenciatributaria.gob.es/static_files/common/internet/dep/aplicaciones/es/aeat/tike/cont/ws/";
+    /// <summary>
+    /// Prefijo de espacios de nombres AEAT TIKE CONT.
+    /// </summary>
+    public const string NamespacePrefix = "https://www2.agenciatributaria.gob.es/static_files/common/internet/dep/aplicaciones/es/aeat/tike/cont/ws/";
 
-        /// <summary>
-        /// Espacio de nombres SF (sum1) y (sum) para Consulta
-        /// </summary>
-        public const string NamespaceSF = NamespacePrefix + "SuministroInformacion.xsd";
+    /// <summary>
+    /// Espacio de nombres SF (sum1) y (sum) para Consulta
+    /// </summary>
+    public const string NamespaceSF = NamespacePrefix + "SuministroInformacion.xsd";
 
-        /// <summary>
-        /// Espacio de nombres SF (sum)
-        /// </summary>
-        public const string NamespaceSFLR = NamespacePrefix + "SuministroLR.xsd";
+    /// <summary>
+    /// Espacio de nombres SF (sum)
+    /// </summary>
+    public const string NamespaceSFLR = NamespacePrefix + "SuministroLR.xsd";
 
-        /// <summary>
-        /// Espacio de nombres RespuestaSuministro
-        /// </summary>
-        public const string NamespaceTikR = NamespacePrefix + "RespuestaSuministro.xsd";
+    /// <summary>
+    /// Espacio de nombres RespuestaSuministro
+    /// </summary>
+    public const string NamespaceTikR = NamespacePrefix + "RespuestaSuministro.xsd";
 
-        /// <summary>
-        /// Espacio de nombres ConsultaLR (con)
-        /// </summary>
-        public const string NamespaceCon = NamespacePrefix + "ConsultaLR.xsd";
+    /// <summary>
+    /// Espacio de nombres ConsultaLR (con)
+    /// </summary>
+    public const string NamespaceCon = NamespacePrefix + "ConsultaLR.xsd";
 
-        /// <summary>
-        /// Espacio de nombres RespuestaConsultaLR (tikLRRC)
-        /// </summary>
-        public const string NamespaceTikLRRC = NamespacePrefix + "RespuestaConsultaLR.xsd";
+    /// <summary>
+    /// Espacio de nombres RespuestaConsultaLR (tikLRRC)
+    /// </summary>
+    public const string NamespaceTikLRRC = NamespacePrefix + "RespuestaConsultaLR.xsd";
 
-        /// <summary>
-        /// Espacio de nombres web service validación NIF.
-        /// </summary>
-        public const string NamespaceVNifV2Ent = "http://www2.agenciatributaria.gob.es/static_files/common/internet/dep/aplicaciones/es/aeat/burt/jdit/ws/VNifV2Ent.xsd";
+    /// <summary>
+    /// Espacio de nombres web service validación NIF.
+    /// </summary>
+    public const string NamespaceVNifV2Ent = "http://www2.agenciatributaria.gob.es/static_files/common/internet/dep/aplicaciones/es/aeat/burt/jdit/ws/VNifV2Ent.xsd";
 
-        /// <summary>
-        /// Espacio de nombres web service validación NIF.
-        /// </summary>
-        public const string NamespaceVNifV2Sal = "http://www2.agenciatributaria.gob.es/static_files/common/internet/dep/aplicaciones/es/aeat/burt/jdit/ws/VNifV2Sal.xsd";
+    /// <summary>
+    /// Espacio de nombres web service validación NIF.
+    /// </summary>
+    public const string NamespaceVNifV2Sal = "http://www2.agenciatributaria.gob.es/static_files/common/internet/dep/aplicaciones/es/aeat/burt/jdit/ws/VNifV2Sal.xsd";
 
-        /// <summary>
-        /// Espacio de nombres soap
-        /// </summary>
-        public const string NamespaceSoap = "http://schemas.xmlsoap.org/soap/envelope/";
+    /// <summary>
+    /// Espacio de nombres soap
+    /// </summary>
+    public const string NamespaceSoap = "http://schemas.xmlsoap.org/soap/envelope/";
 
-        /// <summary>
-        /// Diccionario de espacios de nombres.
-        /// </summary>
-        public static Dictionary<string, string> Items = new Dictionary<string, string>() 
-        {
-            { "soapenv",    NamespaceSoap},
-            { "sum",        NamespaceSFLR },
-            { "sum1",       NamespaceSF },
-            { "con",       NamespaceCon }
-        };
+    /// <summary>
+    /// Diccionario de espacios de nombres.
+    /// </summary>
+    public static Dictionary<string, string> Items = new Dictionary<string, string>
+    {
+      { "soapenv", NamespaceSoap },
+      { "sum", NamespaceSFLR },
+      { "sum1", NamespaceSF },
+      { "con", NamespaceCon }
+    };
 
-        /// <summary>
-        /// Diccionario de espacios de nombres para el servicio
-        /// de validación de NIF de la AEAT.
-        /// </summary>
-        public static Dictionary<string, string> NifItems = new Dictionary<string, string>()
-        {
-            { "soapenv",    NamespaceSoap},
-            { "VNifV2Ent",  NamespaceVNifV2Ent },
-            { "VNifV2Sal",  NamespaceVNifV2Sal }
-        };
+    /// <summary>
+    /// Diccionario de espacios de nombres para el servicio de validación de NIF de la AEAT.
+    /// </summary>
+    public static Dictionary<string, string> NifItems = new Dictionary<string, string>
+    {
+      { "soapenv", NamespaceSoap },
+      { "VNifV2Ent", NamespaceVNifV2Ent },
+      { "VNifV2Sal", NamespaceVNifV2Sal }
+    };
 
-
-        #endregion       
-
-    }
-
+    #endregion       
+  }
 }

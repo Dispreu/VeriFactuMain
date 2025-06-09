@@ -43,34 +43,32 @@ using VeriFactu.Net.Rest.Json;
 
 namespace VeriFactu.Net.Rest.Batch
 {
-    /// <summary>
-    /// Representa un lote de facturas de Verifactu.
-    /// </summary>
-    public class InvoicesBatch : JsonSerializable
-    {
+  /// <summary>
+  /// Representa un lote de facturas de Verifactu.
+  /// </summary>
+  public class InvoicesBatch : JsonSerializable
+  {
 
         #region Public Properties
 
-        /// <summary>
-        /// Facturas del lote.
-        /// </summary>
-        public List<Invoice> Invoices { get; set; }
+    /// <summary>
+    /// Facturas del lote.
+    /// </summary>
+    public List<Invoice> Invoices { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Public Methods
+    #region Public Methods
 
-        /// <summary>
-        /// Representacion textual de la instancia.
-        /// </summary>
-        /// <returns>Representacion textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{Invoices.Count}";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representacion textual de la instancia.
+    /// </summary>
+    /// <returns>Representacion textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{Invoices.Count}";
     }
 
+    #endregion
+  }
 }

@@ -42,63 +42,55 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu
 {
-
-    /// <summary>
-    /// Información del envío con la versión y 
-    /// los datos del obligado.
-    /// Datos de contexto de un suministro.
-    /// </summary>
-    [Serializable]
-    [XmlRoot("Cabecera", Namespace = Namespaces.NamespaceSF)]
-    public class Cabecera
-    {
+  /// <summary>
+  /// Información del envío con la versión y  los datos del obligado. Datos de contexto de un suministro.
+  /// </summary>
+  [Serializable]
+  [XmlRoot("Cabecera", Namespace = Namespaces.NamespaceSF)]
+  public class Cabecera
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Obligado que suministra la información.
-        /// </summary>
-        [XmlElement("ObligadoEmision", Namespace = Namespaces.NamespaceSF)]
-        public Interlocutor ObligadoEmision { get; set; }
+    /// <summary>
+    /// Obligado que suministra la información.
+    /// </summary>
+    [XmlElement("ObligadoEmision", Namespace = Namespaces.NamespaceSF)]
+    public Interlocutor ObligadoEmision { get; set; }
 
-        /// <summary>
-        /// Representante del obligado tributario. A rellenar solo en caso de que los registros
-        /// de facturación remitidos hayan sido generados por un representante/asesor del obligado
-        /// tributario. Este campo forma parte del detalle de las circunstancias de generación
-        /// de los registros de facturación.
-        /// </summary>
-        [XmlElement("Representante", Namespace = Namespaces.NamespaceSF)]
-        public Interlocutor Representante { get; set; }
+    /// <summary>
+    /// Representante del obligado tributario. A rellenar solo en caso de que los registros de facturación remitidos
+    /// hayan sido generados por un representante/asesor del obligado tributario. Este campo forma parte del detalle de
+    /// las circunstancias de generación de los registros de facturación.
+    /// </summary>
+    [XmlElement("Representante", Namespace = Namespaces.NamespaceSF)]
+    public Interlocutor Representante { get; set; }
 
-        /// <summary>
-        /// Datos referentes a la remisión voluntaria.
-        /// </summary>
-        [XmlElement("RemisionVoluntaria", Namespace = Namespaces.NamespaceSF)]
-        public RemisionVoluntaria RemisionVoluntaria { get; set; }
+    /// <summary>
+    /// Datos referentes a la remisión voluntaria.
+    /// </summary>
+    [XmlElement("RemisionVoluntaria", Namespace = Namespaces.NamespaceSF)]
+    public RemisionVoluntaria RemisionVoluntaria { get; set; }
 
-        /// <summary>
-        /// Datos referentes a la remisión por requerimiento de la AEAT.
-        /// </summary>
-        [XmlElement("RemisionRequerimiento", Namespace = Namespaces.NamespaceSF)]
-        public RemisionRequerimiento RemisionRequerimiento { get; set; }
+    /// <summary>
+    /// Datos referentes a la remisión por requerimiento de la AEAT.
+    /// </summary>
+    [XmlElement("RemisionRequerimiento", Namespace = Namespaces.NamespaceSF)]
+    public RemisionRequerimiento RemisionRequerimiento { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representacioón textual de la instancia.
-        /// </summary>
-        /// <returns>Representacioón textual de la instancia.</returns>
-        public override string ToString()
-        {
-
-            return $"{ObligadoEmision}";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representacioón textual de la instancia.
+    /// </summary>
+    /// <returns>Representacioón textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{ObligadoEmision}";
     }
 
+    #endregion
+  }
 }

@@ -41,39 +41,33 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Objeto dummy que representa nodo de firma. Lo utilizamos
-    /// para simplificar inclusión de los espacios de nombres en
-    /// el proceso de canonicalización.
-    /// </summary>
-    internal class SignatureTmp : PropXmlElement
-    {
+  /// <summary>
+  /// Objeto dummy que representa nodo de firma. Lo utilizamos para simplificar inclusión de los espacios de nombres en
+  /// el proceso de canonicalización.
+  /// </summary>
+  internal class SignatureTmp : PropXmlElement
+  {
 
         #region Propiedades Privadas de Instacia
 
-        /// <summary>
-        /// Bloque 'Object' de la firma.
-        /// </summary>
-        internal Object Object { get; private set; }
+    /// <summary>
+    /// Bloque 'Object' de la firma.
+    /// </summary>
+    internal Object Object { get; private set; }
 
-        #endregion
+    #endregion
 
-        #region Construtores de Instancia
+    #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal SignatureTmp(XmlNode parent) : base(parent, "Signature", "ds", "http://www.w3.org/2000/09/xmldsig#")
-        {
-
-            Object = new Object(XmlElement);
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal SignatureTmp(XmlNode parent) : base(parent, "Signature", "ds", "http://www.w3.org/2000/09/xmldsig#")
+    {
+      Object = new Object(XmlElement);
     }
 
+    #endregion
+  }
 }

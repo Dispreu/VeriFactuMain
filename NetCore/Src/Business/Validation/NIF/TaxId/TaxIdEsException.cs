@@ -41,27 +41,21 @@ using System;
 
 namespace VeriFactu.Business.Validation.NIF.TaxId
 {
-
-    /// <summary>
-    /// Initializes a new instance of the System.Exception class with a specified error
-    /// español.
-    /// </summary>
-    public class TaxIdEsException : Exception
-    {
+  /// <summary>
+  /// Initializes a new instance of the System.Exception class with a specified error español.
+  /// </summary>
+  public class TaxIdEsException : Exception
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Initializes a new instance of the System.Exception class with a specified error
-        /// message.
-        /// </summary>
-        /// <param name="message">The message that describes the error.</param>
-        public TaxIdEsException(string message) : base(message)
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the System.Exception class with a specified error message.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    public TaxIdEsException(string message) : base(message)
+        { }
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

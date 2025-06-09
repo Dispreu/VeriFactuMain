@@ -41,54 +41,46 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Consulta
 {
-
-    /// <summary>
-    /// Datos adicionales para la respuesta.
-    /// </summary>
-    public class DatosAdicionalesRespuesta
-    {
+  /// <summary>
+  /// Datos adicionales para la respuesta.
+  /// </summary>
+  public class DatosAdicionalesRespuesta
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// <para> Indicador que especifica si se quiere obtener en la respuesta
-        /// el campo NombreRazonEmisor en la información del registro se facturacion.
-        /// Si el Valor es S aumenta el tiempo de respuesta en la cosulta por detinatario.
-        /// Si no se informa este campo se entenderá que tiene valor “N”.</para>
-        /// <para> Alfanumérico(1) Valores posibles: “S” o “N”</para>
-        /// </summary>
+    /// <summary>
+    /// <para>Indicador que especifica si se quiere obtener en la respuesta el campo NombreRazonEmisor en la información
+    /// del registro se facturacion. Si el Valor es S aumenta el tiempo de respuesta en la cosulta por detinatario. Si
+    /// no se informa este campo se entenderá que tiene valor “N”.</para> <para>Alfanumérico(1) Valores posibles: “S” o
+    /// “N”</para>
+    /// </summary>
 
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string MostrarNombreRazonEmisor { get; set; }
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string MostrarNombreRazonEmisor { get; set; }
 
-        /// <summary>
-        /// <para> Indicador que especifica si se quiere obtener en la respuesta el bloque
-        /// SistemaInformatico en la información del registro se facturacion.
-        /// Si el Valor es S aumenta el tiempo de respuesta en la cosulta.
-        /// Si se consulta por Destinatario el valor del campo MostrarSistemaInformatico
-        /// debe ser 'N' o no estar cumplimentado.</para>
-        /// <para> Alfanumérico(1) Valores posibles: “S” o “N”</para>
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string MostrarSistemaInformatico { get; set; }
+    /// <summary>
+    /// <para>Indicador que especifica si se quiere obtener en la respuesta el bloque SistemaInformatico en la
+    /// información del registro se facturacion. Si el Valor es S aumenta el tiempo de respuesta en la cosulta. Si se
+    /// consulta por Destinatario el valor del campo MostrarSistemaInformatico debe ser 'N' o no estar
+    /// cumplimentado.</para> <para>Alfanumérico(1) Valores posibles: “S” o “N”</para>
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string MostrarSistemaInformatico { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representacioón textual de la instancia.
-        /// </summary>
-        /// <returns>Representacioón textual de la instancia.</returns>
-        public override string ToString()
-        {
-
-            return $"MostrarNombreRazonEmisor: {MostrarNombreRazonEmisor}, MostrarSistemaInformatico: {MostrarSistemaInformatico}";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representacioón textual de la instancia.
+    /// </summary>
+    /// <returns>Representacioón textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"MostrarNombreRazonEmisor: {MostrarNombreRazonEmisor}, MostrarSistemaInformatico: {MostrarSistemaInformatico}";
     }
 
+    #endregion
+  }
 }

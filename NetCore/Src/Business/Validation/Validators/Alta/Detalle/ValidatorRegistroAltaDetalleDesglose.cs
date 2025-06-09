@@ -44,74 +44,60 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta.Detalle
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta Tercero.
-    /// </summary>
-    public class ValidatorRegistroAltaDetalleDesglose : ValidatorRegistroAlta
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta Tercero.
+  /// </summary>
+  public class ValidatorRegistroAltaDetalleDesglose : ValidatorRegistroAlta
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        /// <param name="registroAlta"> Registro de alta del bloque Body.</param>
-        public ValidatorRegistroAltaDetalleDesglose(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    /// <param name="registroAlta">Registro de alta del bloque Body.</param>
+    public ValidatorRegistroAltaDetalleDesglose(Envelope envelope, RegistroAlta registroAlta) : base(envelope, registroAlta)
+        { }
+
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // 15. Agrupación Desglose / DetalleDesglose.
+      List<DetalleDesglose> detalles = _RegistroAlta.Desglose;
+      if(detalles != null)
+      {
+        foreach(DetalleDesglose detalle in detalles)
         {
+          // 15.1 TipoImpositivo
+          result.AddRange(new ValidatorRegistroAltaDetalleDesgloseTipoImpositivo(_Envelope, _RegistroAlta, detalle).GetErrors());
+          // 15.2 BaseImponibleACoste
+          result.AddRange(new ValidatorRegistroAltaDetalleDesgloseBaseImponibleACoste(_Envelope, _RegistroAlta, detalle).GetErrors());
+          // 15.3 TipoRecargoEquivalencia
+          result.AddRange(new ValidatorRegistroAltaDetalleDesgloseTipoRecargoEquivalencia(_Envelope, _RegistroAlta, detalle).GetErrors());
+          // 15.4 CalificacionOperacion
+          result.AddRange(new ValidatorRegistroAltaDetalleDesgloseCalificacionOperacion(_Envelope, _RegistroAlta, detalle).GetErrors());
+          // 15.5 OperacionExenta
+          result.AddRange(new ValidatorRegistroAltaDetalleDesgloseOperacionExenta(_Envelope, _RegistroAlta, detalle).GetErrors());
+          // 15.6 ClaveRegimen
+          result.AddRange(new ValidatorRegistroAltaDetalleDesgloseClaveRegimen(_Envelope, _RegistroAlta, detalle).GetErrors());
+          // 15.7 CuotaRepercutida.
+          result.AddRange(new ValidatorRegistroAltaDetalleDesgloseCuotaRepercutida(_Envelope, _RegistroAlta, detalle).GetErrors());
         }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-
-            // 15. Agrupación Desglose / DetalleDesglose.
-            
-            var detalles = _RegistroAlta.Desglose;
-
-            if (detalles != null) 
-            {
-
-                foreach (var detalle in detalles) 
-                {
-
-                    // 15.1 TipoImpositivo
-                    result.AddRange(new ValidatorRegistroAltaDetalleDesgloseTipoImpositivo(_Envelope, _RegistroAlta, detalle).GetErrors());
-                    // 15.2 BaseImponibleACoste
-                    result.AddRange(new ValidatorRegistroAltaDetalleDesgloseBaseImponibleACoste(_Envelope, _RegistroAlta, detalle).GetErrors());
-                    // 15.3 TipoRecargoEquivalencia
-                    result.AddRange(new ValidatorRegistroAltaDetalleDesgloseTipoRecargoEquivalencia(_Envelope, _RegistroAlta, detalle).GetErrors());
-                    // 15.4 CalificacionOperacion
-                    result.AddRange(new ValidatorRegistroAltaDetalleDesgloseCalificacionOperacion(_Envelope, _RegistroAlta, detalle).GetErrors());
-                    // 15.5 OperacionExenta
-                    result.AddRange(new ValidatorRegistroAltaDetalleDesgloseOperacionExenta(_Envelope, _RegistroAlta, detalle).GetErrors());
-                    // 15.6 ClaveRegimen
-                    result.AddRange(new ValidatorRegistroAltaDetalleDesgloseClaveRegimen(_Envelope, _RegistroAlta, detalle).GetErrors());
-                    // 15.7 CuotaRepercutida.
-                    result.AddRange(new ValidatorRegistroAltaDetalleDesgloseCuotaRepercutida(_Envelope, _RegistroAlta, detalle).GetErrors());
-
-                }
-
-            }
-
-            return result;
-
-        }
-
-        #endregion
-
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

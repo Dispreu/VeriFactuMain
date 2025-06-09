@@ -44,130 +44,115 @@ using VeriFactu.Business.Validation;
 
 namespace VeriFactu.Business.Operations
 {
-
-    /// <summary>
-    /// Representa una acción de alta o anulación de registro
-    /// en todo lo referente a la factura, su envío a la AEAT
-    /// y su gestión contable en la 
-    /// cadena de bloques.
-    /// </summary>
-    public class InvoiceAction : InvoiceActionPost
-    {    
+  /// <summary>
+  /// Representa una acción de alta o anulación de registro en todo lo referente a la factura, su envío a la AEAT y su
+  /// gestión contable en la  cadena de bloques.
+  /// </summary>
+  public class InvoiceAction : InvoiceActionPost
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="invoice">Instancia de factura de entrada en el sistema.</param>
-        public InvoiceAction(Invoice invoice) : base(invoice)
-        {
-
-            // Validamos
-            var errors = GetBusErrors();
-
-            if (errors.Count > 0)
-                throw new InvalidOperationException(string.Join("\n", errors));  
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-
-        /// <summary>
-        /// Devuelve errores de las validaciones de negocio según las
-        /// especificaciones.
-        /// </summary>
-        /// <returns>Lista de errores de validación según las especificaciones.</returns>
-        internal virtual List<string> GetInvoiceValidationErrors() 
-        {
-
-            var validation = new InvoiceValidation(this);
-            return validation.GetErrors();
-
-        }
-
-        /// <summary>
-        /// Devuelve una lista con los errores de la
-        /// línea de impuesto por el incumplimiento de reglas de negocio.
-        /// </summary>
-        /// <returns>Lista con los errores encontrados.</returns>
-        private List<string> GetTaxItemValidationErrors(TaxItem taxItem) 
-        {
-
-            var errors = new List<string>();
-
-            // Validaciones en líneas exentas
-            if (taxItem.TaxException != VeriFactu.Xml.Factu.Alta.CausaExencion.NA) 
-            { 
-            
-                if(taxItem.TaxRate + taxItem.TaxAmount + taxItem.TaxRateSurcharge + taxItem.TaxAmountSurcharge != 0)
-                    errors.Add($"Taxitem [{taxItem}] con TaxException asignada '{taxItem.TaxException}' no puede tener un valor distinto de 0 en las propiedades" +
-                        $" TaxRate, TaxAmount, TaxRateSurcharge y TaxAmountSurcharge.");
-
-            }
-
-            return errors;
-
-        }
-
-        /// <summary>
-        /// Devuelve una lista con los errores de las
-        /// líneas de impuesto por el incumplimiento de reglas de negocio.
-        /// </summary>
-        /// <returns>Lista con los errores encontrados.</returns>
-        internal List<string> GetTaxItemsValidationErrors()
-        {
-
-            var errors = new List<string>();
-
-            if(Invoice.TaxItems != null)
-                foreach (var taxItem in Invoice.TaxItems)
-                    errors.AddRange(GetTaxItemValidationErrors(taxItem));
-
-            return errors;
-
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Devuelve una lista con los errores de la
-        /// factura por el incumplimiento de reglas de negocio.
-        /// </summary>
-        /// <returns>Lista con los errores encontrados.</returns>
-        public virtual List<string> GetBusErrors()
-        {
-
-            var errors = new List<string>();
-
-            if (File.Exists(InvoiceFilePath))
-                errors.Add($"Ya existe una entrada con SellerID: {Invoice.SellerID}" +
-                    $" en el año {Invoice.InvoiceDate.Year} con el número {Invoice.InvoiceID}.");
-
-            if (string.IsNullOrEmpty(Invoice.SellerName))
-                errors.Add($"Es necesario que la propiedad Invoice.SellerName tenga un valor.");
-
-            // Limite listas
-            if(Invoice.RectificationItems?.Count > 1000)
-                errors.Add($"Invoice.RectificationItems.Count no puede ser mayor de 1.000.");
-
-            if (Invoice.TaxItems?.Count > 12)
-                errors.Add($"Invoice.TaxItems.Count no puede ser mayor de 12.");
-
-            errors.AddRange(GetTaxItemsValidationErrors());
-            errors.AddRange(GetInvoiceValidationErrors());
-
-            return errors;
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="invoice">Instancia de factura de entrada en el sistema.</param>
+    public InvoiceAction(Invoice invoice) : base(invoice)
+    {
+      // Validamos
+      List<string> errors = GetBusErrors();
+      if(errors.Count > 0)
+      {
+        throw new InvalidOperationException(string.Join("\n", errors));
+      }
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Devuelve errores de las validaciones de negocio según las especificaciones.
+    /// </summary>
+    /// <returns>Lista de errores de validación según las especificaciones.</returns>
+    internal virtual List<string> GetInvoiceValidationErrors()
+    {
+      InvoiceValidation validation = new InvoiceValidation(this);
+      return validation.GetErrors();
+    }
+
+    /// <summary>
+    /// Devuelve una lista con los errores de la línea de impuesto por el incumplimiento de reglas de negocio.
+    /// </summary>
+    /// <returns>Lista con los errores encontrados.</returns>
+    private List<string> GetTaxItemValidationErrors(TaxItem taxItem)
+    {
+      List<string> errors = new List<string>();
+      // Validaciones en líneas exentas
+      if(taxItem.TaxException != VeriFactu.Xml.Factu.Alta.CausaExencion.NA)
+      {
+        if(taxItem.TaxRate + taxItem.TaxAmount + taxItem.TaxRateSurcharge + taxItem.TaxAmountSurcharge != 0)
+        {
+          errors.Add(
+            $"Taxitem [{taxItem}] con TaxException asignada '{taxItem.TaxException}' no puede tener un valor distinto de 0 en las propiedades" +
+                                $" TaxRate, TaxAmount, TaxRateSurcharge y TaxAmountSurcharge.");
+        }
+      }
+      return errors;
+    }
+
+    /// <summary>
+    /// Devuelve una lista con los errores de las líneas de impuesto por el incumplimiento de reglas de negocio.
+    /// </summary>
+    /// <returns>Lista con los errores encontrados.</returns>
+    internal List<string> GetTaxItemsValidationErrors()
+    {
+      List<string> errors = new List<string>();
+      if(Invoice.TaxItems != null)
+      {
+        foreach(TaxItem taxItem in Invoice.TaxItems)
+        {
+          errors.AddRange(GetTaxItemValidationErrors(taxItem));
+        }
+      }
+      return errors;
+    }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Devuelve una lista con los errores de la factura por el incumplimiento de reglas de negocio.
+    /// </summary>
+    /// <returns>Lista con los errores encontrados.</returns>
+    public virtual List<string> GetBusErrors()
+    {
+      List<string> errors = new List<string>();
+      if(File.Exists(InvoiceFilePath))
+      {
+        errors.Add(
+          $"Ya existe una entrada con SellerID: {Invoice.SellerID}" +
+                          $" en el año {Invoice.InvoiceDate.Year} con el número {Invoice.InvoiceID}.");
+      }
+      if(string.IsNullOrEmpty(Invoice.SellerName))
+      {
+        errors.Add($"Es necesario que la propiedad Invoice.SellerName tenga un valor.");
+      }
+      // Limite listas
+      if(Invoice.RectificationItems?.Count > 1000)
+      {
+        errors.Add($"Invoice.RectificationItems.Count no puede ser mayor de 1.000.");
+      }
+      if(Invoice.TaxItems?.Count > 12)
+      {
+        errors.Add($"Invoice.TaxItems.Count no puede ser mayor de 12.");
+      }
+      errors.AddRange(GetTaxItemsValidationErrors());
+      errors.AddRange(GetInvoiceValidationErrors());
+      return errors;
+    }
+
+    #endregion
+  }
 }

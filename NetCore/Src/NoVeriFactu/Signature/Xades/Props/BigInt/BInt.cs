@@ -42,204 +42,158 @@ using System.Collections.Generic;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props.BigInt
 {
+  /// <summary>
+  /// Clase utilizada para representar textualmente en notación decimal un número entero grande que no se puede
+  /// almacenar en los 8 bytes de un ulong.
+  /// </summary>
+  internal class BInt
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Clase utilizada para representar textualmente en notación
-    /// decimal un número entero grande que no se puede almacenar
-    /// en los 8 bytes de un ulong.
+    /// Valor inicial.
     /// </summary>
-    internal class BInt
+    private string _Value = "0";
+
+    /// <summary>
+    /// Conjunto de bytes que componen el número entero grande.
+    /// </summary>
+    private byte[] _Bytes;
+
+    /// <summary>
+    /// Lista de instancias de BByte que componen el entero.
+    /// </summary>
+    private List<BByte> _BBytes = new List<BByte>();
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="bytes">
+    /// Lista de bytes que componen el número entero.
+    /// </param>
+    public BInt(byte[] bytes)
     {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Valor inicial.
-        /// </summary>
-        string _Value = "0";
-
-        /// <summary>
-        /// Conjunto de bytes que componen
-        /// el número entero grande.
-        /// </summary>
-        byte[] _Bytes;
-
-        /// <summary>
-        /// Lista de instancias de BByte que componen
-        /// el entero.
-        /// </summary>
-        List<BByte> _BBytes = new List<BByte>();
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="bytes">Lista de bytes que componen
-        /// el número entero.</param>
-        public BInt(byte[] bytes)
-        {
-
-            if (!BitConverter.IsLittleEndian)
-                Array.Reverse(bytes);
-
-            _Bytes = bytes;
-            Load();
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Realiza la multipliplicación aplicando el método
-        /// tradicional a dos cadenas de números enteros de entrada.
-        /// </summary>
-        /// <param name="a">Cadena con el primer factor.</param>
-        /// <param name="b">Cadena con el segundo factor.</param>
-        /// <returns>Cadena con el número resultante.</returns>
-        internal static string Multiply(string a, string b)
-        {
-
-            string result = "0";
-            int charOffset = 48;
-
-            for (int i = b.Length - 1; i > -1; i--)
-            {
-
-                int carry = 0;
-
-                var ib = b[i] - charOffset;
-                var iResult = "";
-
-                for (int j = a.Length - 1; j > -1; j--)
-                {
-
-                    var ia = a[j] - charOffset;
-                    var s = $"{ia * ib + carry}";
-
-                    if (s.Length > 1)
-                    {
-
-                        carry = s[0] - charOffset;
-                        s = $"{s[s.Length - 1]}";
-
-                    }
-                    else
-                    {
-
-                        carry = 0;
-
-                    }
-
-                    iResult = $"{s}{iResult}";
-
-                }
-
-                if (carry > 0)
-                    iResult = $"{carry}{iResult}";
-
-                var sufix = "".PadLeft(b.Length - (i + 1), '0');
-
-                iResult = $"{iResult}{sufix}";
-
-                result = Sum(result, iResult);
-
-            }
-
-            return result;
-
-        }
-
-        /// <summary>
-        /// Realiza la suma aplicando el método
-        /// tradicional a dos cadenas de números enteros de entrada.
-        /// </summary>
-        /// <param name="a">Cadena con el primer sumando.</param>
-        /// <param name="b">Cadena con el segundo sumando.</param>
-        /// <returns>Cadena con el número resultante.</returns>
-        internal static string Sum(string a, string b)
-        {
-
-            string result = "";
-            int charOffset = 48;
-            int carry = 0;
-
-            int length = Math.Max(a.Length, b.Length);
-
-            a = a.PadLeft(length, '0');
-            b = b.PadLeft(length, '0');
-
-            for (int i = length - 1; i > -1; i--)
-            {
-
-                var ia = (i < a.Length ? a[i] - charOffset : 0);
-                var ib = (i < b.Length ? b[i] - charOffset : 0);
-                var s = $"{ia + ib + carry}";
-
-                if (s.Length > 1)
-                {
-
-                    carry = s[0] - charOffset;
-                    s = $"{s[s.Length - 1]}";
-
-                }
-                else
-                {
-
-                    carry = 0;
-
-                }
-
-                result = $"{s}{result}";
-
-            }
-
-            if (carry > 0)
-                result = $"{carry}{result}";
-
-            return result;
-
-        }
-
-        /// <summary>
-        /// Carga una lista de instancias de Bbyte que representan
-        /// los bytes que componen el número entero.
-        /// </summary>
-        internal void Load()
-        {
-
-            for (int i = 0; i < _Bytes.Length; i++)
-            {
-
-                var bByte = new BByte(_Bytes[i], i);
-                _BBytes.Add(bByte);
-                _Value = BInt.Sum(_Value, bByte.Value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Represéntación textual de la entrada.
-        /// </summary>
-        /// <returns>Represéntación textual de la entrada.</returns>
-        public override string ToString()
-        {
-
-            return _Value;
-
-        }
-
-        #endregion
-
+      if(!BitConverter.IsLittleEndian)
+      {
+        Array.Reverse(bytes);
+      }
+      _Bytes = bytes;
+      Load();
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Realiza la multipliplicación aplicando el método tradicional a dos cadenas de números enteros de entrada.
+    /// </summary>
+    /// <param name="a">Cadena con el primer factor.</param>
+    /// <param name="b">Cadena con el segundo factor.</param>
+    /// <returns>Cadena con el número resultante.</returns>
+    internal static string Multiply(string a, string b)
+    {
+      string result = "0";
+      int charOffset = 48;
+      for(int i = b.Length - 1; i > -1; i--)
+      {
+        int carry = 0;
+        int ib = b[i] - charOffset;
+        string iResult = string.Empty;
+        for(int j = a.Length - 1; j > -1; j--)
+        {
+          int ia = a[j] - charOffset;
+          string s = $"{ia * ib + carry}";
+          if(s.Length > 1)
+          {
+            carry = s[0] - charOffset;
+            s = $"{s[s.Length - 1]}";
+          }
+          else
+          {
+            carry = 0;
+          }
+          iResult = $"{s}{iResult}";
+        }
+        if(carry > 0)
+        {
+          iResult = $"{carry}{iResult}";
+        }
+        string sufix = string.Empty.PadLeft(b.Length - (i + 1), '0');
+        iResult = $"{iResult}{sufix}";
+        result = Sum(result, iResult);
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Realiza la suma aplicando el método tradicional a dos cadenas de números enteros de entrada.
+    /// </summary>
+    /// <param name="a">Cadena con el primer sumando.</param>
+    /// <param name="b">Cadena con el segundo sumando.</param>
+    /// <returns>Cadena con el número resultante.</returns>
+    internal static string Sum(string a, string b)
+    {
+      string result = string.Empty;
+      int charOffset = 48;
+      int carry = 0;
+      int length = Math.Max(a.Length, b.Length);
+      a = a.PadLeft(length, '0');
+      b = b.PadLeft(length, '0');
+      for(int i = length - 1; i > -1; i--)
+      {
+        int ia = (i < a.Length ? a[i] - charOffset : 0);
+        int ib = (i < b.Length ? b[i] - charOffset : 0);
+        string s = $"{ia + ib + carry}";
+        if(s.Length > 1)
+        {
+          carry = s[0] - charOffset;
+          s = $"{s[s.Length - 1]}";
+        }
+        else
+        {
+          carry = 0;
+        }
+        result = $"{s}{result}";
+      }
+      if(carry > 0)
+      {
+        result = $"{carry}{result}";
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Carga una lista de instancias de Bbyte que representan los bytes que componen el número entero.
+    /// </summary>
+    internal void Load()
+    {
+      for(int i = 0; i < _Bytes.Length; i++)
+      {
+        BByte bByte = new BByte(_Bytes[i], i);
+        _BBytes.Add(bByte);
+        _Value = BInt.Sum(_Value, bByte.Value);
+      }
+    }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Represéntación textual de la entrada.
+    /// </summary>
+    /// <returns>Represéntación textual de la entrada.</returns>
+    public override string ToString()
+    {
+      return _Value;
+    }
+
+    #endregion
+  }
 }

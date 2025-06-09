@@ -41,25 +41,21 @@ using System.Xml;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
-
-    /// <summary>
-    /// Enlace a política de firma.
-    /// </summary>
-    internal class SPURI : PropXmlElementWithValue
-    {
+  /// <summary>
+  /// Enlace a política de firma.
+  /// </summary>
+  internal class SPURI : PropXmlElementWithValue
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal SPURI(XmlNode parent) : base(parent, "SPURI")
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal SPURI(XmlNode parent) : base(parent, "SPURI")
+        { }
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

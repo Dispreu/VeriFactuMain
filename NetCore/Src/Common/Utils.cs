@@ -46,129 +46,120 @@ using VeriFactu.Xml.Factu;
 
 namespace VeriFactu.Common
 {
+  /// <summary>
+  /// Alunas utilidades generales.
+  /// </summary>
+  public static class Utils
+  {
+
+    #region Variables Privadas Estáticas
 
     /// <summary>
-    /// Alunas utilidades generales.
+    /// Algoritmos de dgiest disponibles.
     /// </summary>
-    public static class Utils
+    private static readonly Dictionary<TipoHuella, HashAlgorithm> _HashAlgorithms = new Dictionary<TipoHuella, HashAlgorithm>
     {
+      #pragma warning disable SYSLIB0021
+      { TipoHuella.Sha256, new SHA256Managed() }
+      #pragma warning restore SYSLIB0021
+    };
 
-        #region Variables Privadas Estáticas
+    /// <summary>
+    /// Codificaciones de texto a binario disponibles.
+    /// </summary>
+    private static readonly Dictionary<string, Encoding> _Encodings = new Dictionary<string, Encoding>
+    {
+      { "UTF-8", Encoding.UTF8 }
+    };
 
-        /// <summary>
-        /// Algoritmos de dgiest disponibles.
-        /// </summary>
-        static readonly Dictionary<TipoHuella, HashAlgorithm> _HashAlgorithms = new Dictionary<TipoHuella, HashAlgorithm>()
-        {
+    /// <summary>
+    /// Algoritmo de hash.
+    /// </summary>
+    internal static HashAlgorithm HashAlgorithm { get; private set; }
 
-            {TipoHuella.Sha256, new SHA256Managed() }
+    /// <summary>
+    /// Encoding del texto de entrada para el hash de hash.
+    /// </summary>
+    internal static Encoding Encoding { get; private set; }
 
-        };
+    /// <summary>
+    /// Gestor de log.
+    /// </summary>
+    public static Logger Logger { get; private set; }
 
-        /// <summary>
-        /// Codificaciones de texto a binario disponibles.
-        /// </summary>
-        static readonly Dictionary<string, Encoding> _Encodings = new Dictionary<string, Encoding>()
-        {
+    #endregion
 
-            {"UTF-8", Encoding.UTF8 }
+    #region Construtores Estáticos
 
-        };
-
-        /// <summary>
-        /// Algoritmo de hash.
-        /// </summary>
-        internal static HashAlgorithm HashAlgorithm { get; private set; }
-
-        /// <summary>
-        /// Encoding del texto de entrada para el hash de hash.
-        /// </summary>
-        internal static Encoding Encoding { get; private set; }
-
-        /// <summary>
-        /// Gestor de log.
-        /// </summary>
-        public static Logger Logger { get; private set; }
-
-        #endregion
-
-        #region Construtores Estáticos
-
-        /// <summary>
-        /// Constructor estático clase.
-        /// </summary>
-        static Utils()
-        {
-
-            if (!_HashAlgorithms.ContainsKey(Settings.Current.VeriFactuHashAlgorithm))
-                throw new ArgumentException($"El valor de la variable de configuración 'VeriFactuHashAlgorithm'" +
-                    $" no puede ser '{Settings.Current.VeriFactuHashAlgorithm}'.");
-
-            if (!_Encodings.ContainsKey(Settings.Current.VeriFactuHashInputEncoding))
-                throw new ArgumentException($"El valor de la variable de configuración 'VeriFactuHashInputEncoding'" +
-                    $" no puede ser '{Settings.Current.VeriFactuHashInputEncoding}'.");
-
-            HashAlgorithm = _HashAlgorithms[Settings.Current.VeriFactuHashAlgorithm];
-            Encoding = _Encodings[Settings.Current.VeriFactuHashInputEncoding];
-
-            Logger = new Logger();
-
-        }
-
-        #endregion
-
-        #region Métodos Privados Estáticos
-
-        /// <summary>
-        /// Codifica un texto de entrada en una cadena de bytes
-        /// utilizando UTF8, y luego devuelve la cadena de bytes
-        /// en hexadecimal.
-        /// </summary>
-        /// <param name="text">Texto a codificar.</param>
-        /// <returns>Texto que contiene la codificación hexadecimal.</returns>
-        internal static string GetEncodedToHex(string text)
-        {
-
-            return BitConverter.ToString(Utils.Encoding.GetBytes(text)).Replace("-", "");
-
-        }
-
-        /// <summary>
-        /// Devuelve una cadena que ha sido anteriormente pasada a 
-        /// binario con el Encoding establecido en la configración
-        /// y posteriomente se ha convertido en un texto hesadecimal.
-        /// </summary>
-        /// <param name="text">Texto codificado a decodificar.</param>
-        /// <returns>Texto decodificado.</returns>
-        internal static string GetFromEncodedToHex(string text)
-        {
-
-            if (string.IsNullOrEmpty(text) || text.Length % 2 != 0)
-                throw new ArgumentException($"La cadena de entrada no es válida.");
-
-            var buff = new List<byte>();
-
-            for (int b = 0; b < text.Length; b = b + 2)
-                buff.Add(Convert.ToByte($"{text[b]}{text[b + 1]}", 16));
-
-            return Utils.Encoding.GetString(buff.ToArray());
-
-        }
-
-        /// <summary>
-        /// Almacena un mensaje en el log.
-        /// </summary>
-        /// <param name="msg">Mensaje.</param>
-        internal static void Log(string msg)
-        {
-
-            if (Settings.Current.LoggingEnabled)
-                Logger.Log(msg);
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor estático clase.
+    /// </summary>
+    static Utils()
+    {
+      if(!_HashAlgorithms.ContainsKey(Settings.Current.VeriFactuHashAlgorithm))
+      {
+        throw new ArgumentException(
+          $"El valor de la variable de configuración 'VeriFactuHashAlgorithm'" +
+                          $" no puede ser '{Settings.Current.VeriFactuHashAlgorithm}'.");
+      }
+      if(!_Encodings.ContainsKey(Settings.Current.VeriFactuHashInputEncoding))
+      {
+        throw new ArgumentException(
+          $"El valor de la variable de configuración 'VeriFactuHashInputEncoding'" +
+                          $" no puede ser '{Settings.Current.VeriFactuHashInputEncoding}'.");
+      }
+      HashAlgorithm = _HashAlgorithms[Settings.Current.VeriFactuHashAlgorithm];
+      Encoding = _Encodings[Settings.Current.VeriFactuHashInputEncoding];
+      Logger = new Logger();
     }
 
+    #endregion
+
+    #region Métodos Privados Estáticos
+
+    /// <summary>
+    /// Codifica un texto de entrada en una cadena de bytes utilizando UTF8, y luego devuelve la cadena de bytes en
+    /// hexadecimal.
+    /// </summary>
+    /// <param name="text">Texto a codificar.</param>
+    /// <returns>Texto que contiene la codificación hexadecimal.</returns>
+    internal static string GetEncodedToHex(string text)
+    {
+      return BitConverter.ToString(Utils.Encoding.GetBytes(text)).Replace("-", string.Empty);
+    }
+
+    /// <summary>
+    /// Devuelve una cadena que ha sido anteriormente pasada a  binario con el Encoding establecido en la configración y
+    /// posteriomente se ha convertido en un texto hesadecimal.
+    /// </summary>
+    /// <param name="text">Texto codificado a decodificar.</param>
+    /// <returns>Texto decodificado.</returns>
+    internal static string GetFromEncodedToHex(string text)
+    {
+      if(string.IsNullOrEmpty(text) || text.Length % 2 != 0)
+      {
+        throw new ArgumentException($"La cadena de entrada no es válida.");
+      }
+      List<byte> buff = new List<byte>();
+      for(int b = 0; b < text.Length; b = b + 2)
+      {
+        buff.Add(Convert.ToByte($"{text[b]}{text[b + 1]}", 16));
+      }
+      return Utils.Encoding.GetString(buff.ToArray());
+    }
+
+    /// <summary>
+    /// Almacena un mensaje en el log.
+    /// </summary>
+    /// <param name="msg">Mensaje.</param>
+    internal static void Log(string msg)
+    {
+      if(Settings.Current.LoggingEnabled)
+      {
+        Logger.Log(msg);
+      }
+    }
+
+    #endregion
+  }
 }

@@ -44,75 +44,63 @@ using VeriFactu.NoVeriFactu.Signature.Xades.Props.BigInt;
 
 namespace VeriFactu.NoVeriFactu.Signature.Xades.Props
 {
+  /// <summary>
+  /// Certificado digital.
+  /// </summary>
+  internal class Cert : PropXmlElement
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Certificado digital.
+    /// Certificado representado.
     /// </summary>
-    internal class Cert : PropXmlElement
+    private X509Certificate2 _Certificate;
+
+    #endregion
+
+    #region Propiedades Privadas de Instacia
+
+    /// <summary>
+    /// Huella del certificado.
+    /// </summary>
+    internal CertDigest CertDigest { get; private set; }
+
+    /// <summary>
+    /// Emisor y número de serie del certificado.
+    /// </summary>
+    internal IssuerSerial IssuerSerial { get; private set; }
+
+    /// <summary>
+    /// Certificado representado.
+    /// </summary>
+    internal X509Certificate2 Certificate
     {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Certificado representado.
-        /// </summary>
-        X509Certificate2 _Certificate;
-
-        #endregion
-
-        #region Propiedades Privadas de Instacia
-
-        /// <summary>
-        /// Huella del certificado.
-        /// </summary>
-        internal CertDigest CertDigest { get; private set; }
-
-        /// <summary>
-        /// Emisor y número de serie del certificado.
-        /// </summary>
-        internal IssuerSerial IssuerSerial { get; private set; }
-
-        /// <summary>
-        /// Certificado representado.
-        /// </summary>
-        internal X509Certificate2 Certificate
-        {
-            get
-            {
-
-                return _Certificate;
-
-            }
-            set
-            {
-
-                _Certificate = value;
-                CertDigest.DigestValue.Value = Convert.ToBase64String(_Certificate.GetCertHash());
-                IssuerSerial.X509IssuerName.Value = _Certificate.IssuerName.Name.Replace(", ", ","); /* Para que coincida con software oficial*/;
-                IssuerSerial.X509SerialNumber.Value = $"{new BInt(_Certificate.GetSerialNumber())}";
-
-            }
-
-        }
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="parent">Nodo padre.</param>
-        internal Cert(XmlNode parent) : base(parent, "Cert")
-        {
-
-            CertDigest = new CertDigest(XmlElement);
-            IssuerSerial = new IssuerSerial(XmlElement);
-
-        }
-
-        #endregion
-
+      get => _Certificate;
+      set
+      {
+        _Certificate = value;
+        CertDigest.DigestValue.Value = Convert.ToBase64String(_Certificate.GetCertHash());
+        IssuerSerial.X509IssuerName.Value = _Certificate.IssuerName.Name.Replace(", ", ","); /* Para que coincida con software oficial*/
+        ;
+        IssuerSerial.X509SerialNumber.Value = $"{new BInt(_Certificate.GetSerialNumber())}";
+      }
     }
 
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="parent">Nodo padre.</param>
+    internal Cert(XmlNode parent) : base(parent, "Cert")
+    {
+      CertDigest = new CertDigest(XmlElement);
+      IssuerSerial = new IssuerSerial(XmlElement);
+    }
+
+    #endregion
+  }
 }

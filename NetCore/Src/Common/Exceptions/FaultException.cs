@@ -42,70 +42,44 @@ using VeriFactu.Xml.Factu.Fault;
 
 namespace VeriFactu.Common.Exceptions
 {
-
-    /// <summary>
-    /// Representa el error devuelto por la AEAT cuando es su repuesta se incluye
-    /// el bloque Fault.
-    /// </summary>
-    public class FaultException : Exception
-    {
+  /// <summary>
+  /// Representa el error devuelto por la AEAT cuando es su repuesta se incluye el bloque Fault.
+  /// </summary>
+  public class FaultException : Exception
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="fault">Objeto  VeriFactu.Xml.Factu.Fault.Fault que origina
-        /// la excepción.</param>
-        public FaultException(Fault fault) : base($"{fault.detail}")
-        {
-
-            Fault = fault ?? throw new ArgumentNullException(nameof(fault), "El objeto Fault no puede ser nulo.");
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// Objeto  VeriFactu.Xml.Factu.Fault.Fault que origina
-        /// la excepción.
-        /// </summary>
-        public Fault Fault { get; private set; }
-
-        /// <summary>
-        /// Código de error devuelto por la AEAT.
-        /// </summary>
-        public string FaultCode
-        {
-            
-            get 
-            {
-
-                return Fault.faultcode;
-
-            }
-
-        }
-
-        /// <summary>
-        /// Texto de error devuelto por la AEAT.
-        /// </summary>
-        public string FaultString
-        {
-
-            get
-            {
-
-                return Fault.faultstring;
-
-            }
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="fault">
+    /// Objeto  VeriFactu.Xml.Factu.Fault.Fault que origina la excepción.
+    /// </param>
+    public FaultException(Fault fault) : base($"{fault.detail}")
+    {
+      Fault = fault ?? throw new ArgumentNullException(nameof(fault), "El objeto Fault no puede ser nulo.");
     }
 
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// Objeto  VeriFactu.Xml.Factu.Fault.Fault que origina la excepción.
+    /// </summary>
+    public Fault Fault { get; private set; }
+
+    /// <summary>
+    /// Código de error devuelto por la AEAT.
+    /// </summary>
+    public string FaultCode => Fault.faultcode;
+
+    /// <summary>
+    /// Texto de error devuelto por la AEAT.
+    /// </summary>
+    public string FaultString => Fault.faultstring;
+
+    #endregion
+  }
 }

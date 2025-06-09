@@ -41,162 +41,135 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml
 {
+  /// <summary>
+  /// Datos de identificación de factura expedida para operaciones de baja y consulta.
+  /// </summary>
+  public class IDFactura
+  {
+
+    #region Propiedades Privadas de Instacia
 
     /// <summary>
-    /// Datos de identificación de factura expedida para operaciones de baja y consulta.
+    /// Flag para indicar si se trata de una anulación.
     /// </summary>
-    public class IDFactura
+    private bool _IsCancellation;
+
+    /// <summary>
+    /// <para>Número de identificación fiscal (NIF) del obligado a expedir la factura.</para>
+    /// <para>FormatoNIF(9).</para>
+    /// </summary>
+    [XmlIgnore]
+    internal string IDEmisor { get; set; }
+
+    /// <summary>
+    /// <para>Nº Serie+Nº Factura  que identifica a la factura emitida.</para> <para>Alfanumérico(60).</para>
+    /// </summary>
+    [XmlIgnore]
+    internal string NumSerie { get; set; }
+
+    /// <summary>
+    /// <para>Fecha de expedición de la factura.</para> <para>Fecha(dd-mm-yyyy).</para>
+    /// </summary>
+    [XmlIgnore]
+    internal string FechaExpedicion { get; set; }
+
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// <para>Número de identificación fiscal (NIF) del obligado a expedir la factura.</para>
+    /// <para>FormatoNIF(9).</para>
+    /// </summary>
+    public string IDEmisorFactura
     {
-
-        #region Propiedades Privadas de Instacia
-
-        /// <summary>
-        /// Flag para indicar si se trata de una anulación.
-        /// </summary>
-        bool _IsCancellation;
-
-        /// <summary>
-        /// <para>Número de identificación fiscal (NIF) del obligado a expedir la factura.</para>
-        /// <para>FormatoNIF(9).</para>
-        /// </summary>
-        [XmlIgnore()]
-        internal string IDEmisor { get; set; }
-
-        /// <summary>
-        /// <para>Nº Serie+Nº Factura  que identifica a la factura emitida.</para>
-        /// <para>Alfanumérico(60).</para>
-        /// </summary>
-        [XmlIgnore()]
-        internal string NumSerie { get; set; }
-
-        /// <summary>
-        /// <para>Fecha de expedición de la factura.</para>
-        /// <para>Fecha(dd-mm-yyyy).</para>
-        /// </summary>
-        [XmlIgnore()]
-        internal string FechaExpedicion { get; set; }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// <para>Número de identificación fiscal (NIF) del obligado a expedir la factura.</para>
-        /// <para>FormatoNIF(9).</para>
-        /// </summary>
-        public string IDEmisorFactura
-        {
-            get
-            {
-                return _IsCancellation ? null : IDEmisor;
-            }
-            set
-            {
-                _IsCancellation = false;
-                IDEmisor = value;
-            }
-        }
-
-        /// <summary>
-        /// <para>Nº Serie+Nº Factura  que identifica a la factura emitida.</para>
-        /// <para>Alfanumérico(60).</para>
-        /// </summary>
-        public string NumSerieFactura
-        {
-            get
-            {
-                return _IsCancellation ? null : NumSerie;
-            }
-            set
-            {
-                _IsCancellation = false;
-                NumSerie = value;
-            }
-        }
-
-        /// <summary>
-        /// <para>Fecha de expedición de la factura.</para>
-        /// <para>Fecha(dd-mm-yyyy).</para>
-        /// </summary>
-        public string FechaExpedicionFactura
-        {
-            get
-            {
-                return _IsCancellation ? null : FechaExpedicion;
-            }
-            set
-            {
-                _IsCancellation = false;
-                FechaExpedicion = value;
-            }
-        }
-
-        /// <summary>
-        /// <para>Número de identificación fiscal (NIF) del obligado a expedir la factura.</para>
-        /// <para>FormatoNIF(9).</para>
-        /// </summary>
-        public string IDEmisorFacturaAnulada
-        {
-            get
-            {
-                return _IsCancellation ? IDEmisor : null;
-            }
-            set
-            {
-                _IsCancellation = true;
-                IDEmisor = value;
-            }
-        }
-
-        /// <summary>
-        /// <para>Nº Serie+Nº Factura  que identifica a la factura emitida.</para>
-        /// <para>Alfanumérico(60).</para>
-        /// </summary>
-        public string NumSerieFacturaAnulada
-        {
-            get
-            {
-                return _IsCancellation ? NumSerie : null;
-            }
-            set
-            {
-                _IsCancellation = true;
-                NumSerie = value;
-            }
-        }
-
-        /// <summary>
-        /// <para>Fecha de expedición de la factura.</para>
-        /// <para>Fecha(dd-mm-yyyy).</para>
-        /// </summary>
-        public string FechaExpedicionFacturaAnulada
-        {
-            get
-            {
-                return _IsCancellation ? FechaExpedicion : null;
-            }
-            set
-            {
-                _IsCancellation = true;
-                FechaExpedicion = value;
-            }
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{IDEmisorFactura}: {NumSerieFactura} ({FechaExpedicionFactura})"; 
-        }
-
-        #endregion
-
+      get => _IsCancellation ? null : IDEmisor;
+      set
+      {
+        _IsCancellation = false;
+        IDEmisor = value;
+      }
     }
 
+    /// <summary>
+    /// <para>Nº Serie+Nº Factura  que identifica a la factura emitida.</para> <para>Alfanumérico(60).</para>
+    /// </summary>
+    public string NumSerieFactura
+    {
+      get => _IsCancellation ? null : NumSerie;
+      set
+      {
+        _IsCancellation = false;
+        NumSerie = value;
+      }
+    }
+
+    /// <summary>
+    /// <para>Fecha de expedición de la factura.</para> <para>Fecha(dd-mm-yyyy).</para>
+    /// </summary>
+    public string FechaExpedicionFactura
+    {
+      get => _IsCancellation ? null : FechaExpedicion;
+      set
+      {
+        _IsCancellation = false;
+        FechaExpedicion = value;
+      }
+    }
+
+    /// <summary>
+    /// <para>Número de identificación fiscal (NIF) del obligado a expedir la factura.</para>
+    /// <para>FormatoNIF(9).</para>
+    /// </summary>
+    public string IDEmisorFacturaAnulada
+    {
+      get => _IsCancellation ? IDEmisor : null;
+      set
+      {
+        _IsCancellation = true;
+        IDEmisor = value;
+      }
+    }
+
+    /// <summary>
+    /// <para>Nº Serie+Nº Factura  que identifica a la factura emitida.</para> <para>Alfanumérico(60).</para>
+    /// </summary>
+    public string NumSerieFacturaAnulada
+    {
+      get => _IsCancellation ? NumSerie : null;
+      set
+      {
+        _IsCancellation = true;
+        NumSerie = value;
+      }
+    }
+
+    /// <summary>
+    /// <para>Fecha de expedición de la factura.</para> <para>Fecha(dd-mm-yyyy).</para>
+    /// </summary>
+    public string FechaExpedicionFacturaAnulada
+    {
+      get => _IsCancellation ? FechaExpedicion : null;
+      set
+      {
+        _IsCancellation = true;
+        FechaExpedicion = value;
+      }
+    }
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{IDEmisorFactura}: {NumSerieFactura} ({FechaExpedicionFactura})";
+    }
+
+    #endregion
+  }
 }

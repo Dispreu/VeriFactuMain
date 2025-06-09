@@ -43,38 +43,35 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Nif
 {
-    /// <summary>
-    /// Datos de contribuyentes de entrada al web service
-    /// de validación de NIF de la AEAT.
-    /// </summary>
-    [Serializable]
-	[XmlRoot("VNifV2Sal", Namespace = Namespaces.NamespaceVNifV2Sal)]
-	public class VNifV2Sal
-    {
+  /// <summary>
+  /// Datos de contribuyentes de entrada al web service de validación de NIF de la AEAT.
+  /// </summary>
+  [Serializable]
+  [XmlRoot("VNifV2Sal", Namespace = Namespaces.NamespaceVNifV2Sal)]
+  public class VNifV2Sal
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public VNifV2Sal()
-        {
-            Contribuyente = new List<Contribuyente>();
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// NIF del contribuyente.
-        /// </summary>
-        [XmlArray("VNifV2Sal", Namespace = Namespaces.NamespaceVNifV2Sal)]
-        [XmlArrayItem("Contribuyente", Namespace = Namespaces.NamespaceVNifV2Sal)]
-        public List<Contribuyente> Contribuyente { get; set; }
-
-        #endregion
-
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    public VNifV2Sal()
+    {
+      Contribuyente = new List<Contribuyente>();
     }
 
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// NIF del contribuyente.
+    /// </summary>
+    [XmlArray("VNifV2Sal", Namespace = Namespaces.NamespaceVNifV2Sal)]
+    [XmlArrayItem("Contribuyente", Namespace = Namespaces.NamespaceVNifV2Sal)]
+    public List<Contribuyente> Contribuyente { get; set; }
+
+    #endregion
+  }
 }

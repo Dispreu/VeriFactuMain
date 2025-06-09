@@ -41,67 +41,63 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Respuesta
 {
-
-    /// <summary>
-    /// Línea de respuesta de la presentación.
-    /// </summary>
-    [XmlType(AnonymousType = true, Namespace = Namespaces.NamespaceTikR)]
-    public class RespuestaLinea
-    {
+  /// <summary>
+  /// Línea de respuesta de la presentación.
+  /// </summary>
+  [XmlType(AnonymousType = true, Namespace = Namespaces.NamespaceTikR)]
+  public class RespuestaLinea
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// Identificador de la factura.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceTikR)]
+    /// <summary>
+    /// Identificador de la factura.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceTikR)]
 
-        public IDFactura IDFactura { get; set; }
+    public IDFactura IDFactura { get; set; }
 
-        /// <summary>
-        /// Contiene el tipo de operación y los parámetros opcionales asociados al mismo. 
-        /// </summary>
-        public Operacion Operacion { get; set; }
+    /// <summary>
+    /// Contiene el tipo de operación y los parámetros opcionales asociados al mismo.
+    /// </summary>
+    public Operacion Operacion { get; set; }
 
-        /// <summary>
-        /// <para>Dato adicional de contenido libre con el objetivo de que se pueda
-        /// asociar opcionalmente información interna del sistema informático de facturación
-        /// al registro de facturación. Este dato puede ayudar a completar la identificación
-        /// o calificación de la factura y/o su registro de facturación.</para>
-        /// <para>Alfanumérico (60)</para>
-        /// </summary>
-        public string RefExterna { get; set; }
+    /// <summary>
+    /// <para>Dato adicional de contenido libre con el objetivo de que se pueda asociar opcionalmente información
+    /// interna del sistema informático de facturación al registro de facturación. Este dato puede ayudar a completar la
+    /// identificación o calificación de la factura y/o su registro de facturación.</para> <para>Alfanumérico
+    /// (60)</para>
+    /// </summary>
+    public string RefExterna { get; set; }
 
-        /// <summary>
-        /// Estado del registro presentado en el sistema de la AEAT.
-        /// </summary>
-        public string EstadoRegistro { get; set; }
+    /// <summary>
+    /// Estado del registro presentado en el sistema de la AEAT.
+    /// </summary>
+    public string EstadoRegistro { get; set; }
 
-        /// <summary>
-        /// En su caso, código del error en la presentación.
-        /// </summary>
-        public string CodigoErrorRegistro { get; set; }
+    /// <summary>
+    /// En su caso, código del error en la presentación.
+    /// </summary>
+    public string CodigoErrorRegistro { get; set; }
 
-        /// <summary>
-        /// En su caso, texto del error en la presentación.
-        /// </summary>
-        public string DescripcionErrorRegistro { get; set; }
+    /// <summary>
+    /// En su caso, texto del error en la presentación.
+    /// </summary>
+    public string DescripcionErrorRegistro { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{IDFactura}-{EstadoRegistro}";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{IDFactura}-{EstadoRegistro}";
     }
 
+    #endregion
+  }
 }

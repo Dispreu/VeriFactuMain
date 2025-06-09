@@ -41,48 +41,41 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Consulta.Respuesta
 {
-
-    /// <summary>
-    /// Encadenamiento con la factura anterior. 
-    /// Artículo 7 de la Orden HAC/1177/2024 de 17 de octubre.
-    /// </summary>
-    public class Encadenamiento
-    {
+  /// <summary>
+  /// Encadenamiento con la factura anterior.  Artículo 7 de la Orden HAC/1177/2024 de 17 de octubre.
+  /// </summary>
+  public class Encadenamiento
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// <para>Indicador que especifica que no existe registro de facturación anterior
-        /// en este sistema informático por tratarse del primer registro de facturación
-        /// generado en él. En este caso, se informará con el valor "S".
-        /// Si no se informa este campo se entenderá que no es el primer registro de
-        /// facturación, en cuyo caso es obligatorio informar los campos de que consta
-        /// «RegistroAnterior».</para>
-        /// <para>Alfanumérico (1).</para>
-        /// </summary>
-        public string PrimerRegistro { get; set; }
+    /// <summary>
+    /// <para>Indicador que especifica que no existe registro de facturación anterior en este sistema informático por
+    /// tratarse del primer registro de facturación generado en él. En este caso, se informará con el valor "S". Si no
+    /// se informa este campo se entenderá que no es el primer registro de facturación, en cuyo caso es obligatorio
+    /// informar los campos de que consta «RegistroAnterior».</para> <para>Alfanumérico (1).</para>
+    /// </summary>
+    public string PrimerRegistro { get; set; }
 
-        /// <summary>
-        /// Datos registro anterior.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceTikLRRC)]
-        public VeriFactu.Xml.Factu.Consulta.Respuesta.RegistroAnterior RegistroAnterior { get; set; }      
+    /// <summary>
+    /// Datos registro anterior.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceTikLRRC)]
+    public VeriFactu.Xml.Factu.Consulta.Respuesta.RegistroAnterior RegistroAnterior { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representación textual de la instancia.
-        /// </summary>
-        /// <returns> Representación textual de la instancia.</returns>
-        public override string ToString()
-        {
-            return $"{RegistroAnterior}";
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representación textual de la instancia.
+    /// </summary>
+    /// <returns>Representación textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{RegistroAnterior}";
     }
 
+    #endregion
+  }
 }

@@ -44,113 +44,100 @@ using VeriFactu.Xml.Factu.Alta;
 
 namespace VeriFactu.Business
 {
-
-    /// <summary>
-    /// Representa una acción de subsanación de un registro
-    /// anteriormente presentado.
-    /// </summary>
-    public class InvoiceFix : InvoiceEntry
-    {
+  /// <summary>
+  /// Representa una acción de subsanación de un registro anteriormente presentado.
+  /// </summary>
+  public class InvoiceFix : InvoiceEntry
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="invoice">Instancia de factura de entrada en el sistema.</param>
-        public InvoiceFix(Invoice invoice) : base(invoice)
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="invoice">Instancia de factura de entrada en el sistema.</param>
+    public InvoiceFix(Invoice invoice) : base(invoice)
+        { }
 
+    #endregion
 
-        #endregion
+    #region Métodos Privados de Instancia
 
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Establece el registro relativo a la entrada
-        /// a contabilizar y enviar.
-        /// </summary>
-        internal override void SetRegistro()
-        {
-
-            base.SetRegistro();
-
-            // Establecemos que se trata de una subsanación
-            var registroAlta = Registro as RegistroAlta;
-
-            if (registroAlta == null)
-                throw new Exception($"No se ha encontrado el RegistroAlta correspondiente a la entrada {this}.");
-
-            registroAlta.Subsanacion = "S";
-
-
-        }
-
-        #endregion
-
-        #region Propiedades Públicas de Instancia
-
-        /// <summary>
-        /// Path de la factura original en el directorio de facturas.
-        /// </summary>
-        public string OriginalInvoiceFilePath => $"{InvoicePostedPath}{EncodedInvoiceID}.xml";
-
-        /// <summary>
-        /// Path de la factura en el directorio de facturas.
-        /// </summary>
-        public override string InvoiceFilePath => $"{InvoicePostedPath}{EncodedInvoiceID}.SUB.{DateTime.Now:yyyy.MM.dd.HH.mm.ss.ffff}.xml";
-
-        /// <summary>
-        /// Path de la factura en el directorio de archivado de los datos de la
-        /// cadena.
-        /// </summary>
-        public override string InvoiceEntryFilePath => $"{InvoiceEntryPath}{InvoiceEntryID}.SUB.{DateTime.Now:yyyy.MM.dd.HH.mm.ss.ffff}.xml";
-
-        /// <summary>
-        /// Path del directorio de archivado de los datos de la
-        /// cadena.
-        /// </summary>
-        public override string ResponseFilePath => $"{ResponsesPath}{InvoiceEntryID}.SUB.{DateTime.Now:yyyy.MM.dd.HH.mm.ss.ffff}.xml";
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Devuelve una lista con los errores de la
-        /// factura por el incumplimiento de reglas de negocio.
-        /// </summary>
-        /// <returns>Lista con los errores encontrados.</returns>
-        public override List<string> GetBusErrors()
-        {
-
-            var errors = new List<string>();
-
-            // Comprobamos que la factura existe
-            if (!File.Exists(base.InvoiceFilePath))
-                errors.Add($"No existe una entrada con SellerID: {Invoice.SellerID}" +
-                    $" en el año {Invoice.InvoiceDate.Year} con el número {Invoice.InvoiceID}.");
-
-            if (string.IsNullOrEmpty(Invoice.SellerName))
-                errors.Add($"Es necesario que la propiedad Invoice.SellerName tenga un valor.");
-
-            // Limite listas
-            if (Invoice.RectificationItems?.Count > 1000)
-                errors.Add($"Invoice.RectificationItems.Count no puede ser mayor de 1.000.");
-
-            if (Invoice.TaxItems?.Count > 12)
-                errors.Add($"Invoice.TaxItems.Count no puede ser mayor de 12.");
-
-            errors.AddRange(GetTaxItemsValidationErrors());
-            errors.AddRange(GetInvoiceValidationErrors());
-
-            return errors;
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Establece el registro relativo a la entrada a contabilizar y enviar.
+    /// </summary>
+    internal override void SetRegistro()
+    {
+      base.SetRegistro();
+      // Establecemos que se trata de una subsanación
+      RegistroAlta registroAlta = Registro as RegistroAlta;
+      if(registroAlta == null)
+      {
+        throw new Exception($"No se ha encontrado el RegistroAlta correspondiente a la entrada {this}.");
+      }
+      registroAlta.Subsanacion = "S";
     }
 
+    #endregion
+
+    #region Propiedades Públicas de Instancia
+
+    /// <summary>
+    /// Path de la factura original en el directorio de facturas.
+    /// </summary>
+    public string OriginalInvoiceFilePath => $"{InvoicePostedPath}{EncodedInvoiceID}.xml";
+
+    /// <summary>
+    /// Path de la factura en el directorio de facturas.
+    /// </summary>
+    public override string InvoiceFilePath => $"{InvoicePostedPath}{EncodedInvoiceID}.SUB.{DateTime.Now:yyyy.MM.dd.HH.mm.ss.ffff}.xml";
+
+    /// <summary>
+    /// Path de la factura en el directorio de archivado de los datos de la cadena.
+    /// </summary>
+    public override string InvoiceEntryFilePath => $"{InvoiceEntryPath}{InvoiceEntryID}.SUB.{DateTime.Now:yyyy.MM.dd.HH.mm.ss.ffff}.xml";
+
+    /// <summary>
+    /// Path del directorio de archivado de los datos de la cadena.
+    /// </summary>
+    public override string ResponseFilePath => $"{ResponsesPath}{InvoiceEntryID}.SUB.{DateTime.Now:yyyy.MM.dd.HH.mm.ss.ffff}.xml";
+
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Devuelve una lista con los errores de la factura por el incumplimiento de reglas de negocio.
+    /// </summary>
+    /// <returns>Lista con los errores encontrados.</returns>
+    public override List<string> GetBusErrors()
+    {
+      List<string> errors = new List<string>();
+      // Comprobamos que la factura existe
+      if(!File.Exists(base.InvoiceFilePath))
+      {
+        errors.Add(
+          $"No existe una entrada con SellerID: {Invoice.SellerID}" +
+                          $" en el año {Invoice.InvoiceDate.Year} con el número {Invoice.InvoiceID}.");
+      }
+      if(string.IsNullOrEmpty(Invoice.SellerName))
+      {
+        errors.Add($"Es necesario que la propiedad Invoice.SellerName tenga un valor.");
+      }
+      // Limite listas
+      if(Invoice.RectificationItems?.Count > 1000)
+      {
+        errors.Add($"Invoice.RectificationItems.Count no puede ser mayor de 1.000.");
+      }
+      if(Invoice.TaxItems?.Count > 12)
+      {
+        errors.Add($"Invoice.TaxItems.Count no puede ser mayor de 12.");
+      }
+      errors.AddRange(GetTaxItemsValidationErrors());
+      errors.AddRange(GetInvoiceValidationErrors());
+      return errors;
+    }
+
+    #endregion
+  }
 }

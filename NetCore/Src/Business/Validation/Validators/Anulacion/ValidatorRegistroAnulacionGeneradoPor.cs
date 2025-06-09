@@ -43,52 +43,46 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Anulacion
 {
-
-    /// <summary>
-    /// Valida los datos de RegistroAlta GeneradoPor.
-    /// </summary>
-    public class ValidatorRegistroAnulacionGeneradoPor : ValidatorRegistroAnulacion
-    {
+  /// <summary>
+  /// Valida los datos de RegistroAlta GeneradoPor.
+  /// </summary>
+  public class ValidatorRegistroAnulacionGeneradoPor : ValidatorRegistroAnulacion
+  {
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Envelope de envío al
-        /// servicio Verifactu de la AEAT.</param>
-        /// <param name="registroAnulacion"> Registro de anulación del bloque Body.</param>
-        public ValidatorRegistroAnulacionGeneradoPor(Envelope envelope, RegistroAnulacion registroAnulacion) : base(envelope, registroAnulacion)
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">
+    /// Envelope de envío al servicio Verifactu de la AEAT.
+    /// </param>
+    /// <param name="registroAnulacion">Registro de anulación del bloque Body.</param>
+    public ValidatorRegistroAnulacionGeneradoPor(Envelope envelope, RegistroAnulacion registroAnulacion) : base(envelope, registroAnulacion)
+        { }
 
-        #endregion
+    #endregion
 
-        #region Métodos Privados de Instancia
+    #region Métodos Privados de Instancia
 
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            // 1. GeneradoPor
-
-            // Si se informa este campo, deberá informarse la agrupación Generador.
-
-            if(!string.IsNullOrEmpty(_RegistroAnulacion.GeneradoPor) && _RegistroAnulacion.Generador == null)
-                result.Add($"Error en el bloque RegistroAnulacion ({_RegistroAnulacion}):" +
-                    $" Si se informa el campo GeneradoPor, deberá informarse la agrupación Generador.");      
-
-            return result;
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      // 1. GeneradoPor
+      // Si se informa este campo, deberá informarse la agrupación Generador.
+      if(!string.IsNullOrEmpty(_RegistroAnulacion.GeneradoPor) && _RegistroAnulacion.Generador == null)
+      {
+        result.Add(
+          $"Error en el bloque RegistroAnulacion ({_RegistroAnulacion}):" +
+                          $" Si se informa el campo GeneradoPor, deberá informarse la agrupación Generador.");
+      }
+      return result;
     }
 
+    #endregion
+  }
 }

@@ -41,62 +41,53 @@ using System;
 
 namespace VeriFactu.Xml.Factu
 {
-
-    /// <summary>
-    ///  Datos parte interviniente en algún modo en la facturación.
-    /// </summary>
-    [Serializable]
-    public class Interlocutor
-    {     
+  /// <summary>
+  /// Datos parte interviniente en algún modo en la facturación.
+  /// </summary>
+  [Serializable]
+  public class Interlocutor
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// <para>Nombre-razón social.</para>
-        /// <para>Alfanumérico(120).</para>
-        /// </summary>
-        public string NombreRazon { get; set; }
+    /// <summary>
+    /// <para>Nombre-razón social.</para> <para>Alfanumérico(120).</para>
+    /// </summary>
+    public string NombreRazon { get; set; }
 
-        /// <summary>
-        /// <para>NIF.</para>
-        /// <para>FormatoNIF(9).</para>
-        /// </summary>
-        public string NIF { get; set; }
+    /// <summary>
+    /// <para>NIF.</para> <para>FormatoNIF(9).</para>
+    /// </summary>
+    public string NIF { get; set; }
 
-        /// <summary>
-        /// Id. fiscal no español.
-        /// </summary>
-        public IDOtro IDOtro { get; set; }
+    /// <summary>
+    /// Id. fiscal no español.
+    /// </summary>
+    public IDOtro IDOtro { get; set; }
 
-        /// <summary>
-        /// <para>Nombre-razón del representante.</para>
-        /// <para>Alfanumérico(120).</para>
-        /// </summary>
-        public string NombreRazonRepresentante { get; set; }
+    /// <summary>
+    /// <para>Nombre-razón del representante.</para> <para>Alfanumérico(120).</para>
+    /// </summary>
+    public string NombreRazonRepresentante { get; set; }
 
-        /// <summary>
-        /// <para>NIFRepresentante.</para>
-        /// <para>FormatoNIF(9).</para>
-        /// </summary>
-        public string NIFRepresentante { get; set; }
+    /// <summary>
+    /// <para>NIFRepresentante.</para> <para>FormatoNIF(9).</para>
+    /// </summary>
+    public string NIFRepresentante { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Métodos Públicos de Instancia
+    #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Representacioón textual de la instancia.
-        /// </summary>
-        /// <returns>Representacioón textual de la instancia.</returns>
-        public override string ToString()
-        {
-
-            return $"{NIF}{IDOtro?.ID}";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Representacioón textual de la instancia.
+    /// </summary>
+    /// <returns>Representacioón textual de la instancia.</returns>
+    public override string ToString()
+    {
+      return $"{NIF}{IDOtro?.ID}";
     }
 
+    #endregion
+  }
 }

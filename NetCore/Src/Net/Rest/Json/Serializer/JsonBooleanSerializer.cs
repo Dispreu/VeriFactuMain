@@ -41,32 +41,25 @@ using System;
 
 namespace VeriFactu.Net.Rest.Json.Serializer
 {
-
-    /// <summary>
-    /// Serializador para boolean.
-    /// </summary>
-    internal class JsonBooleanSerializer : IJsonSerializer
-    {
+  /// <summary>
+  /// Serializador para boolean.
+  /// </summary>
+  internal class JsonBooleanSerializer : IJsonSerializer
+  {
 
         #region Métodos Públicos de Instancia
 
-        /// <summary>
-        /// Devuelve la representación en JSON
-        /// de la propiedad facilitada para la
-        /// instancia facilitada.
-        /// </summary>
-        /// <param name="value">Valor a serializar.</param>
-        /// <returns>Representación JSON de la propiedad.</returns>
-        public string ToJson(object value)
-        {
-
-            var b = value as Boolean?;
-            return (b??false) ? "true" : "false";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Devuelve la representación en JSON de la propiedad facilitada para la instancia facilitada.
+    /// </summary>
+    /// <param name="value">Valor a serializar.</param>
+    /// <returns>Representación JSON de la propiedad.</returns>
+    public string ToJson(object value)
+    {
+      bool? b = value as bool?;
+      return (b ?? false) ? "true" : "false";
     }
 
+    #endregion
+  }
 }

@@ -41,31 +41,27 @@ using System.Xml.Serialization;
 
 namespace VeriFactu.Xml.Factu.Respuesta
 {
-
-    /// <summary>
-    /// Datos relativos a la presentación a la que
-    /// se refiere la respuesta.
-    /// </summary>
-    [XmlType(AnonymousType = true, Namespace = Namespaces.NamespaceTikR)]
-    public class DatosPresentacion
-    {
+  /// <summary>
+  /// Datos relativos a la presentación a la que se refiere la respuesta.
+  /// </summary>
+  [XmlType(AnonymousType = true, Namespace = Namespaces.NamespaceTikR)]
+  public class DatosPresentacion
+  {
 
         #region Propiedades Públicas de Instancia
 
-        /// <summary>
-        /// NIF del presentador.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string NIFPresentador { get; set; }
+    /// <summary>
+    /// NIF del presentador.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string NIFPresentador { get; set; }
 
-        /// <summary>
-        /// Marca de tiempo de la preséntación.
-        /// </summary>
-        [XmlElement(Namespace = Namespaces.NamespaceSF)]
-        public string TimestampPresentacion { get; set; }
+    /// <summary>
+    /// Marca de tiempo de la preséntación.
+    /// </summary>
+    [XmlElement(Namespace = Namespaces.NamespaceSF)]
+    public string TimestampPresentacion { get; set; }
 
-        #endregion
-
-    }
-
+    #endregion
+  }
 }

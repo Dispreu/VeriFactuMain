@@ -45,104 +45,91 @@ using VeriFactu.Xml.Soap;
 
 namespace VeriFactu.Business.Validation.Validators.Alta.Detalle
 {
+  /// <summary>
+  /// Valida los datos de RegistroAlta DetalleDesglose CuotaRepercutida.
+  /// </summary>
+  public class ValidatorRegistroAltaDetalleDesgloseCuotaRepercutida : ValidatorRegistroAlta
+  {
+
+    #region Variables Privadas de Instancia
 
     /// <summary>
-    /// Valida los datos de RegistroAlta DetalleDesglose CuotaRepercutida.
+    /// Interlocutor a validar.
     /// </summary>
-    public class ValidatorRegistroAltaDetalleDesgloseCuotaRepercutida : ValidatorRegistroAlta
+    private readonly DetalleDesglose _DetalleDesglose;
+
+    #endregion
+
+    #region Construtores de Instancia
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="envelope">Sobre SOAP envío.</param>
+    /// <param name="registroAlta">Registro alta factura.</param>
+    /// <param name="detalleDesglose">DetalleDesglose a validar.</param>
+    public ValidatorRegistroAltaDetalleDesgloseCuotaRepercutida(
+      Envelope envelope,
+      RegistroAlta registroAlta,
+      DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
     {
-
-        #region Variables Privadas de Instancia
-
-        /// <summary>
-        /// Interlocutor a validar.
-        /// </summary>
-        readonly DetalleDesglose _DetalleDesglose;
-
-        #endregion
-
-        #region Construtores de Instancia
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="envelope"> Sobre SOAP envío.</param>
-        /// <param name="registroAlta"> Registro alta factura.</param>
-        /// <param name="detalleDesglose"> DetalleDesglose a validar. </param>
-        public ValidatorRegistroAltaDetalleDesgloseCuotaRepercutida(Envelope envelope, RegistroAlta registroAlta,
-            DetalleDesglose detalleDesglose) : base(envelope, registroAlta)
-        {
-
-            _DetalleDesglose = detalleDesglose;
-
-        }
-
-        #endregion
-
-        #region Métodos Privados de Instancia
-
-        /// <summary>
-        /// Obtiene los errores de un bloque en concreto.
-        /// </summary>
-        /// <returns>Lista con los errores de un bloque en concreto.</returns>
-        protected override List<string> GetBlockErrors()
-        {
-
-            var result = new List<string>();
-
-            var cuotaRepercutida = XmlParser.ToDecimal(_DetalleDesglose.CuotaRepercutida);
-            var baseImponibleOimporteNoSujeto = XmlParser.ToDecimal(_DetalleDesglose.BaseImponibleOimporteNoSujeto);
-            var baseImponibleACoste = XmlParser.ToDecimal(_DetalleDesglose.BaseImponibleACoste);
-            var tipoImpositivo = XmlParser.ToDecimal(_DetalleDesglose.TipoImpositivo);
-
-            if (cuotaRepercutida != 0) 
-            {
-
-                if (_DetalleDesglose.CalificacionOperacion == CalificacionOperacion.S1)
-                {                   
-
-                    if (!((_RegistroAlta.TipoRectificativaSpecified && _RegistroAlta.TipoRectificativa == TipoRectificativa.I) ||
-                        _RegistroAlta.TipoFactura == TipoFactura.R2 || _RegistroAlta.TipoFactura == TipoFactura.R3)) 
-                    {
-
-                        var taxBase = (baseImponibleACoste == 0) ? baseImponibleOimporteNoSujeto : baseImponibleACoste;
-                        var texBase = (baseImponibleACoste == 0) ? "BaseImponibleOimporteNoSujeto" : "BaseImponibleACoste";
-
-                        // CuotaRepercutida y BaseImponibleOimporteNoSujeto deben tener el mismo signo.
-                        if ((cuotaRepercutida/Math.Abs(cuotaRepercutida)) != (taxBase / Math.Abs(taxBase)))
-                            result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                                    $" CuotaRepercutida y {texBase} deben tener el mismo signo.");
-
-                        // Si [BaseImponibleOimporteNoSujeto] ≤ 1.000,00:
-                        // [CuotaRepercutida]=([BaseImponibleOimporteNoSujeto] * TipoImpositivo) +/- 1% de[BaseImponibleOimporteNoSujeto]
-                        // (y en todo caso se admite una diferencia de +/- 10,00 euros). (CREO QUE ESTO ESTÁ MAL REDACTADO !!!)
-
-                        var maxDiff = 10m;
-
-                        if (Math.Abs(taxBase * tipoImpositivo / 100 - cuotaRepercutida) > maxDiff)
-                            result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                                $" [CuotaRepercutida]=([{texBase}] * TipoImpositivo) +/- {maxDiff:#,##0.00}%.");
-
-                    }
-
-                }
-                else 
-                {
-
-                    result.Add($"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
-                           $" CuotaRepercutida solo podrá ser distinta de cero (positivo o negativo)" +
-                           $" si CalificacionOperacion es “S1“.");
-
-                }
-
-            }          
-
-            return result;
-
-        }
-
-        #endregion
-
+      _DetalleDesglose = detalleDesglose;
     }
 
+    #endregion
+
+    #region Métodos Privados de Instancia
+
+    /// <summary>
+    /// Obtiene los errores de un bloque en concreto.
+    /// </summary>
+    /// <returns>Lista con los errores de un bloque en concreto.</returns>
+    protected override List<string> GetBlockErrors()
+    {
+      List<string> result = new List<string>();
+      decimal cuotaRepercutida = XmlParser.ToDecimal(_DetalleDesglose.CuotaRepercutida);
+      decimal baseImponibleOimporteNoSujeto = XmlParser.ToDecimal(_DetalleDesglose.BaseImponibleOimporteNoSujeto);
+      decimal baseImponibleACoste = XmlParser.ToDecimal(_DetalleDesglose.BaseImponibleACoste);
+      decimal tipoImpositivo = XmlParser.ToDecimal(_DetalleDesglose.TipoImpositivo);
+      if(cuotaRepercutida != 0)
+      {
+        if(_DetalleDesglose.CalificacionOperacion == CalificacionOperacion.S1)
+        {
+          if(!((_RegistroAlta.TipoRectificativaSpecified && _RegistroAlta.TipoRectificativa == TipoRectificativa.I) ||
+                        _RegistroAlta.TipoFactura == TipoFactura.R2 || _RegistroAlta.TipoFactura == TipoFactura.R3))
+          {
+            decimal taxBase = (baseImponibleACoste == 0) ? baseImponibleOimporteNoSujeto : baseImponibleACoste;
+            string texBase = (baseImponibleACoste == 0) ? "BaseImponibleOimporteNoSujeto" : "BaseImponibleACoste";
+            // CuotaRepercutida y BaseImponibleOimporteNoSujeto deben tener el mismo signo.
+            if((cuotaRepercutida / Math.Abs(cuotaRepercutida)) != (taxBase / Math.Abs(taxBase)))
+            {
+              result.Add(
+                $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                                $" CuotaRepercutida y {texBase} deben tener el mismo signo.");
+            }
+            // Si [BaseImponibleOimporteNoSujeto] ≤ 1.000,00:
+            // [CuotaRepercutida]=([BaseImponibleOimporteNoSujeto] * TipoImpositivo) +/- 1% de[BaseImponibleOimporteNoSujeto]
+            // (y en todo caso se admite una diferencia de +/- 10,00 euros). (CREO QUE ESTO ESTÁ MAL REDACTADO !!!)
+            decimal maxDiff = 10m;
+            if(Math.Abs(taxBase * tipoImpositivo / 100 - cuotaRepercutida) > maxDiff)
+            {
+              result.Add(
+                $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                                            $" [CuotaRepercutida]=([{texBase}] * TipoImpositivo) +/- {maxDiff:#,##0.00}%.");
+            }
+          }
+        }
+        else
+        {
+          result.Add(
+            $"Error en el bloque RegistroAlta ({_RegistroAlta}) en el detalle {_DetalleDesglose}:" +
+                           $" CuotaRepercutida solo podrá ser distinta de cero (positivo o negativo)" +
+                           $" si CalificacionOperacion es “S1“.");
+        }
+      }
+      return result;
+    }
+
+    #endregion
+  }
 }

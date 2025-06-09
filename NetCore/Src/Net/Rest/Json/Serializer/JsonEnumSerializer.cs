@@ -39,53 +39,44 @@
 
 namespace VeriFactu.Net.Rest.Json.Serializer
 {
+  /// <summary>
+  /// Serializador para enumeraciones.
+  /// </summary>
+  internal class JsonEnumSerializer : IJsonSerializer
+  {
 
-    /// <summary>
-    /// Serializador para enumeraciones.
-    /// </summary>
-    internal class JsonEnumSerializer : IJsonSerializer
-    {
+    #region Variables Privadas de Instancia
 
-        #region Variables Privadas de Instancia
+    private string _Value = null;
 
-        string _Value = null;
-
-        #endregion
+    #endregion
 
 
         #region Construtores de Instancia
 
-        /// <summary>
-        /// Valor a aplicar en la serialización.
-        /// </summary>
-        /// <param name="value">Valor a aplicar en la serialización.</param>
-        public JsonEnumSerializer(string value = null) 
-        {
-
-            _Value = value;
-
-        }
-
-        #endregion
-
-        #region Métodos Públicos de Instancia
-
-        /// <summary>
-        /// Devuelve la representación en JSON
-        /// de la propiedad facilitada para la
-        /// instancia facilitada.
-        /// </summary>
-        /// <param name="value">Valor a serializar.</param>
-        /// <returns>Representación JSON de la propiedad.</returns>
-        public string ToJson(object value)
-        {
-
-            return _Value == null ? $"\"{value}\"" : $"\"{_Value}\"";
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Valor a aplicar en la serialización.
+    /// </summary>
+    /// <param name="value">Valor a aplicar en la serialización.</param>
+    public JsonEnumSerializer(string value = null)
+    {
+      _Value = value;
     }
 
+    #endregion
+
+    #region Métodos Públicos de Instancia
+
+    /// <summary>
+    /// Devuelve la representación en JSON de la propiedad facilitada para la instancia facilitada.
+    /// </summary>
+    /// <param name="value">Valor a serializar.</param>
+    /// <returns>Representación JSON de la propiedad.</returns>
+    public string ToJson(object value)
+    {
+      return _Value == null ? $"\"{value}\"" : $"\"{_Value}\"";
+    }
+
+    #endregion
+  }
 }
