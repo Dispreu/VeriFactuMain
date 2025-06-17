@@ -29,6 +29,7 @@
     <NuGetAudit>False</NuGetAudit>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>C:\VSProjects\MemorySoftKey.snk</AssemblyOriginatorKeyFile>
+    <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
